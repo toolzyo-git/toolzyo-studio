@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Podcast Script Studio — Toolzyo Studio</title>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://unpkg.com/lucide-react@0.383.0/dist/umd/lucide-react.min.js"></script>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:#070A20; }
+  #root { min-height:100vh; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-presets="react">
+const { useState, useRef } = React;
+const Mic = LucideReact.Mic;
+const Sparkles = LucideReact.Sparkles;
+const FileText = LucideReact.FileText;
+const Download = LucideReact.Download;
+const Copy = LucideReact.Copy;
+const Check = LucideReact.Check;
+const ChevronDown = LucideReact.ChevronDown;
+const Loader = LucideReact.Loader;
+const Radio = LucideReact.Radio;
+const Zap = LucideReact.Zap;
+const Globe = LucideReact.Globe;
+const BookOpen = LucideReact.BookOpen;
+const Swords = LucideReact.Swords;
+const Lightbulb = LucideReact.Lightbulb;
+const TrendingUp = LucideReact.TrendingUp;
+const X = LucideReact.X;
+
+// ─── BRAND TOKENS ─────────────────────────────────────────────────────────────
+const css = `
+  @import url('https://fonts.cdnfonts.com/css/gambarino');
+  @import url('https://fonts.cdnfonts.com/css/switzer');
+
+  .ps-root *, .ps-root *::before, .ps-root *::after { box-sizing:border-box; margin:0; padding:0; }
+
+  .ps-root {
+    font-family: 'Switzer', 'DM Sans', sans-serif;
+    background: #070A20;
+    color: #F0F2FF;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  .ps-root::before {
+    content: '';
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background:
+      radial-gradient(ellipse 55% 45% at 15% 15%, rgba(42,47,255,0.13) 0%, transparent 65%),
+      radial-gradient(ellipse 45% 40% at 85% 85%, rgba(196,0,255,0.10) 0%, transparent 65%),
+      radial-gradient(ellipse 35% 30% at 50% 50%, rgba(123,43,255,0.06) 0%, transparent 60%);
+  }
+
+  /* Grain overlay */
+  .ps-root::after {
+    content: '';
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)'/%3E%3C/svg%3E");
+  }
+
+  .ps-inner { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 2rem 2rem 5rem; }
+
+  /* HEADER */
+  .ps-header { text-align: center; padding: 2.5rem 0 3.5rem; }
+  .ps-wordmark { font-family: 'Gambarino', Georgia, serif; font-size: 1.2rem; color: rgba(240,242,255,0.45); letter-spacing: 0.03em; margin-bottom: 1.5rem; }
+  .ps-wordmark em { font-style: normal; color: #9D4EFF; }
+  .ps-title { font-family: 'Gambarino', Georgia, serif; font-size: clamp(2.8rem, 5.5vw, 5rem); line-height: 0.95; letter-spacing: 0.01em; }
+  .ps-title-line2 { background: linear-gradient(135deg, #2A2FFF, #9D4EFF, #C400FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .ps-sub { font-weight: 300; font-size: 0.95rem; color: rgba(240,242,255,0.55); margin-top: 1rem; max-width: 500px; margin-left: auto; margin-right: auto; line-height: 1.7; }
+  .ps-badges { display: flex; gap: 0.6rem; justify-content: center; flex-wrap: wrap; margin-top: 1.4rem; }
+  .ps-badge { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.28rem 0.85rem; border-radius: 50px; font-size: 0.68rem; font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase; }
+  .ps-badge.blue { background: rgba(42,47,255,0.12); border: 1px solid rgba(42,47,255,0.28); color: #8b91ff; }
+  .ps-badge.mag  { background: rgba(196,0,255,0.1);  border: 1px solid rgba(196,0,255,0.25); color: #d97aff; }
+  .ps-badge.cyan { background: rgba(0,232,192,0.1);  border: 1px solid rgba(0,232,192,0.25); color: #00E8C0; }
+
+  /* LAYOUT */
+  .ps-grid { display: grid; grid-template-columns: 420px 1fr; gap: 1.5rem; align-items: start; }
+  @media (max-width: 900px) { .ps-grid { grid-template-columns: 1fr; } }
+
+  /* PANEL */
+  .panel {
+    background: rgba(13,16,53,0.82);
+    border: 1px solid rgba(123,43,255,0.2);
+    border-radius: 20px;
+    padding: 1.8rem;
+    backdrop-filter: blur(16px);
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 1.2rem;
+  }
+  .panel::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(157,78,255,0.55), transparent);
+  }
+  .panel-title {
+    font-family: 'Gambarino', Georgia, serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.02em;
+    margin-bottom: 1.3rem;
+    display: flex; align-items: center; gap: 0.55rem;
+    color: #F0F2FF;
+  }
+  .panel-title svg { color: #9D4EFF; }
+  .eyebrow {
+    font-size: 0.67rem; font-weight: 400; letter-spacing: 0.16em;
+    text-transform: uppercase; color: #9D4EFF; margin-bottom: 0.6rem;
+  }
+  .divider { height: 1px; background: rgba(123,43,255,0.14); margin: 1.2rem 0; }
+
+  /* FORMAT CARDS */
+  .format-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem; }
+  .fmt-card {
+    background: rgba(7,10,32,0.65);
+    border: 1px solid rgba(123,43,255,0.18);
+    border-radius: 13px;
+    padding: 0.85rem 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .fmt-card:hover { border-color: rgba(123,43,255,0.45); background: rgba(123,43,255,0.08); }
+  .fmt-card.on { border-color: #9D4EFF; background: rgba(123,43,255,0.14); }
+  .fmt-card.on::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, #9D4EFF, transparent);
+  }
+  .fmt-icon { font-size: 1.2rem; margin-bottom: 0.3rem; }
+  .fmt-name { font-size: 0.8rem; font-weight: 500; }
+  .fmt-desc { font-size: 0.67rem; color: rgba(240,242,255,0.45); margin-top: 0.15rem; }
+
+  /* TONE PILLS */
+  .pill-row { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  .pill {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(123,43,255,0.2);
+    border-radius: 50px;
+    padding: 0.28rem 0.75rem;
+    font-size: 0.72rem;
+    color: rgba(240,242,255,0.55);
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .pill:hover { border-color: #9D4EFF; color: #F0F2FF; }
+  .pill.on { background: rgba(123,43,255,0.18); border-color: #9D4EFF; color: #F0F2FF; }
+
+  /* INPUTS */
+  .t-input {
+    width: 100%;
+    background: rgba(7,10,32,0.8);
+    border: 1px solid rgba(123,43,255,0.22);
+    border-radius: 11px;
+    padding: 0.75rem 1rem;
+    font-family: 'Switzer', sans-serif;
+    font-size: 0.84rem;
+    color: #F0F2FF;
+    outline: none;
+    resize: none;
+    transition: border-color 0.2s;
+    line-height: 1.6;
+  }
+  .t-input:focus { border-color: #9D4EFF; }
+  .t-input::placeholder { color: rgba(240,242,255,0.22); }
+  select.t-input { appearance: none; cursor: pointer; }
+
+  /* RANGE */
+  .range-row { display: flex; align-items: center; gap: 0.8rem; }
+  .range-label { font-size: 0.75rem; color: rgba(240,242,255,0.55); min-width: 70px; }
+  .range-val { font-size: 0.75rem; color: #9D4EFF; min-width: 28px; text-align: right; font-weight: 500; }
+  input[type=range] { flex: 1; -webkit-appearance: none; height: 2px; background: rgba(123,43,255,0.25); border-radius: 2px; outline: none; cursor: pointer; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; background: #9D4EFF; border-radius: 50%; box-shadow: 0 0 8px rgba(157,78,255,0.65); cursor: pointer; }
+
+  /* BUTTONS */
+  .btn {
+    border: none; cursor: pointer;
+    font-family: 'Switzer', sans-serif; font-weight: 500;
+    font-size: 0.82rem; letter-spacing: 0.08em; text-transform: uppercase;
+    border-radius: 50px;
+    padding: 0.8rem 1.8rem;
+    transition: all 0.22s;
+    display: inline-flex; align-items: center; gap: 0.5rem; justify-content: center;
+  }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+  .btn-primary { background: linear-gradient(135deg, #2A2FFF, #7B2BFF); color: #F0F2FF; width: 100%; }
+  .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 14px 38px rgba(123,43,255,0.48); }
+  .btn-ghost { background: transparent; border: 1px solid rgba(123,43,255,0.35); color: #9D4EFF; }
+  .btn-ghost:hover:not(:disabled) { background: rgba(123,43,255,0.1); border-color: #9D4EFF; color: #F0F2FF; }
+  .btn-cyan { background: rgba(0,232,192,0.12); border: 1px solid rgba(0,232,192,0.3); color: #00E8C0; }
+  .btn-cyan:hover:not(:disabled) { background: rgba(0,232,192,0.2); transform: translateY(-2px); }
+  .btn-sm { padding: 0.42rem 1rem; font-size: 0.72rem; }
+
+  /* GENERATE BTN STATE */
+  .btn-generate {
+    background: linear-gradient(135deg, #2A2FFF, #7B2BFF, #C400FF);
+    background-size: 200% 200%;
+    animation: none;
+    color: #F0F2FF; width: 100%;
+    padding: 1rem 2rem;
+    font-size: 0.88rem;
+  }
+  .btn-generate:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 18px 48px rgba(123,43,255,0.55); }
+  .btn-generate.loading { animation: gradshift 2s linear infinite; }
+  @keyframes gradshift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spin { animation: spin 0.8s linear infinite; }
+
+  /* PROGRESS STEPS */
+  .steps { display: flex; flex-direction: column; gap: 0.5rem; margin: 1.2rem 0; }
+  .step-row { display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 0.9rem; border-radius: 10px; background: rgba(7,10,32,0.6); border: 1px solid rgba(123,43,255,0.12); transition: all 0.3s; }
+  .step-row.active { border-color: rgba(157,78,255,0.4); background: rgba(123,43,255,0.1); }
+  .step-row.done { border-color: rgba(0,232,192,0.3); background: rgba(0,232,192,0.06); }
+  .step-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(123,43,255,0.25); flex-shrink: 0; transition: all 0.3s; }
+  .step-row.active .step-dot { background: #9D4EFF; box-shadow: 0 0 8px rgba(157,78,255,0.7); animation: pulse 1s infinite; }
+  .step-row.done .step-dot { background: #00E8C0; box-shadow: 0 0 6px rgba(0,232,192,0.5); }
+  .step-label { font-size: 0.78rem; color: rgba(240,242,255,0.5); transition: color 0.3s; }
+  .step-row.active .step-label { color: #F0F2FF; }
+  .step-row.done .step-label { color: rgba(0,232,192,0.8); }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(1.3)} }
+
+  /* OUTPUT AREA */
+  .output-empty {
+    min-height: 420px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 0.8rem; opacity: 0.4;
+  }
+  .output-empty p { font-size: 0.85rem; color: rgba(240,242,255,0.55); }
+
+  /* SCRIPT DISPLAY */
+  .script-wrap { position: relative; }
+  .script-toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem; }
+  .script-meta { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .script-tag { display: inline-flex; align-items: center; gap: 0.3rem; background: rgba(42,47,255,0.12); border: 1px solid rgba(42,47,255,0.25); border-radius: 50px; padding: 0.22rem 0.7rem; font-size: 0.68rem; letter-spacing: 0.08em; color: #8b91ff; text-transform: uppercase; }
+  .script-actions { display: flex; gap: 0.5rem; }
+
+  .script-body { font-size: 0.87rem; line-height: 1.85; color: rgba(240,242,255,0.82); }
+  .script-section { margin-bottom: 1.8rem; }
+  .script-section-label {
+    font-family: 'Gambarino', Georgia, serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #9D4EFF;
+    margin-bottom: 0.6rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .script-section-label::after { content: ''; flex: 1; height: 1px; background: rgba(123,43,255,0.2); }
+  .script-text { white-space: pre-wrap; background: rgba(7,10,32,0.5); border-radius: 10px; padding: 1rem 1.1rem; border: 1px solid rgba(123,43,255,0.12); }
+
+  /* TRANSCRIPT HTML PREVIEW */
+  .transcript-card {
+    background: rgba(0,232,192,0.06);
+    border: 1px solid rgba(0,232,192,0.2);
+    border-radius: 14px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 1rem;
+  }
+  .transcript-title { font-size: 0.8rem; font-weight: 500; color: #00E8C0; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.4rem; }
+  .transcript-desc { font-size: 0.78rem; color: rgba(240,242,255,0.5); line-height: 1.6; }
+
+  /* UPSELL CARD */
+  .upsell-card {
+    background: linear-gradient(135deg, rgba(42,47,255,0.08), rgba(196,0,255,0.08));
+    border: 1px solid rgba(157,78,255,0.28);
+    border-radius: 14px;
+    padding: 1.2rem 1.4rem;
+    margin-top: 1rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .upsell-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(196,0,255,0.5), transparent);
+  }
+  .upsell-title { font-family: 'Gambarino', Georgia, serif; font-size: 1rem; margin-bottom: 0.4rem; }
+  .upsell-title span { background: linear-gradient(135deg, #9D4EFF, #C400FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .upsell-desc { font-size: 0.78rem; color: rgba(240,242,255,0.5); line-height: 1.6; }
+  .upsell-price { font-family: 'Gambarino', Georgia, serif; font-size: 1.4rem; color: #9D4EFF; margin-top: 0.6rem; }
+  .upsell-price span { font-size: 0.72rem; font-family: 'Switzer', sans-serif; color: rgba(240,242,255,0.4); }
+
+  /* WORD COUNT */
+  .wc-row { display: flex; gap: 1.5rem; margin-top: 0.8rem; }
+  .wc-item { text-align: center; }
+  .wc-num { font-family: 'Gambarino', Georgia, serif; font-size: 1.6rem; background: linear-gradient(135deg, #2A2FFF, #9D4EFF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .wc-label { font-size: 0.66rem; color: rgba(240,242,255,0.38); text-transform: uppercase; letter-spacing: 0.1em; }
+
+  /* COPY TOAST */
+  .copy-toast {
+    position: fixed; bottom: 2rem; right: 2rem;
+    background: rgba(0,232,192,0.15); border: 1px solid rgba(0,232,192,0.35);
+    color: #00E8C0; padding: 0.7rem 1.2rem; border-radius: 50px;
+    font-size: 0.8rem; font-weight: 500; letter-spacing: 0.06em;
+    display: flex; align-items: center; gap: 0.4rem;
+    animation: slideUp 0.25s ease; z-index: 999;
+  }
+  @keyframes slideUp { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: translateY(0); } }
+
+  /* SCROLLBAR */
+  .ps-root ::-webkit-scrollbar { width: 4px; }
+  .ps-root ::-webkit-scrollbar-track { background: transparent; }
+  .ps-root ::-webkit-scrollbar-thumb { background: rgba(123,43,255,0.3); border-radius: 2px; }
+
+  .char-count { font-size: 0.68rem; color: rgba(240,242,255,0.28); text-align: right; margin-top: 0.3rem; }
+
+  /* ── OUTPUT GATE ── */
+  .gate-wrap { position:relative; }
+  .gate-preview-badge { display:inline-flex; align-items:center; gap:0.4rem; background:rgba(255,200,0,0.1); border:1px solid rgba(255,200,0,0.25); border-radius:50px; padding:0.22rem 0.75rem; font-size:0.62rem; font-weight:600; letter-spacing:0.13em; text-transform:uppercase; color:#fbbf24; margin-bottom:0.85rem; }
+  .gate-visible { position:relative; }
+  .gate-blurred { filter:blur(5px); pointer-events:none; user-select:none; opacity:0.6; overflow:hidden; max-height:340px; }
+  .gate-overlay { position:relative; margin-top:-2rem; background:linear-gradient(to bottom, transparent 0%, rgba(7,10,32,0.97) 28%); border-radius:0 0 20px 20px; padding:2.5rem 1.8rem 2rem; text-align:center; z-index:10; }
+  .gate-overlay-inner { background:linear-gradient(135deg,rgba(13,16,53,0.95),rgba(30,10,55,0.9)); border:1px solid rgba(123,43,255,0.32); border-radius:20px; padding:2rem 1.8rem; position:relative; overflow:hidden; }
+  .gate-overlay-inner::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,#9D4EFF,transparent); }
+  .gate-lock { font-size:1.8rem; margin-bottom:0.6rem; }
+  .gate-title { font-family:'Gambarino',Georgia,serif; font-size:1.35rem; color:#F0F2FF; margin-bottom:0.4rem; line-height:1.2; }
+  .gate-sub { font-size:0.8rem; color:rgba(240,242,255,0.48); line-height:1.7; margin-bottom:1.4rem; max-width:360px; margin-left:auto; margin-right:auto; }
+  .gate-options { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-bottom:1rem; }
+  @media(max-width:600px){ .gate-options{ grid-template-columns:1fr; } }
+  .gate-opt { padding:1rem 1rem; border-radius:14px; cursor:pointer; border:none; font-family:'Switzer','DM Sans',sans-serif; text-align:center; transition:all 0.22s; }
+  .gate-opt-pay { background:linear-gradient(135deg,rgba(42,47,255,0.2),rgba(123,43,255,0.2)); border:1px solid rgba(123,43,255,0.35); }
+  .gate-opt-pay:hover { border-color:#9D4EFF; transform:translateY(-2px); box-shadow:0 10px 30px rgba(123,43,255,0.3); }
+  .gate-opt-month { background:rgba(0,232,192,0.08); border:1px solid rgba(0,232,192,0.22); }
+  .gate-opt-month:hover { background:rgba(0,232,192,0.14); border-color:#00E8C0; transform:translateY(-2px); }
+  .gate-opt-price { font-family:'Gambarino',Georgia,serif; font-size:1.5rem; line-height:1; margin-bottom:0.2rem; }
+  .gate-opt-pay .gate-opt-price { background:linear-gradient(135deg,#2A2FFF,#9D4EFF); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .gate-opt-month .gate-opt-price { color:#00E8C0; }
+  .gate-opt-label { font-size:0.7rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.22rem; }
+  .gate-opt-pay .gate-opt-label { color:#9D4EFF; }
+  .gate-opt-month .gate-opt-label { color:#00E8C0; }
+  .gate-opt-desc { font-size:0.72rem; color:rgba(240,242,255,0.45); line-height:1.5; }
+  .gate-divider { display:flex; align-items:center; gap:0.7rem; margin:0.5rem 0; }
+  .gate-divider-line { flex:1; height:1px; background:rgba(123,43,255,0.15); }
+  .gate-divider-text { font-size:0.65rem; color:rgba(240,242,255,0.25); letter-spacing:0.1em; text-transform:uppercase; }
+  .gate-call-btn { width:100%; padding:0.85rem; border-radius:50px; border:1px solid rgba(123,43,255,0.28); background:transparent; color:rgba(240,242,255,0.6); font-family:'Switzer','DM Sans',sans-serif; font-size:0.78rem; font-weight:500; letter-spacing:0.08em; text-transform:uppercase; cursor:pointer; transition:all 0.2s; }
+  .gate-call-btn:hover { background:rgba(123,43,255,0.1); border-color:#9D4EFF; color:#F0F2FF; }
+  .gate-already { font-size:0.68rem; color:rgba(240,242,255,0.22); margin-top:0.75rem; cursor:pointer; transition:color 0.18s; background:none; border:none; font-family:'Switzer','DM Sans',sans-serif; width:100%; }
+  .gate-already:hover { color:rgba(240,242,255,0.5); }
+  .gate-code-row { display:flex; gap:0.45rem; margin-top:0.6rem; }
+  .gate-code-input { flex:1; background:rgba(7,10,32,0.8); border:1px solid rgba(123,43,255,0.22); border-radius:9px; padding:0.5rem 0.8rem; font-size:0.8rem; color:#F0F2FF; outline:none; font-family:'Switzer','DM Sans',sans-serif; }
+  .gate-code-input::placeholder { color:rgba(240,242,255,0.2); }
+  .gate-code-btn { background:rgba(123,43,255,0.18); border:1px solid rgba(123,43,255,0.28); border-radius:9px; padding:0.5rem 0.9rem; font-size:0.7rem; font-weight:500; letter-spacing:0.07em; text-transform:uppercase; color:#9D4EFF; cursor:pointer; font-family:'Switzer','DM Sans',sans-serif; white-space:nowrap; }
+  .gate-code-btn:hover { background:rgba(123,43,255,0.28); color:#F0F2FF; }
+`;
+
+const FORMATS = [
+  { id: 'deep-dive', icon: '🔬', name: 'Deep Dive', desc: 'Solo host, thorough breakdown' },
+  { id: 'discussion', icon: '💬', name: 'Discussion', desc: 'Two-host back & forth' },
+  { id: 'debate', icon: '⚔️', name: 'Debate', desc: 'Opposing views explored' },
+  { id: 'educational', icon: '🎓', name: 'Educational', desc: 'Teach & explain style' },
+  { id: 'news-recap', icon: '📰', name: 'News Recap', desc: 'Weekly highlights' },
+  { id: 'interview', icon: '🎙️', name: 'Interview', desc: 'Guest Q&A format' },
+];
+
+const TONES = ['Energetic', 'Serious', 'Conversational', 'Hype', 'Calm', 'Urgent', 'Inspiring'];
+const AUDIENCES = ['General Public', 'AI Professionals', 'Creators', 'Founders', 'Marketers', 'Students'];
+const LENGTHS = { short: { label: '5 min', words: 700 }, medium: { label: '10 min', words: 1400 }, long: { label: '20 min', words: 2800 } };
+
+function parseScript(raw) {
+  // Try to extract labeled sections
+  const sections = [];
+  const sectionRe = /\[([^\]]+)\]\s*\n([\s\S]*?)(?=\n\[|$)/g;
+  let match;
+  let hasSections = false;
+  while ((match = sectionRe.exec(raw)) !== null) {
+    sections.push({ label: match[1], text: match[2].trim() });
+    hasSections = true;
+  }
+  if (hasSections) return sections;
+  // Fallback: paragraph split
+  const paras = raw.split(/\n{2,}/);
+  return paras.map((p, i) => ({ label: i === 0 ? 'Intro' : i === paras.length - 1 ? 'Outro' : `Segment ${i}`, text: p.trim() }));
+}
+
+function ToolzyoPodcastStudio() {
+  const [topic, setTopic] = useState('');
+
+  const [isUnlocked, setIsUnlocked] = useState(
+    typeof window !== 'undefined' && !!localStorage.getItem('tz_access')
+  );
+  const [showCodeEntry, setShowCodeEntry] = useState(false);
+
+  const unlockAccess = (inputId) => {
+    const code = document.getElementById(inputId)?.value?.trim().toUpperCase();
+    if (code && (code === 'TZ2025' || code.length >= 8)) {
+      localStorage.setItem('tz_access', '1');
+      setIsUnlocked(true);
+    } else {
+      const el = document.getElementById(inputId);
+      if (el) { el.style.borderColor='rgba(255,80,80,0.5)'; setTimeout(()=>el.style.borderColor='',1500); }
+    }
+  };
+
+
+  const [showPaywall, setShowPaywall] = useState(false);
+  const [pendingDownload, setPendingDownload] = useState(null);
+
+  const gatedDownload = (fn) => {
+    if (typeof window !== 'undefined' && localStorage.getItem('tz_access')) { fn(); return; }
+    setPendingDownload(() => fn);
+    setShowPaywall(true);
+  };
+
+  const unlockWithCode = (inputId) => {
+    const code = document.getElementById(inputId)?.value?.trim().toUpperCase();
+    const valid = code && (code === 'TZ2025' || code.length >= 8);
+    if (valid) {
+      localStorage.setItem('tz_access', '1');
+      setShowPaywall(false);
+      if (pendingDownload) { pendingDownload(); setPendingDownload(null); }
+    } else {
+      const el = document.getElementById(inputId);
+      if (el) { el.style.borderColor = 'rgba(255,80,80,0.5)'; setTimeout(()=>el.style.borderColor='',1500); }
+    }
+  };
+
+  const [context, setContext] = useState('');
+  const [format, setFormat] = useState('deep-dive');
+  const [tone, setTone] = useState('Energetic');
+  const [audience, setAudience] = useState('General Public');
+  const [length, setLength] = useState('medium');
+  const [hostName, setHostName] = useState('');
+
+  const [phase, setPhase] = useState('idle'); // idle | researching | scripting | done | error
+  const [steps, setSteps] = useState([
+    { id: 'research', label: 'Researching topic & gathering insights', status: 'idle' },
+    { id: 'script', label: 'Writing your podcast script', status: 'idle' },
+    { id: 'format', label: 'Formatting transcript & sections', status: 'idle' },
+  ]);
+  const [researchSummary, setResearchSummary] = useState('');
+  const [scriptRaw, setScriptRaw] = useState('');
+  const [scriptSections, setScriptSections] = useState([]);
+  const [copyDone, setCopyDone] = useState(false);
+
+  const abortRef = useRef(null);
+
+  const setStepStatus = (id, status) => {
+    setSteps(prev => prev.map(s => s.id === id ? { ...s, status } : s));
+  };
+
+  const wordCount = scriptRaw ? scriptRaw.split(/\s+/).filter(Boolean).length : 0;
+  const estimatedMins = Math.round(wordCount / 140);
+
+  const generate = async () => {
+    if (!topic.trim()) return;
+    setPhase('running');
+    setScriptRaw('');
+    setScriptSections([]);
+    setResearchSummary('');
+    setSteps(prev => prev.map(s => ({ ...s, status: 'idle' })));
+
+    try {
+      // ── STEP 1: Research ──────────────────────────────────────────────────
+      setStepStatus('research', 'active');
+      const targetWords = LENGTHS[length].words;
+      const formatLabel = FORMATS.find(f => f.id === format)?.name || format;
+      const host = hostName || 'your AI-savvy host';
+
+      const researchRes = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          messages: [{
+            role: 'user',
+            content: `You are a podcast research assistant. Generate a focused research brief for a podcast episode.
+
+Topic: "${topic}"
+${context ? `Additional context: ${context}` : ''}
+Format: ${formatLabel}
+Target audience: ${audience}
+
+Provide:
+1. 5-7 key talking points or facts
+2. 2-3 compelling angles or controversies
+3. A strong opening hook sentence
+4. Suggested guest/opposing view (if relevant to format)
+
+Be concise and punchy. This is raw material for a podcast script writer.`
+          }]
+        })
+      });
+      const researchData = await researchRes.json();
+      const research = researchData.content?.[0]?.text || '';
+      setResearchSummary(research);
+      setStepStatus('research', 'done');
+
+      // ── STEP 2: Script ────────────────────────────────────────────────────
+      setStepStatus('script', 'active');
+
+      const toneGuide = {
+        Energetic: 'upbeat, excited, fast-paced with energy — like you genuinely love this topic',
+        Serious: 'measured, authoritative, weighty — this matters and you want people to feel that',
+        Conversational: 'casual, warm, like talking to a smart friend over coffee',
+        Hype: 'maximum energy, hype the audience up, bold statements, quotable',
+        Calm: 'relaxed, clear, steady delivery — reassuring and thoughtful',
+        Urgent: 'time-sensitive, this is important RIGHT NOW, lean forward energy',
+        Inspiring: 'motivational, future-forward, leave them feeling pumped',
+      }[tone] || tone;
+
+      const formatInstructions = {
+        'deep-dive': `Solo host (${host}) going deep. Use sections: [COLD OPEN], [INTRO], [SECTION 1], [SECTION 2], [SECTION 3], [KEY TAKEAWAYS], [OUTRO]`,
+        'discussion': `Two hosts (${host} and Co-Host). Label lines as HOST: and CO-HOST:. Use sections: [COLD OPEN], [INTRO], [DISCUSSION], [HOT TAKES], [WRAP UP]`,
+        'debate': `Two sides. ${host} moderates. Use sections: [COLD OPEN], [INTRO], [SIDE A], [SIDE B], [REBUTTAL], [VERDICT]`,
+        'educational': `${host} teaches. Clear, structured. Use sections: [HOOK], [WHAT IS IT], [WHY IT MATTERS], [HOW IT WORKS], [REAL WORLD EXAMPLES], [SUMMARY]`,
+        'news-recap': `${host} recaps top stories. Use sections: [INTRO], [STORY 1], [STORY 2], [STORY 3], [BIGGEST TAKEAWAY], [SIGN OFF]`,
+        'interview': `${host} interviews a guest. Use sections: [INTRO], [GUEST BACKGROUND], [MAIN QUESTIONS], [RAPID FIRE], [CLOSING]`,
+      }[format];
+
+      const scriptRes = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 4096,
+          messages: [{
+            role: 'user',
+            content: `You are writing a podcast script. Write ONLY the script — no meta-commentary, no "here's your script", just the raw script content.
+
+RESEARCH BRIEF:
+${research}
+
+SCRIPT REQUIREMENTS:
+- Topic: ${topic}
+- Format: ${formatInstructions}
+- Tone: ${toneGuide}
+- Target audience: ${audience}
+- Target length: approximately ${targetWords} words of spoken content
+- Write naturally for spoken delivery — contractions, pauses (...), emphasis (CAPS for key words)
+- Each section label must be on its own line in [BRACKETS]
+- Make it sound like a real human who's passionate about this topic, not a corporate script
+- Start strong — grab attention in the first 10 seconds
+- End with a clear call to action or memorable closing thought`
+          }]
+        })
+      });
+      const scriptData = await scriptRes.json();
+      const rawScript = scriptData.content?.[0]?.text || '';
+      setScriptRaw(rawScript);
+      setStepStatus('script', 'done');
+
+      // ── STEP 3: Format ────────────────────────────────────────────────────
+      setStepStatus('format', 'active');
+      const parsed = parseScript(rawScript);
+      setScriptSections(parsed);
+      setStepStatus('format', 'done');
+      setPhase('done');
+
+    } catch (err) {
+      console.error(err);
+      setPhase('error');
+    }
+  };
+
+  const copyScript = () => {
+    navigator.clipboard.writeText(scriptRaw);
+    setCopyDone(true);
+    setTimeout(() => setCopyDone(false), 2500);
+  };
+
+  const downloadTranscript = () => {
+    const html = generateTranscriptHTML();
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${topic.slice(0, 40).replace(/\s+/g, '-').toLowerCase()}-transcript.html`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const downloadScript = () => {
+    const blob = new Blob([scriptRaw], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${topic.slice(0, 40).replace(/\s+/g, '-').toLowerCase()}-script.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const generateTranscriptHTML = () => {
+    const formatLabel = FORMATS.find(f => f.id === format)?.name || format;
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>${topic} — Podcast Transcript</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet"/>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#070A20;color:#F0F2FF;font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;padding:0 0 4rem}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse 60% 50% at 20% 20%,rgba(42,47,255,0.12) 0%,transparent 60%),radial-gradient(ellipse 50% 40% at 80% 80%,rgba(196,0,255,0.09) 0%,transparent 60%)}
+  .wrap{max-width:760px;margin:0 auto;padding:3rem 2rem;position:relative;z-index:1}
+  header{text-align:center;padding:2rem 0 3rem;border-bottom:1px solid rgba(123,43,255,0.18);margin-bottom:3rem}
+  .logo{font-family:'Syne',sans-serif;font-size:1rem;color:rgba(240,242,255,0.4);margin-bottom:1.5rem;letter-spacing:0.08em}
+  .logo em{font-style:normal;color:#9D4EFF}
+  h1{font-family:'Syne',sans-serif;font-size:clamp(1.8rem,4vw,3rem);line-height:1.1;font-weight:700}
+  .meta{display:flex;gap:0.6rem;justify-content:center;flex-wrap:wrap;margin-top:1.2rem}
+  .tag{display:inline-block;padding:0.25rem 0.8rem;border-radius:50px;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase}
+  .tag-blue{background:rgba(42,47,255,0.14);border:1px solid rgba(42,47,255,0.28);color:#8b91ff}
+  .tag-mag{background:rgba(196,0,255,0.1);border:1px solid rgba(196,0,255,0.22);color:#d97aff}
+  .tag-cyan{background:rgba(0,232,192,0.1);border:1px solid rgba(0,232,192,0.22);color:#00E8C0}
+  .section{margin-bottom:2.5rem}
+  .section-label{font-family:'Syne',sans-serif;font-size:0.72rem;letter-spacing:0.18em;text-transform:uppercase;color:#9D4EFF;margin-bottom:1rem;display:flex;align-items:center;gap:0.6rem}
+  .section-label::after{content:'';flex:1;height:1px;background:rgba(123,43,255,0.18)}
+  .section-text{font-size:0.95rem;line-height:1.9;color:rgba(240,242,255,0.78);white-space:pre-wrap;background:rgba(13,16,53,0.7);border:1px solid rgba(123,43,255,0.12);border-radius:12px;padding:1.2rem 1.4rem}
+  .upsell{background:linear-gradient(135deg,rgba(42,47,255,0.1),rgba(196,0,255,0.08));border:1px solid rgba(157,78,255,0.25);border-radius:14px;padding:1.4rem 1.6rem;margin-top:3rem;text-align:center}
+  .upsell h3{font-family:'Syne',sans-serif;font-size:1.1rem;margin-bottom:0.5rem}
+  .upsell h3 span{background:linear-gradient(135deg,#9D4EFF,#C400FF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .upsell p{font-size:0.82rem;color:rgba(240,242,255,0.5);line-height:1.65}
+  footer{text-align:center;margin-top:3rem;padding-top:2rem;border-top:1px solid rgba(123,43,255,0.14);font-size:0.75rem;color:rgba(240,242,255,0.25)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">Toolzyo<em>.</em> Studio</div>
+    <h1>${topic}</h1>
+    <div class="meta">
+      <span class="tag tag-blue">${formatLabel}</span>
+      <span class="tag tag-mag">${tone}</span>
+      <span class="tag tag-cyan">${estimatedMins} min read</span>
+    </div>
+  </header>
+  ${scriptSections.map(s => `
+  <div class="section">
+    <div class="section-label">${s.label}</div>
+    <div class="section-text">${s.text.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+  </div>`).join('')}
+  <div class="upsell">
+    <h3>Want this as a <span>professional voiceover?</span></h3>
+    <p>Toolzyo Studio offers AI-enhanced voiceover production as a paid add-on. Lifelike voice, mixed audio, and a ready-to-publish file — delivered in 24 hours.</p>
+  </div>
+  <footer>Generated by Toolzyo Studio — toolzyo.com &nbsp;·&nbsp; © ${new Date().getFullYear()} Toolzyo</footer>
+</div>
+</body>
+</html>`;
+  };
+
+  const isRunning = phase === 'running';
+
+
+  const GateOverlay = ({ codeId }) => (
+    <div className="gate-overlay">
+      <div className="gate-overlay-inner">
+        <div className="gate-lock">🔒</div>
+        <h3 className="gate-title">Your personalized results are ready</h3>
+        <p className="gate-sub">You're seeing a preview based on your inputs. Unlock the full output or book a call to go through it together.</p>
+        <div className="gate-options">
+          <button className="gate-opt gate-opt-pay" onClick={()=>{ localStorage.setItem('tz_access_session','1'); setIsUnlocked(true); window.open('https://toolzyo.com/checkout?plan=session','_blank'); }}>
+            <div className="gate-opt-label">This Result</div>
+            <div className="gate-opt-price">$57</div>
+            <div className="gate-opt-desc">Unlock this full output + all downloads for this session</div>
+          </button>
+          <button className="gate-opt gate-opt-month" onClick={()=>{ window.open('https://toolzyo.com/checkout?plan=14day','_blank'); }}>
+            <div className="gate-opt-label">This Tool · 14 Days</div>
+            <div className="gate-opt-price">$127</div>
+            <div className="gate-opt-desc">Unlimited use of this tool for 14 days · all results unlocked</div>
+          </button>
+        </div>
+        <div className="gate-divider">
+          <div className="gate-divider-line"/>
+          <span className="gate-divider-text">or let us do it for you</span>
+          <div className="gate-divider-line"/>
+        </div>
+        <button className="gate-opt gate-opt-dfy" style={{width:'100%',marginBottom:'0.65rem'}} onClick={()=>window.open('https://toolzyo.com/#pricing','_blank')}>
+          <div className="gate-opt-label" style={{color:'#fbbf24'}}>⭐ Done-For-You — Strategy Snapshot</div>
+          <div className="gate-opt-price" style={{background:'linear-gradient(135deg,#fbbf24,#f59e0b)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text'}}>$397</div>
+          <div className="gate-opt-desc">Haze runs this for your business, delivers the polished report — you do nothing</div>
+        </button>
+        <button className="gate-call-btn" onClick={()=>window.open('https://toolzyo.com/#start','_blank')}>
+          📅 Book a discovery call first — talk through it live
+        </button>
+        {!showCodeEntry && (
+          <button className="gate-already" onClick={()=>setShowCodeEntry(true)}>Already have an access code?</button>
+        )}
+        {showCodeEntry && (
+          <div className="gate-code-row">
+            <input className="gate-code-input" id={codeId} placeholder="Enter access code" onKeyDown={e=>e.key==='Enter'&&unlockAccess(codeId)}/>
+            <button className="gate-code-btn" onClick={()=>unlockAccess(codeId)}>Unlock</button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  return (
+    <>
+      <style>{css}</style>
+      <div className="ps-root">
+        <div className="ps-inner">
+
+          {/* HEADER */}
+          <div className="ps-header">
+            <div className="ps-wordmark">Toolzyo<em>.</em></div>
+            <h1 className="ps-title">
+              Podcast<br />
+              <span className="ps-title-line2">Script Studio</span>
+            </h1>
+            <p className="ps-sub">AI-researched, fully written podcast scripts ready for recording — in under 2 minutes</p>
+            <div className="ps-badges">
+              <span className="ps-badge blue"><Globe size={10} /> AI Research</span>
+              <span className="ps-badge mag"><Mic size={10} /> Script Generator</span>
+              <span className="ps-badge cyan"><FileText size={10} /> Transcript Export</span>
+            </div>
+          </div>
+
+          <div className="ps-grid">
+
+            {/* ── LEFT: CONTROLS ─────────────────────────────────────────── */}
+            <div>
+              <div className="panel">
+                <p className="panel-title"><Radio size={16} /> Episode Setup</p>
+
+                {/* Topic */}
+                <p className="eyebrow">Topic *</p>
+                <textarea className="t-input" rows={3}
+                  placeholder="e.g. OpenAI launches GPT-5 — what it means for creators"
+                  value={topic}
+                  onChange={e => setTopic(e.target.value)}
+                  maxLength={300} />
+                <p className="char-count">{topic.length}/300</p>
+
+                <div className="divider" />
+
+                {/* Context */}
+                <p className="eyebrow">Extra Context (optional)</p>
+                <textarea className="t-input" rows={2}
+                  placeholder="Paste an article URL, key facts, or talking points..."
+                  value={context}
+                  onChange={e => setContext(e.target.value)} />
+
+                <div className="divider" />
+
+                {/* Host Name */}
+                <p className="eyebrow">Host Name (optional)</p>
+                <input className="t-input" type="text"
+                  placeholder='e.g. "Leo from Toolzyo"'
+                  value={hostName}
+                  onChange={e => setHostName(e.target.value)} />
+              </div>
+
+              <div className="panel">
+                <p className="panel-title"><Sparkles size={16} /> Format & Style</p>
+
+                {/* Format */}
+                <p className="eyebrow">Format</p>
+                <div className="format-grid">
+                  {FORMATS.map(f => (
+                    <div key={f.id} className={`fmt-card${format === f.id ? ' on' : ''}`}
+                      onClick={() => setFormat(f.id)}>
+                      <div className="fmt-icon">{f.icon}</div>
+                      <div className="fmt-name">{f.name}</div>
+                      <div className="fmt-desc">{f.desc}</div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="divider" />
+
+                {/* Tone */}
+                <p className="eyebrow">Tone</p>
+                <div className="pill-row">
+                  {TONES.map(t => (
+                    <button key={t} className={`pill${tone === t ? ' on' : ''}`}
+                      onClick={() => setTone(t)}>{t}</button>
+                  ))}
+                </div>
+
+                <div className="divider" />
+
+                {/* Audience */}
+                <p className="eyebrow">Audience</p>
+                <div className="pill-row">
+                  {AUDIENCES.map(a => (
+                    <button key={a} className={`pill${audience === a ? ' on' : ''}`}
+                      onClick={() => setAudience(a)}>{a}</button>
+                  ))}
+                </div>
+
+                <div className="divider" />
+
+                {/* Length */}
+                <p className="eyebrow">Episode Length</p>
+                <div className="pill-row">
+                  {Object.entries(LENGTHS).map(([k, v]) => (
+                    <button key={k} className={`pill${length === k ? ' on' : ''}`}
+                      onClick={() => setLength(k)}>
+                      {v.label} (~{v.words.toLocaleString()} words)
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Generate Button */}
+              <button
+                className={`btn btn-generate${isRunning ? ' loading' : ''}`}
+                disabled={isRunning || !topic.trim()}
+                onClick={generate}>
+                {isRunning
+                  ? <><Loader size={15} className="spin" /> Generating...</>
+                  : <><Zap size={15} /> Generate Podcast Script</>}
+              </button>
+
+              {/* Steps Progress */}
+              {(isRunning || phase === 'done' || phase === 'error') && (
+                <div className="steps" style={{marginTop:'1rem'}}>
+                  {steps.map(s => (
+                    <div key={s.id} className={`step-row${s.status === 'active' ? ' active' : s.status === 'done' ? ' done' : ''}`}>
+                      <div className="step-dot" />
+                      <span className="step-label">
+                        {s.status === 'done' ? '✓ ' : s.status === 'active' ? '⟳ ' : ''}{s.label}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* ── RIGHT: OUTPUT ───────────────────────────────────────────── */}
+            <div>
+              <div className="panel" style={{minHeight: 480}}>
+                <div className="panel-title"><FileText size={16} /> Script Output</div>
+
+                {phase === 'idle' && (
+                  <div className="output-empty">
+                    <Mic size={40} strokeWidth={1} color="#9D4EFF" />
+                    <p>Fill in the setup and hit Generate</p>
+                  </div>
+                )}
+
+                {isRunning && !scriptRaw && (
+                  <div className="output-empty">
+                    <Loader size={36} strokeWidth={1} color="#9D4EFF" className="spin" />
+                    <p>Researching and writing your script...</p>
+                  </div>
+                )}
+
+                {phase === 'error' && (
+                  <div className="output-empty">
+                    <X size={36} color="#ff5449" />
+                    <p style={{color:'#ff5449'}}>Something went wrong. Check your connection and try again.</p>
+                  </div>
+                )}
+
+                {scriptRaw && (
+                  <div className="gate-wrap">
+                    <span className="gate-preview-badge">👁 Sample Preview — Intro visible · Full script locked</span>
+                  <div className="script-wrap">
+                    {/* Meta + actions */}
+                    <div className="script-toolbar">
+                      <div className="script-meta">
+                        <span className="script-tag"><FileText size={10} /> {wordCount.toLocaleString()} words</span>
+                        <span className="script-tag"><Radio size={10} /> ~{estimatedMins} min</span>
+                        <span className="script-tag">{FORMATS.find(f=>f.id===format)?.name}</span>
+                      </div>
+                      <div className="script-actions">
+                        <button className="btn btn-ghost btn-sm" onClick={copyScript}>
+                          {copyDone ? <><Check size={12} /> Copied</> : <><Copy size={12} /> Copy</>}
+                        </button>
+                        <button className="btn btn-ghost btn-sm" onClick={()=>gatedDownload(downloadScript)}>
+                          <Download size={12} /> .txt
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Word count stats */}
+                    <div className="wc-row">
+                      <div className="wc-item">
+                        <div className="wc-num">{wordCount.toLocaleString()}</div>
+                        <div className="wc-label">Words</div>
+                      </div>
+                      <div className="wc-item">
+                        <div className="wc-num">{estimatedMins}</div>
+                        <div className="wc-label">Est. Minutes</div>
+                      </div>
+                      <div className="wc-item">
+                        <div className="wc-num">{scriptSections.length}</div>
+                        <div className="wc-label">Sections</div>
+                      </div>
+                    </div>
+
+                    <div className="divider" />
+
+                    {/* Script sections — show first section, blur rest */}
+                    <div className="script-body">
+                      {scriptSections.slice(0,1).map((s, i) => (
+                        <div key={i} className="script-section">
+                          <div className="script-section-label">{s.label}</div>
+                          <div className="script-text">{s.text}</div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {!isUnlocked && (
+                      <div className="gate-blurred">
+                        {scriptSections.slice(1).map((s, i) => (
+                          <div key={i} className="script-section">
+                            <div className="script-section-label">{s.label}</div>
+                            <div className="script-text">{s.text}</div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {isUnlocked && scriptSections.slice(1).map((s, i) => (
+                      <div key={i} className="script-section">
+                        <div className="script-section-label">{s.label}</div>
+                        <div className="script-text">{s.text}</div>
+                      </div>
+                    ))}
+
+                    {/* Transcript download */}
+                    {phase === 'done' && (
+                      <>
+                        <div className="transcript-card">
+                          <div className="transcript-title"><FileText size={13} /> Formatted Transcript Page</div>
+                          <p className="transcript-desc">Download a branded HTML transcript page — ready to share with clients, post on your site, or hand off to a voice actor.</p>
+                          <button className="btn btn-cyan btn-sm" style={{marginTop:'0.8rem', width:'100%'}} onClick={()=>gatedDownload(downloadTranscript)}>
+                            <Download size={13} /> Download Transcript Page (.html)
+                          </button>
+                        </div>
+
+                        {/* Upsell */}
+                        <div className="upsell-card">
+                          <div className="upsell-title">Want a <span>professional voiceover?</span></div>
+                          <p className="upsell-desc">Toolzyo Studio offers AI-enhanced voiceover production as a premium add-on. Lifelike voice, mixed audio, ready to publish.</p>
+                          <div className="upsell-price">+$49 <span>/ episode add-on</span></div>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                  {!isUnlocked && <GateOverlay codeId="podcastCode"/>}
+                  </div>
+                )}
+              </div>
+
+              {/* Research Brief (collapsible) */}
+              {researchSummary && (
+                <div className="panel">
+                  <p className="panel-title"><BookOpen size={16} /> Research Brief</p>
+                  <p style={{fontSize:'0.83rem', lineHeight:'1.8', color:'rgba(240,242,255,0.65)', whiteSpace:'pre-wrap'}}>{researchSummary}</p>
+                </div>
+              )}
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      {copyDone && (
+        <div className="copy-toast"><Check size={14} /> Script copied to clipboard</div>
+      )}
+
+      {showPaywall && (
+        <div className="pw-overlay" onClick={e=>{ if(e.target===e.currentTarget){ setShowPaywall(false); } }}>
+          <div className="pw-card">
+            <div className="pw-lock">🔒</div>
+            <h2 className="pw-title">Your results are ready to save</h2>
+            <p className="pw-sub">Generate freely — download your personalized output when you're on a package or grab one-time access.</p>
+            <div className="pw-options">
+              <button className="pw-opt pw-opt-primary" onClick={()=>{ setShowPaywall(false); window.open('https://toolzyo.com/#pricing','_blank'); }}>
+                <div className="pw-opt-label">📦 View Packages</div>
+                <div className="pw-opt-text">Content Engine · Full Service · Strategy Snapshot</div>
+                <div className="pw-opt-price">From $397 · Includes unlimited downloads</div>
+              </button>
+              <button className="pw-opt pw-opt-secondary" onClick={()=>{ setShowPaywall(false); window.open('https://toolzyo.com/vault','_blank'); }}>
+                <div className="pw-opt-label">⚡ One-Time Download</div>
+                <div className="pw-opt-text">Pay once, download this result now</div>
+                <div className="pw-opt-price">$9 per export — available in The Vault</div>
+              </button>
+            </div>
+            <div className="pw-divider"/>
+            <p className="pw-code-lbl">Already have access? Enter your code</p>
+            <div className="pw-code-row">
+              <input className="pw-code-input" id="pwCodeInput" placeholder="Access code" type="text" onKeyDown={e=>e.key==='Enter'&&unlockWithCode('pwCodeInput')}/>
+              <button className="pw-code-btn" onClick={()=>unlockWithCode('pwCodeInput')}>Unlock</button>
+            </div>
+            <button className="pw-dismiss" onClick={()=>setShowPaywall(false)}>Continue browsing without downloading</button>
+          </div>
+        </div>
+      )}
+
+    </>
+  );
+}
+
+
+const container = document.getElementById('root');
+const root = ReactDOM.createRoot(container);
+root.render(React.createElement(ToolzyoPodcastStudio));
+</script>
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>The 2026 AI Tool Stack That Actually Matters — Toolzyo Intel</title>
+<meta name="description" content="There are now thousands of AI tools. Most of them do the same four things with different branding. The actual question is not which tools exist — it is which on"/>
+<link href="https://fonts.cdnfonts.com/css/gambarino" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/switzer" rel="stylesheet">
+<style>
+  :root{--navy:#070A20;--navy2:#0A0D28;--royal:#2A2FFF;--purple:#7B2BFF;--purpv:#9D4EFF;--mag:#C400FF;--cyan:#00E8C0;--white:#F0F2FF;--dim:rgba(240,242,255,0.62);--faint:rgba(240,242,255,0.25);--border:rgba(123,43,255,0.2);--G:'Gambarino',Georgia,serif;--S:'Switzer','DM Sans',sans-serif;}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--navy);color:var(--white);font-family:var(--S);font-weight:300;overflow-x:hidden;line-height:1.6;}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 55% 45% at 2% 5%,rgba(42,47,255,0.14) 0%,transparent 60%),radial-gradient(ellipse 45% 40% at 98% 95%,rgba(196,0,255,0.09) 0%,transparent 60%);}
+  nav{position:fixed;top:0;width:100%;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:1.1rem 4rem;background:rgba(4,5,26,0.85);backdrop-filter:blur(28px);border-bottom:1px solid rgba(123,43,255,0.13);}
+  .nav-logo{font-family:var(--G);font-size:1.7rem;letter-spacing:0.02em;color:var(--white);text-decoration:none;}
+  .nav-logo em{font-style:normal;color:var(--purpv);}
+  .nav-back{display:inline-flex;align-items:center;gap:0.45rem;font-family:var(--S);font-weight:400;font-size:0.82rem;color:var(--dim);text-decoration:none;letter-spacing:0.04em;transition:color 0.2s;}
+  .nav-back:hover{color:var(--white);}
+  .nav-back::before{content:'←';font-size:1rem;}
+  .article-wrap{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:8rem 2rem 5rem;}
+  .article-meta{display:flex;flex-wrap:wrap;align-items:center;gap:0.6rem;margin-bottom:1.8rem;}
+  .meta-tag{display:inline-flex;align-items:center;font-size:0.65rem;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;padding:0.24rem 0.75rem;border-radius:50px;}
+  .tag-intel{background:rgba(123,43,255,0.12);border:1px solid rgba(123,43,255,0.28);color:#c084fc;}
+  .tag-a{background:rgba(42,47,255,0.1);border:1px solid rgba(42,47,255,0.22);color:#8b91ff;}
+  .tag-b{background:rgba(196,0,255,0.1);border:1px solid rgba(196,0,255,0.22);color:#e879f9;}
+  .meta-date{font-size:0.72rem;color:var(--faint);letter-spacing:0.06em;}
+  .meta-dot{width:3px;height:3px;border-radius:50%;background:rgba(240,242,255,0.2);}
+  .meta-read{font-size:0.72rem;color:var(--faint);}
+  .article-headline{font-family:var(--G);font-size:clamp(2.2rem,5vw,3.4rem);line-height:1.0;letter-spacing:0.01em;margin-bottom:1.2rem;}
+  .article-headline .acc{background:linear-gradient(135deg,var(--purpv),var(--mag));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .byline{display:flex;align-items:center;gap:0.85rem;padding:1.1rem 1.3rem;background:rgba(13,16,53,0.7);border:1px solid rgba(123,43,255,0.18);border-radius:13px;margin-bottom:2rem;}
+  .byline-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--royal),var(--purpv),var(--mag));display:flex;align-items:center;justify-content:center;font-family:var(--G);font-size:1.1rem;flex-shrink:0;}
+  .byline-name{font-family:var(--S);font-weight:500;font-size:0.84rem;color:var(--white);}
+  .byline-role{font-size:0.72rem;color:var(--dim);margin-top:0.1rem;}
+  .byline-studio{margin-left:auto;font-size:0.68rem;color:var(--purpv);letter-spacing:0.08em;text-transform:uppercase;font-weight:500;white-space:nowrap;}
+  .audio-player{background:rgba(13,16,53,0.88);border:1px solid rgba(123,43,255,0.25);border-radius:16px;padding:1.1rem 1.4rem;margin-bottom:2.2rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;position:relative;overflow:hidden;}
+  .audio-player::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(157,78,255,0.5),transparent);}
+  .audio-play-btn{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#2A2FFF,#9D4EFF);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.22s;box-shadow:0 4px 16px rgba(123,43,255,0.35);}
+  .audio-play-icon{width:0;height:0;border-style:solid;border-width:7px 0 7px 13px;border-color:transparent transparent transparent #F0F2FF;margin-left:3px;}
+  .audio-play-icon.pause{width:12px;height:14px;border:none;margin-left:0;background:linear-gradient(to right,#F0F2FF 40%,transparent 40%,transparent 60%,#F0F2FF 60%);border-radius:1px;}
+  .audio-info{flex:1;min-width:0;}
+  .audio-label{font-size:0.63rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--purpv);margin-bottom:0.18rem;}
+  .audio-title{font-family:var(--G);font-size:0.95rem;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .audio-progress-wrap{width:100%;height:4px;background:rgba(255,255,255,0.07);border-radius:2px;cursor:pointer;margin-top:0.5rem;}
+  .audio-progress-bar{height:4px;background:linear-gradient(90deg,#2A2FFF,#9D4EFF);border-radius:2px;width:0%;transition:width 0.3s linear;pointer-events:none;}
+  .audio-time{font-size:0.68rem;color:var(--faint);white-space:nowrap;flex-shrink:0;}
+  .audio-speed{background:rgba(123,43,255,0.12);border:1px solid rgba(123,43,255,0.22);border-radius:50px;padding:0.22rem 0.6rem;font-size:0.68rem;color:#c084fc;cursor:pointer;flex-shrink:0;font-family:var(--S);}
+  @media(max-width:500px){.audio-time,.audio-speed{display:none;}}
+  .article-lead{font-size:1.08rem;color:rgba(240,242,255,0.75);line-height:1.82;margin-bottom:2.5rem;padding-bottom:2rem;border-bottom:1px solid rgba(123,43,255,0.14);}
+  .article-body{font-size:0.95rem;color:var(--dim);line-height:1.88;}
+  .article-body p{margin-bottom:1.4rem;}
+  .article-body h2{font-family:var(--G);font-size:1.55rem;color:var(--white);margin:2.5rem 0 1rem;letter-spacing:0.01em;line-height:1.15;}
+  .article-body strong{color:var(--white);font-weight:500;}
+  .pull-quote{border-left:3px solid var(--purpv);padding:0.9rem 1.4rem;margin:2rem 0;background:rgba(123,43,255,0.06);border-radius:0 12px 12px 0;}
+  .pull-quote p{font-family:var(--G);font-size:1.2rem;color:var(--white);line-height:1.4;margin:0;}
+  .insight-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0.85rem;margin:2rem 0;}
+  .insight-card{background:rgba(13,16,53,0.75);border:1px solid rgba(123,43,255,0.18);border-radius:14px;padding:1.2rem;position:relative;overflow:hidden;}
+  .insight-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(157,78,255,0.4),transparent);}
+  .insight-label{font-size:0.63rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--purpv);margin-bottom:0.5rem;}
+  .insight-title{font-family:var(--G);font-size:1rem;color:var(--white);margin-bottom:0.4rem;}
+  .insight-desc{font-size:0.82rem;color:var(--dim);line-height:1.65;}
+  .haze-callout{background:linear-gradient(135deg,rgba(42,47,255,0.08),rgba(123,43,255,0.08));border:1px solid rgba(123,43,255,0.25);border-radius:16px;padding:1.4rem 1.6rem;margin:2.2rem 0;position:relative;}
+  .haze-callout::before{content:'💬';position:absolute;top:-12px;left:1.4rem;font-size:1.2rem;}
+  .haze-label{font-size:0.63rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--purpv);margin-bottom:0.5rem;}
+  .haze-callout p{font-size:0.88rem;color:rgba(240,242,255,0.72);line-height:1.78;margin:0;}
+  .haze-callout p+p{margin-top:0.8rem;}
+  .section-divider{height:1px;background:rgba(123,43,255,0.12);margin:2.5rem 0;}
+  .social-cta{display:flex;align-items:center;gap:1rem;background:rgba(13,16,53,0.8);border:1px solid rgba(123,43,255,0.18);border-radius:14px;padding:1.1rem 1.4rem;margin:2rem 0;flex-wrap:wrap;}
+  .social-cta p{font-size:0.86rem;color:var(--dim);line-height:1.65;flex:1;min-width:200px;}
+  .social-cta p strong{color:var(--white);font-weight:500;}
+  .social-links{display:flex;gap:0.5rem;flex-shrink:0;}
+  .social-link{display:inline-flex;align-items:center;gap:0.3rem;font-size:0.72rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.38rem 0.85rem;border-radius:50px;text-decoration:none;transition:all 0.18s;}
+  .social-ig{background:rgba(225,48,108,0.12);border:1px solid rgba(225,48,108,0.25);color:#f472b6;}
+  .social-tt{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.16);color:var(--white);}
+  .cta-block{background:linear-gradient(135deg,rgba(42,47,255,0.12),rgba(123,43,255,0.1),rgba(196,0,255,0.08));border:1px solid rgba(123,43,255,0.28);border-radius:20px;padding:2rem 2.2rem;margin:3rem 0;text-align:center;position:relative;overflow:hidden;}
+  .cta-block::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--purpv),transparent);}
+  .cta-eyebrow{font-size:0.65rem;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:var(--purpv);margin-bottom:0.7rem;}
+  .cta-block h3{font-family:var(--G);font-size:1.6rem;color:var(--white);margin-bottom:0.6rem;line-height:1.15;}
+  .cta-block p{font-size:0.88rem;color:var(--dim);line-height:1.75;margin-bottom:1.4rem;max-width:480px;margin-left:auto;margin-right:auto;}
+  .cta-btn-row{display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;}
+  .cta-btn{display:inline-flex;align-items:center;gap:0.45rem;padding:0.78rem 1.6rem;border-radius:50px;font-family:var(--S);font-weight:500;font-size:0.8rem;letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;transition:all 0.22s;border:none;cursor:pointer;}
+  .cta-primary{background:linear-gradient(135deg,var(--royal),var(--purple),var(--mag));color:var(--white);}
+  .cta-primary:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(123,43,255,0.45);}
+  .cta-ghost{background:transparent;border:1px solid rgba(123,43,255,0.32);color:var(--purpv);}
+  .cta-ghost:hover{background:rgba(123,43,255,0.1);color:var(--white);}
+  .article-footer{margin-top:4rem;padding-top:2rem;border-top:1px solid rgba(123,43,255,0.14);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+  .back-home{display:inline-flex;align-items:center;gap:0.45rem;font-size:0.8rem;color:var(--dim);text-decoration:none;transition:color 0.2s;}
+  .back-home:hover{color:var(--white);}
+  .back-home::before{content:'←';}
+  .share-label{font-size:0.68rem;color:var(--faint);letter-spacing:0.1em;text-transform:uppercase;}
+  @media(max-width:768px){nav{padding:1rem 1.5rem;}.article-wrap{padding:7rem 1.4rem 4rem;}.byline-studio{display:none;}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">Toolzyo<em>.</em></a>
+  <a href="index.html#ai-intel" class="nav-back">Back to AI Intel</a>
+</nav>
+<div class="article-wrap">
+  <div class="article-meta">
+    <span class="meta-tag tag-intel">AI Intel</span>
+    <span class="meta-tag tag-a">AI Tools · 2026 Stack</span><span class="meta-tag tag-b">Productivity</span><span class="meta-tag tag-c">Workflow</span>
+    <span class="meta-dot"></span>
+    <span class="meta-date">March 26, 2026</span>
+    <span class="meta-dot"></span>
+    <span class="meta-read">8 min read</span>
+  </div>
+  <h1 class="article-headline">The 2026 AI Tool Stack That <span class="acc">Actually Matters</span></h1>
+  <div class="byline">
+    <div class="byline-avatar">H</div>
+    <div>
+      <div class="byline-name">Haze</div>
+      <div class="byline-role">Creative Director, Toolzyo Studio</div>
+    </div>
+    <span class="byline-studio">Toolzyo Intel</span>
+  </div>
+  <div class="audio-player" id="audioPlayer">
+    <button class="audio-play-btn" id="playBtn" onclick="toggleAudio()">
+      <div class="audio-play-icon" id="playIcon"></div>
+    </button>
+    <div class="audio-info">
+      <div class="audio-label">🎧 Listen to Article</div>
+      <div class="audio-title" id="audioTitle">The 2026 AI Tool Stack That Actually Matters</div>
+      <div class="audio-progress-wrap" id="progressWrap" onclick="seekAudio(event)">
+        <div class="audio-progress-bar" id="progressBar"></div>
+      </div>
+    </div>
+    <span class="audio-time" id="audioTime">0:00</span>
+    <button class="audio-speed" id="speedBtn" onclick="cycleSpeed()">1×</button>
+  </div>
+  <p class="article-lead">There are now thousands of AI tools. Most of them do the same four things with different branding. The actual question is not which tools exist — it is which ones integrate into a real workflow and produce work you would stake your reputation on. This is how to think about the 2026 AI tool stack from first principles, not as a list.</p>
+  <div class="article-body">
+
+    <h2>The Problem With Every "Best AI Tools" List</h2>
+    <p>Lists of the best AI tools in 2026 tend to share a structural problem: they optimize for comprehensiveness over utility. You end up with 18, 25, or 50 tools organized by category — writing, coding, design, research — with a brief description of what each one does. Nobody builds a workflow from a list like this. Nobody knows what to actually use on Monday morning.</p>
+    <p>The more useful question is: what is the minimum set of AI tools that covers the core functions of a modern creative or business workflow, where each one is genuinely the best option for its specific job? The answer in 2026 is roughly four to six tools, not fifty. The rest are either redundant, niche, or not mature enough to rely on.</p>
+
+    <h2>The Framework: Four Workflow Functions</h2>
+    <p>Organize your AI tool stack around what you need to produce — not around tool categories. Most professional workflows require four core functions: <strong>thinking and reasoning</strong>, <strong>writing and content</strong>, <strong>visual creation</strong>, and <strong>research and knowledge management</strong>. One strong tool per function, with intentional choices about where they overlap, is more powerful than a sprawling collection of specialized apps.</p>
+
+    <div style="display:flex;flex-direction:column;gap:0.75rem;margin:2rem 0;">
+      <div style="background:rgba(13,16,53,0.75);border:1px solid rgba(42,47,255,0.22);border-radius:14px;padding:1.2rem 1.4rem;display:flex;gap:1rem;align-items:flex-start;">
+        <div style="font-size:1.4rem;flex-shrink:0;">🧠</div>
+        <div>
+          <div style="font-family:var(--G);font-size:1rem;color:var(--white);margin-bottom:0.3rem;">Thinking & Reasoning</div>
+          <div style="font-size:0.85rem;color:var(--dim);line-height:1.65;"><strong style="color:var(--white);">Claude or ChatGPT</strong> — for complex analysis, long documents, strategy work, and anything requiring genuine reasoning over extended context. Claude handles 200K token context windows; GPT-5.2 is the go-to for precise, methodical work where correctness matters more than speed. Not interchangeable — test both for your specific use case.</div>
+        </div>
+      </div>
+      <div style="background:rgba(13,16,53,0.75);border:1px solid rgba(157,78,255,0.22);border-radius:14px;padding:1.2rem 1.4rem;display:flex;gap:1rem;align-items:flex-start;">
+        <div style="font-size:1.4rem;flex-shrink:0;">✍️</div>
+        <div>
+          <div style="font-family:var(--G);font-size:1rem;color:var(--white);margin-bottom:0.3rem;">Writing & Content</div>
+          <div style="font-size:0.85rem;color:var(--dim);line-height:1.65;"><strong style="color:var(--white);">Claude in your workflow</strong> — for drafting, editing, and producing content at scale. The distinction that matters: use AI to draft and structure, not to replace the human voice. Output that carries your actual perspective and expertise outperforms output that reads like it came from a model — because in 2026, audiences and AI search systems both know the difference.</div>
+        </div>
+      </div>
+      <div style="background:rgba(13,16,53,0.75);border:1px solid rgba(196,0,255,0.18);border-radius:14px;padding:1.2rem 1.4rem;display:flex;gap:1rem;align-items:flex-start;">
+        <div style="font-size:1.4rem;flex-shrink:0;">🖼️</div>
+        <div>
+          <div style="font-family:var(--G);font-size:1rem;color:var(--white);margin-bottom:0.3rem;">Visual Creation</div>
+          <div style="font-size:0.85rem;color:var(--dim);line-height:1.65;"><strong style="color:var(--white);">Midjourney V8 for quality, Flux Kontext for editability, Nano Banana 2 for free-tier daily use.</strong> No single image generator wins on every dimension. The professional answer in 2026 is a primary tool for hero outputs and a secondary for iteration. Midjourney V8 leads on pure aesthetic quality; Flux Kontext leads on element editing and text rendering in complex compositions.</div>
+        </div>
+      </div>
+      <div style="background:rgba(13,16,53,0.75);border:1px solid rgba(0,232,192,0.18);border-radius:14px;padding:1.2rem 1.4rem;display:flex;gap:1rem;align-items:flex-start;">
+        <div style="font-size:1.4rem;flex-shrink:0;">🔍</div>
+        <div>
+          <div style="font-family:var(--G);font-size:1rem;color:var(--white);margin-bottom:0.3rem;">Research & Knowledge</div>
+          <div style="font-size:0.85rem;color:var(--dim);line-height:1.65;"><strong style="color:var(--white);">Perplexity for sourced web research, NotebookLM for document-grounded analysis.</strong> These solve different problems. Perplexity gives you sourced, current information fast. NotebookLM lets you upload your own documents and create a grounded AI expert on exactly that material — useful for competitive analysis, client research, and synthesizing large bodies of information.</div>
+        </div>
+      </div>
+    </div>
+
+    <h2>The Coding Tier: From Assistant to Agent</h2>
+    <p>For anyone building with code in 2026 — even non-developers using no-code tools — the AI coding landscape has fundamentally shifted. The terminology has changed from "Copilot" (finishes your sentences) to "Agent" (completes the whole task). In practice, the most impactful tools are those that understand your entire codebase rather than just the file you have open.</p>
+    <p><strong>Cursor</strong> remains the leading AI-native code editor for complex, multi-file work. Its Composer feature lets you describe a feature in plain English and have the AI modify 12 files at once while keeping types safe. <strong>GitHub Copilot</strong> is the safer choice for teams already in the GitHub ecosystem with enterprise compliance requirements. <strong>Claude Code</strong> is the terminal-native option that handles long-horizon tasks with strong reasoning about intent, not just syntax. The right choice depends on your workflow and team structure — not on which one has the best demos.</p>
+
+    <div class="pull-quote"><p>"In 2026, we've moved from Copilots to Agents. You act as the Architect. You give an Agent a high-level goal. The Agent executes."</p></div>
+
+    <h2>What to Ignore</h2>
+    <p>The harder and more valuable skill in 2026 is knowing what not to add to your stack. The market is flooded with tools that do one thing adequately but add friction by requiring yet another account, another interface, another subscription. Before adding any AI tool, the question is whether it genuinely outperforms your existing tools for a specific function you actually need — not whether it has a compelling demo or a lot of press coverage.</p>
+    <p>Redundancy is the main failure mode. Most teams using five writing AI tools would be better served by becoming expert users of one. Most people subscribing to six image generators would get better output from deep mastery of two. The compounding advantage comes from workflow fluency, not from maximizing the number of subscriptions.</p>
+
+    <div class="haze-callout">
+      <p class="haze-label">Haze's Take</p>
+      <p>The Toolzyo Studio tool stack is six deep: Claude for reasoning and content strategy, Midjourney V8 for client-facing image outputs, Flux for editability and pipeline work, Perplexity for research, Cursor for anything involving code, and the Toolzyo internal tools for client deliverable production. Everything else we've tested and moved on from.</p>
+      <p>The brands and creators getting the most from AI right now aren't the ones with the biggest tool libraries. They're the ones who picked their stack deliberately, learned it deeply, and build every deliverable through it with a clear human creative direction on top.</p>
+    </div>
+
+    <div class="social-cta">
+      <p>We cut through the AI tool noise every week. <strong>Follow @toolzyo on Instagram and TikTok</strong> for what's actually worth your attention.</p>
+      <div class="social-links">
+        <a href="https://instagram.com/toolzyo" target="_blank" class="social-link social-ig">📸 Instagram</a>
+        <a href="https://tiktok.com/@toolzyo" target="_blank" class="social-link social-tt">🎵 TikTok</a>
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+    <p>The 2026 AI tool landscape is defined by abundance and confusion in equal measure. The path through it isn't to test everything — it's to build a minimal, deliberate stack organized around your actual workflow functions, learn those tools to fluency, and add new tools only when a specific gap demands it. Four to six tools, deeply understood, will outperform fifty tools barely used every time.</p>
+
+    <div class="cta-block">
+      <p class="cta-eyebrow">Toolzyo Studio</p>
+      <h3>Stop collecting tools. Start building output.</h3>
+      <p>We help brands and teams build AI workflows that produce real deliverables — not demos. Strategy, content, brand, and lead generation, all shipped.</p>
+      <div class="cta-btn-row">
+        <a href="index.html#start" class="cta-btn cta-primary">Start a Project →</a>
+        <a href="index.html#pricing" class="cta-btn cta-ghost">See Packages</a>
+      </div>
+    </div>
+  </div>
+  <div class="article-footer">
+    <a href="index.html#ai-intel" class="back-home">Back to AI Intel</a>
+    <span class="share-label">Toolzyo Intel · March 2026</span>
+  </div>
+</div>
+<script>
+  const SPEEDS=[1,1.25,1.5,0.85];
+  let speedIdx=0,utterance=null,isPlaying=false,charIndex=0,totalChars=1,progressInterval=null;
+  function getArticleText(){const body=document.querySelector('.article-body');const lead=document.querySelector('.article-lead');if(!body)return'';const clone=body.cloneNode(true);clone.querySelectorAll('.cta-block,.social-cta').forEach(el=>el.remove());let text='';if(lead)text+=lead.innerText.trim()+' ... ';clone.querySelectorAll('h2,h3,p,.haze-label').forEach(el=>{const tag=el.tagName.toLowerCase();const t=el.innerText.trim();if(!t)return;if(tag==='h2')text+=' ... '+t+'. ';else text+=t+' ';});return text.replace(/\s+/g,' ').trim();}
+  function getMaleVoice(){const voices=window.speechSynthesis.getVoices();if(!voices.length)return null;const priority=['Google UK English Male','Daniel','Alex','Fred','Microsoft David'];for(const name of priority){const v=voices.find(v=>v.name===name);if(v)return v;}return voices.find(v=>v.lang.startsWith('en'))||voices[0];}
+  function formatTime(s){return`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;}
+  function updateProgress(){if(!utterance||!isPlaying)return;document.getElementById('progressBar').style.width=Math.min((charIndex/totalChars)*100,100)+'%';document.getElementById('audioTime').textContent=formatTime(Math.max(0,Math.round((totalChars-charIndex)/(14*SPEEDS[speedIdx]))));}
+  function setPlayState(p){isPlaying=p;document.getElementById('playIcon').classList.toggle('pause',p);}
+  function toggleAudio(){if(!window.speechSynthesis)return;if(isPlaying){window.speechSynthesis.pause();setPlayState(false);clearInterval(progressInterval);}else if(utterance&&window.speechSynthesis.paused){window.speechSynthesis.resume();setPlayState(true);progressInterval=setInterval(updateProgress,500);}else{startReading();}}
+  function startReading(){window.speechSynthesis.cancel();clearInterval(progressInterval);const text=getArticleText();if(!text)return;totalChars=text.length;charIndex=0;utterance=new SpeechSynthesisUtterance(text);utterance.rate=0.92*SPEEDS[speedIdx];utterance.pitch=1.18;utterance.volume=1.0;const voice=getMaleVoice();if(voice)utterance.voice=voice;utterance.onboundary=e=>{if(e.name==='word')charIndex=e.charIndex;};utterance.onend=()=>{setPlayState(false);clearInterval(progressInterval);document.getElementById('progressBar').style.width='100%';document.getElementById('audioTime').textContent='0:00';charIndex=0;};utterance.onerror=()=>{setPlayState(false);clearInterval(progressInterval);};window.speechSynthesis.speak(utterance);setPlayState(true);progressInterval=setInterval(updateProgress,500);}
+  function cycleSpeed(){speedIdx=(speedIdx+1)%SPEEDS.length;document.getElementById('speedBtn').textContent=['1×','1.25×','1.5×','0.85×'][speedIdx];if(isPlaying){window.speechSynthesis.cancel();clearInterval(progressInterval);setPlayState(false);setTimeout(()=>{if(utterance)startReading();},100);}}
+  function seekAudio(e){const wrap=document.getElementById('progressWrap');charIndex=Math.floor((e.offsetX/wrap.offsetWidth)*totalChars);if(isPlaying||utterance){window.speechSynthesis.cancel();clearInterval(progressInterval);setPlayState(false);setTimeout(startReading,100);}}
+  if(window.speechSynthesis){window.speechSynthesis.getVoices();window.speechSynthesis.onvoiceschanged=()=>window.speechSynthesis.getVoices();}
+</script>
+</body>
+</html>
