@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Brand Voice Studio — Toolzyo Studio</title>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://unpkg.com/lucide-react@0.383.0/dist/umd/lucide-react.min.js"></script>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:#070A20; }
+  #root { min-height:100vh; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-presets="react">
+const { useState } = React;
+const Zap = LucideReact.Zap;
+const Globe = LucideReact.Globe;
+const Dna = LucideReact.Dna;
+const Megaphone = LucideReact.Megaphone;
+const Sparkles = LucideReact.Sparkles;
+const Copy = LucideReact.Copy;
+const Check = LucideReact.Check;
+const Loader = LucideReact.Loader;
+const Download = LucideReact.Download;
+const ChevronRight = LucideReact.ChevronRight;
+const ChevronLeft = LucideReact.ChevronLeft;
+const AlertCircle = LucideReact.AlertCircle;
+const RefreshCw = LucideReact.RefreshCw;
+const Image = LucideReact.Image;
+const Palette = LucideReact.Palette;
+const Users = LucideReact.Users;
+const MessageSquare = LucideReact.MessageSquare;
+const Target = LucideReact.Target;
+const Star = LucideReact.Star;
+const ArrowRight = LucideReact.ArrowRight;
+const FileText = LucideReact.FileText;
+const Hash = LucideReact.Hash;
+
+/* ─────────────────────────────────────────────────────────────────────────
+   CSS
+───────────────────────────────────────────────────────────────────────── */
+const css = `
+  @import url('https://fonts.cdnfonts.com/css/gambarino');
+  @import url('https://fonts.cdnfonts.com/css/switzer');
+
+  .bv-root *, .bv-root *::before, .bv-root *::after { box-sizing:border-box; margin:0; padding:0; }
+  .bv-root {
+    font-family:'Switzer','DM Sans',sans-serif;
+    background:#070A20; color:#F0F2FF;
+    min-height:100vh; overflow-x:hidden; position:relative;
+  }
+  .bv-root::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 60% 50% at 3% 8%,   rgba(42,47,255,0.16) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 45% at 97% 92%,  rgba(196,0,255,0.11) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 35% at 50% 50%,  rgba(0,232,192,0.04) 0%, transparent 55%);
+  }
+  .bv-inner { position:relative; z-index:1; max-width:1100px; margin:0 auto; padding:2rem 2rem 5rem; }
+
+  /* HEADER */
+  .bv-header { text-align:center; padding:2.5rem 0 3.5rem; }
+  .bv-wordmark { font-family:'Gambarino',Georgia,serif; font-size:1.1rem; color:rgba(240,242,255,0.38); letter-spacing:0.04em; margin-bottom:1rem; }
+  .bv-wordmark em { font-style:normal; color:#9D4EFF; }
+  .bv-title { font-family:'Gambarino',Georgia,serif; font-size:clamp(2.4rem,5vw,4.8rem); line-height:0.92; }
+  .bv-grd { background:linear-gradient(135deg,#2A2FFF,#9D4EFF,#C400FF); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .bv-sub { font-weight:300; font-size:0.92rem; color:rgba(240,242,255,0.48); margin-top:0.9rem; line-height:1.7; }
+
+  /* STEP INDICATOR */
+  .step-indicator { display:flex; align-items:center; justify-content:center; gap:0; margin-bottom:3rem; }
+  .step-node { display:flex; flex-direction:column; align-items:center; gap:0.45rem; }
+  .step-circle { width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Gambarino',Georgia,serif; font-size:1.1rem; transition:all 0.3s; border:2px solid rgba(123,43,255,0.25); background:rgba(7,10,32,0.8); color:rgba(240,242,255,0.3); }
+  .step-circle.active { background:linear-gradient(135deg,#2A2FFF,#9D4EFF); border-color:#9D4EFF; color:#F0F2FF; box-shadow:0 0 20px rgba(157,78,255,0.5); }
+  .step-circle.done { background:rgba(0,232,192,0.12); border-color:#00E8C0; color:#00E8C0; }
+  .step-label { font-size:0.63rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:rgba(240,242,255,0.3); white-space:nowrap; }
+  .step-label.active { color:#9D4EFF; }
+  .step-label.done { color:#00E8C0; }
+  .step-connector { width:80px; height:2px; background:rgba(123,43,255,0.15); margin:0 0.5rem; margin-bottom:1.5rem; transition:background 0.3s; flex-shrink:0; }
+  .step-connector.done { background:linear-gradient(90deg,#00E8C0,rgba(0,232,192,0.3)); }
+  @media(max-width:600px){ .step-connector{ width:40px; } .step-label{ font-size:0.55rem; } }
+
+  /* PANEL */
+  .panel { background:rgba(13,16,53,0.82); border:1px solid rgba(123,43,255,0.2); border-radius:22px; padding:2rem; backdrop-filter:blur(16px); position:relative; overflow:hidden; }
+  .panel::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,rgba(157,78,255,0.5),transparent); }
+  .eyebrow { font-size:0.63rem; font-weight:500; letter-spacing:0.16em; text-transform:uppercase; color:#9D4EFF; margin-bottom:0.45rem; display:block; }
+  .divider { height:1px; background:rgba(123,43,255,0.14); margin:1.2rem 0; }
+
+  /* INPUTS */
+  .t-input { width:100%; background:rgba(7,10,32,0.8); border:1px solid rgba(123,43,255,0.22); border-radius:12px; padding:0.75rem 1rem; font-family:'Switzer',sans-serif; font-size:0.85rem; color:#F0F2FF; outline:none; resize:none; transition:border-color 0.2s; line-height:1.65; }
+  .t-input:focus { border-color:#9D4EFF; }
+  .t-input::placeholder { color:rgba(240,242,255,0.2); }
+
+  /* URL INPUT */
+  .url-row { display:flex; gap:0.6rem; }
+  .url-input-wrap { flex:1; position:relative; }
+  .url-icon { position:absolute; left:1rem; top:50%; transform:translateY(-50%); color:rgba(240,242,255,0.3); pointer-events:none; }
+  .url-input { padding-left:2.6rem !important; font-size:0.92rem !important; }
+  .url-analyze-btn { background:linear-gradient(135deg,#2A2FFF,#7B2BFF); color:#F0F2FF; border:none; border-radius:12px; padding:0 1.6rem; cursor:pointer; font-family:'Switzer',sans-serif; font-weight:500; font-size:0.8rem; letter-spacing:0.08em; text-transform:uppercase; transition:all 0.22s; white-space:nowrap; display:flex; align-items:center; gap:0.45rem; }
+  .url-analyze-btn:hover:not(:disabled) { transform:translateY(-2px); box-shadow:0 10px 28px rgba(123,43,255,0.45); }
+  .url-analyze-btn:disabled { opacity:0.4; cursor:not-allowed; }
+  .url-analyze-btn.running { animation:gradpulse 2s linear infinite; }
+
+  /* BUTTONS */
+  .btn { border:none; cursor:pointer; font-family:'Switzer',sans-serif; font-weight:500; font-size:0.8rem; letter-spacing:0.08em; text-transform:uppercase; border-radius:50px; padding:0.78rem 1.6rem; transition:all 0.22s; display:inline-flex; align-items:center; gap:0.45rem; justify-content:center; }
+  .btn:disabled { opacity:0.35; cursor:not-allowed; }
+  .btn-primary { background:linear-gradient(135deg,#2A2FFF,#7B2BFF,#C400FF); background-size:200%; color:#F0F2FF; }
+  .btn-primary:hover:not(:disabled) { transform:translateY(-2px); box-shadow:0 14px 38px rgba(123,43,255,0.45); }
+  .btn-primary.running { animation:gradpulse 2s linear infinite; }
+  .btn-ghost { background:transparent; border:1px solid rgba(123,43,255,0.32); color:#9D4EFF; }
+  .btn-ghost:hover:not(:disabled) { background:rgba(123,43,255,0.1); border-color:#9D4EFF; color:#F0F2FF; }
+  .btn-cyan { background:rgba(0,232,192,0.1); border:1px solid rgba(0,232,192,0.28); color:#00E8C0; }
+  .btn-cyan:hover:not(:disabled) { background:rgba(0,232,192,0.18); }
+  .btn-sm { padding:0.35rem 0.9rem; font-size:0.68rem; }
+  .btn-nav { padding:0.78rem 1.6rem; }
+  @keyframes gradpulse { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+  @keyframes spin { to{transform:rotate(360deg)} }
+  .spin { animation:spin 0.8s linear infinite; }
+
+  /* LOADING STATE */
+  .loading-state { text-align:center; padding:4rem 2rem; }
+  .loading-state p { font-size:0.85rem; color:rgba(240,242,255,0.48); margin-top:1.2rem; line-height:1.7; max-width:320px; margin-left:auto; margin-right:auto; }
+  .loading-steps { display:flex; flex-direction:column; gap:0.5rem; max-width:380px; margin:1.5rem auto 0; }
+  .lstep { display:flex; align-items:center; gap:0.6rem; padding:0.5rem 0.8rem; border-radius:9px; background:rgba(7,10,32,0.6); border:1px solid rgba(123,43,255,0.1); font-size:0.76rem; color:rgba(240,242,255,0.4); transition:all 0.3s; }
+  .lstep.active { border-color:rgba(157,78,255,0.38); background:rgba(123,43,255,0.1); color:#F0F2FF; }
+  .lstep.done { border-color:rgba(0,232,192,0.25); background:rgba(0,232,192,0.05); color:rgba(0,232,192,0.72); }
+  .ldot { width:7px; height:7px; border-radius:50%; background:rgba(123,43,255,0.22); flex-shrink:0; }
+  .lstep.active .ldot { background:#9D4EFF; animation:dpulse 1s infinite; }
+  .lstep.done .ldot { background:#00E8C0; }
+  @keyframes dpulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.3)} }
+
+  /* ── STEP 1: BRAND DNA ── */
+  .dna-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1rem; margin-top:1.5rem; }
+  .dna-card { background:rgba(7,10,32,0.7); border:1px solid rgba(123,43,255,0.18); border-radius:16px; padding:1.2rem; }
+  .dna-card-icon { width:36px; height:36px; border-radius:9px; display:flex; align-items:center; justify-content:center; margin-bottom:0.8rem; }
+  .dna-card-label { font-size:0.63rem; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:#9D4EFF; margin-bottom:0.4rem; }
+  .dna-card-value { font-size:0.84rem; color:rgba(240,242,255,0.78); line-height:1.65; }
+  .dna-card-pills { display:flex; flex-wrap:wrap; gap:0.35rem; margin-top:0.3rem; }
+  .dna-pill { font-size:0.68rem; padding:0.18rem 0.6rem; border-radius:50px; background:rgba(123,43,255,0.12); border:1px solid rgba(123,43,255,0.22); color:#c084fc; }
+  .dna-pill.cyan { background:rgba(0,232,192,0.08); border-color:rgba(0,232,192,0.2); color:#00E8C0; }
+  .dna-pill.blue { background:rgba(42,47,255,0.1); border-color:rgba(42,47,255,0.22); color:#8b91ff; }
+
+  /* Color swatches */
+  .color-swatches { display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:0.4rem; }
+  .color-swatch { height:28px; min-width:60px; border-radius:6px; flex:1; max-width:80px; position:relative; overflow:hidden; border:1px solid rgba(255,255,255,0.1); }
+  .color-label { font-size:0.6rem; color:rgba(255,255,255,0.6); position:absolute; bottom:0; left:0; right:0; text-align:center; background:rgba(0,0,0,0.3); padding:1px; }
+
+  /* Brand banner */
+  .brand-banner { position:relative; border-radius:16px; overflow:hidden; height:160px; margin-bottom:1.5rem; display:flex; align-items:flex-end; padding:1.5rem; }
+  .brand-banner-bg { position:absolute; inset:0; }
+  .brand-banner-content { position:relative; z-index:1; }
+  .brand-banner-name { font-family:'Gambarino',Georgia,serif; font-size:2rem; line-height:1.1; color:#F0F2FF; }
+  .brand-banner-tagline { font-size:0.82rem; color:rgba(240,242,255,0.6); margin-top:0.25rem; }
+
+  /* ── STEP 2: CAMPAIGN IDEAS ── */
+  .campaign-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1rem; margin-top:1.2rem; }
+  .campaign-card { background:rgba(7,10,32,0.7); border:1px solid rgba(123,43,255,0.18); border-radius:18px; padding:1.4rem; cursor:pointer; transition:all 0.22s; position:relative; overflow:hidden; }
+  .campaign-card::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,rgba(157,78,255,0.4),transparent); opacity:0; transition:opacity 0.22s; }
+  .campaign-card:hover { border-color:rgba(123,43,255,0.4); transform:translateY(-3px); }
+  .campaign-card:hover::before { opacity:1; }
+  .campaign-card.selected { border-color:#9D4EFF; background:rgba(123,43,255,0.1); }
+  .campaign-card.selected::before { opacity:1; }
+  .campaign-num { font-family:'Gambarino',Georgia,serif; font-size:2.5rem; color:rgba(123,43,255,0.08); line-height:1; float:right; margin-left:0.5rem; }
+  .campaign-objective { font-size:0.62rem; font-weight:600; letter-spacing:0.13em; text-transform:uppercase; color:#9D4EFF; margin-bottom:0.5rem; display:flex; align-items:center; gap:0.3rem; }
+  .campaign-name { font-family:'Gambarino',Georgia,serif; font-size:1.15rem; line-height:1.2; color:#F0F2FF; margin-bottom:0.5rem; }
+  .campaign-concept { font-size:0.81rem; color:rgba(240,242,255,0.58); line-height:1.68; margin-bottom:0.75rem; }
+  .campaign-platform-row { display:flex; flex-wrap:wrap; gap:0.35rem; }
+  .campaign-plat-badge { font-size:0.62rem; font-weight:500; letter-spacing:0.09em; text-transform:uppercase; padding:0.15rem 0.55rem; border-radius:50px; background:rgba(42,47,255,0.12); border:1px solid rgba(42,47,255,0.24); color:#8b91ff; }
+  .campaign-check { position:absolute; top:1rem; right:1rem; width:22px; height:22px; border-radius:50%; background:rgba(157,78,255,0.15); border:1px solid rgba(157,78,255,0.25); display:flex; align-items:center; justify-content:center; color:rgba(240,242,255,0.2); font-size:0.65rem; transition:all 0.2s; }
+  .campaign-card.selected .campaign-check { background:#9D4EFF; border-color:#9D4EFF; color:#F0F2FF; }
+  .select-hint { text-align:center; font-size:0.77rem; color:rgba(240,242,255,0.3); margin-top:1rem; }
+
+  /* ── STEP 3: CREATIVES ── */
+  .creative-header { display:flex; align-items:center; gap:0.75rem; margin-bottom:1.5rem; flex-wrap:wrap; }
+  .creative-campaign-badge { background:rgba(123,43,255,0.14); border:1px solid rgba(123,43,255,0.26); border-radius:50px; padding:0.3rem 0.85rem; font-size:0.72rem; color:#c084fc; display:flex; align-items:center; gap:0.35rem; }
+
+  .creative-section { margin-bottom:2rem; }
+  .creative-section-title { font-family:'Gambarino',Georgia,serif; font-size:1.1rem; color:#F0F2FF; margin-bottom:1rem; display:flex; align-items:center; gap:0.5rem; }
+  .creative-section-title svg { color:#9D4EFF; }
+
+  /* Ad copy angles */
+  .angles-grid { display:flex; flex-direction:column; gap:0.85rem; }
+  .angle-card { background:rgba(7,10,32,0.72); border:1px solid rgba(123,43,255,0.16); border-radius:14px; padding:1.1rem 1.2rem; position:relative; overflow:hidden; }
+  .angle-card::before { content:''; position:absolute; top:0; left:0; bottom:0; width:3px; border-radius:2px; }
+  .angle-card.curiosity::before { background:linear-gradient(to bottom,#9D4EFF,rgba(157,78,255,0.2)); }
+  .angle-card.pain::before { background:linear-gradient(to bottom,#C400FF,rgba(196,0,255,0.2)); }
+  .angle-card.social::before { background:linear-gradient(to bottom,#00E8C0,rgba(0,232,192,0.2)); }
+  .angle-type { font-size:0.62rem; font-weight:600; letter-spacing:0.13em; text-transform:uppercase; margin-bottom:0.65rem; }
+  .angle-card.curiosity .angle-type { color:#9D4EFF; }
+  .angle-card.pain .angle-type { color:#e879f9; }
+  .angle-card.social .angle-type { color:#00E8C0; }
+  .angle-field { margin-bottom:0.55rem; }
+  .angle-field-label { font-size:0.6rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:rgba(240,242,255,0.35); margin-bottom:0.22rem; }
+  .angle-field-val { font-size:0.83rem; color:rgba(240,242,255,0.78); line-height:1.6; }
+  .angle-field-val.headline { font-family:'Gambarino',Georgia,serif; font-size:1.05rem; color:#F0F2FF; }
+  .angle-cta-badge { display:inline-block; background:rgba(0,232,192,0.08); border:1px solid rgba(0,232,192,0.2); border-radius:50px; padding:0.2rem 0.65rem; font-size:0.75rem; color:#00E8C0; margin-top:0.3rem; }
+  .angle-copy-btn { position:absolute; top:0.85rem; right:0.9rem; }
+
+  /* Image prompt box */
+  .img-prompt-section { background:rgba(7,10,32,0.72); border:1px solid rgba(196,0,255,0.22); border-radius:16px; padding:1.3rem; }
+  .img-prompt-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:0.9rem; flex-wrap:wrap; gap:0.5rem; }
+  .img-prompt-title { font-size:0.63rem; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:#C400FF; display:flex; align-items:center; gap:0.35rem; }
+  .img-model-tags { display:flex; gap:0.3rem; flex-wrap:wrap; }
+  .img-model-tag { font-size:0.6rem; font-weight:500; letter-spacing:0.08em; padding:0.14rem 0.5rem; border-radius:50px; background:rgba(196,0,255,0.1); border:1px solid rgba(196,0,255,0.22); color:#e879f9; }
+  .img-prompt-variants { display:flex; flex-direction:column; gap:0.6rem; }
+  .img-prompt-variant { background:rgba(0,0,0,0.3); border:1px solid rgba(196,0,255,0.14); border-radius:10px; padding:0.75rem 0.85rem; }
+  .img-variant-label { font-size:0.6rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:#e879f9; margin-bottom:0.4rem; }
+  .img-prompt-text { font-family:'DM Mono','Courier New',monospace; font-size:0.76rem; color:rgba(240,242,255,0.7); line-height:1.72; white-space:pre-wrap; word-break:break-word; }
+  .img-copy-row { display:flex; gap:0.4rem; margin-top:0.6rem; flex-wrap:wrap; }
+
+  /* Platform specs */
+  .specs-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:0.7rem; }
+  .spec-card { background:rgba(7,10,32,0.65); border:1px solid rgba(123,43,255,0.14); border-radius:12px; padding:0.85rem; }
+  .spec-plat { font-size:0.68rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:#9D4EFF; margin-bottom:0.4rem; display:flex; align-items:center; gap:0.3rem; }
+  .spec-item { font-size:0.75rem; color:rgba(240,242,255,0.58); line-height:1.6; margin-bottom:0.2rem; }
+  .spec-item strong { color:rgba(240,242,255,0.78); font-weight:500; }
+
+  /* NAV ROW */
+  .nav-row { display:flex; align-items:center; justify-content:space-between; margin-top:2rem; flex-wrap:wrap; gap:0.75rem; }
+
+  /* GATE */
+  .gate-wrap { position:relative; }
+  .gate-preview-badge { display:inline-flex; align-items:center; gap:0.4rem; background:rgba(255,200,0,0.1); border:1px solid rgba(255,200,0,0.25); border-radius:50px; padding:0.22rem 0.75rem; font-size:0.62rem; font-weight:600; letter-spacing:0.13em; text-transform:uppercase; color:#fbbf24; margin-bottom:0.85rem; }
+  .gate-blurred { filter:blur(5px); pointer-events:none; user-select:none; opacity:0.55; overflow:hidden; max-height:320px; }
+  .gate-overlay { position:relative; margin-top:-2rem; background:linear-gradient(to bottom,transparent 0%,rgba(7,10,32,0.97) 28%); border-radius:0 0 20px 20px; padding:2.5rem 1.8rem 2rem; text-align:center; z-index:10; }
+  .gate-overlay-inner { background:linear-gradient(135deg,rgba(13,16,53,0.95),rgba(30,10,55,0.9)); border:1px solid rgba(123,43,255,0.32); border-radius:20px; padding:2rem 1.8rem; position:relative; overflow:hidden; }
+  .gate-overlay-inner::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,#9D4EFF,transparent); }
+  .gate-lock { font-size:1.8rem; margin-bottom:0.6rem; }
+  .gate-title { font-family:'Gambarino',Georgia,serif; font-size:1.35rem; color:#F0F2FF; margin-bottom:0.4rem; line-height:1.2; }
+  .gate-sub { font-size:0.8rem; color:rgba(240,242,255,0.48); line-height:1.7; margin-bottom:1.4rem; max-width:360px; margin-left:auto; margin-right:auto; }
+  .gate-options { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-bottom:1rem; }
+  @media(max-width:600px){ .gate-options{ grid-template-columns:1fr; } }
+  .gate-opt { padding:1rem; border-radius:14px; cursor:pointer; border:none; font-family:'Switzer',sans-serif; text-align:center; transition:all 0.22s; }
+  .gate-opt-pay { background:linear-gradient(135deg,rgba(42,47,255,0.2),rgba(123,43,255,0.2)); border:1px solid rgba(123,43,255,0.35); }
+  .gate-opt-pay:hover { border-color:#9D4EFF; transform:translateY(-2px); box-shadow:0 10px 30px rgba(123,43,255,0.3); }
+  .gate-opt-month { background:rgba(0,232,192,0.08); border:1px solid rgba(0,232,192,0.22); }
+  .gate-opt-month:hover { background:rgba(0,232,192,0.14); border-color:#00E8C0; transform:translateY(-2px); }
+  .gate-opt-dfy { background:rgba(251,191,36,0.07); border:1px solid rgba(251,191,36,0.22); width:100%; margin-bottom:0.65rem; }
+  .gate-opt-dfy:hover { background:rgba(251,191,36,0.13); border-color:#fbbf24; transform:translateY(-2px); }
+  .gate-opt-price { font-family:'Gambarino',Georgia,serif; font-size:1.5rem; line-height:1; margin-bottom:0.2rem; }
+  .gate-opt-pay .gate-opt-price { background:linear-gradient(135deg,#2A2FFF,#9D4EFF); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .gate-opt-month .gate-opt-price { color:#00E8C0; }
+  .gate-opt-label { font-size:0.7rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.22rem; }
+  .gate-opt-pay .gate-opt-label { color:#9D4EFF; }
+  .gate-opt-month .gate-opt-label { color:#00E8C0; }
+  .gate-opt-desc { font-size:0.72rem; color:rgba(240,242,255,0.45); line-height:1.5; }
+  .gate-divider { display:flex; align-items:center; gap:0.7rem; margin:0.5rem 0; }
+  .gate-divider-line { flex:1; height:1px; background:rgba(123,43,255,0.15); }
+  .gate-divider-text { font-size:0.65rem; color:rgba(240,242,255,0.25); letter-spacing:0.1em; text-transform:uppercase; }
+  .gate-call-btn { width:100%; padding:0.82rem; border-radius:50px; border:1px solid rgba(123,43,255,0.25); background:transparent; color:rgba(240,242,255,0.55); font-family:'Switzer',sans-serif; font-size:0.77rem; font-weight:500; letter-spacing:0.08em; text-transform:uppercase; cursor:pointer; transition:all 0.2s; }
+  .gate-call-btn:hover { background:rgba(123,43,255,0.1); border-color:#9D4EFF; color:#F0F2FF; }
+  .gate-already { font-size:0.68rem; color:rgba(240,242,255,0.22); margin-top:0.75rem; cursor:pointer; transition:color 0.18s; background:none; border:none; font-family:'Switzer',sans-serif; width:100%; }
+  .gate-already:hover { color:rgba(240,242,255,0.5); }
+  .gate-code-row { display:flex; gap:0.45rem; margin-top:0.6rem; }
+  .gate-code-input { flex:1; background:rgba(7,10,32,0.8); border:1px solid rgba(123,43,255,0.22); border-radius:9px; padding:0.5rem 0.8rem; font-size:0.8rem; color:#F0F2FF; outline:none; font-family:'Switzer',sans-serif; }
+  .gate-code-input::placeholder { color:rgba(240,242,255,0.2); }
+  .gate-code-btn { background:rgba(123,43,255,0.18); border:1px solid rgba(123,43,255,0.28); border-radius:9px; padding:0.5rem 0.9rem; font-size:0.7rem; font-weight:500; letter-spacing:0.07em; text-transform:uppercase; color:#9D4EFF; cursor:pointer; font-family:'Switzer',sans-serif; white-space:nowrap; }
+  .gate-code-btn:hover { background:rgba(123,43,255,0.28); color:#F0F2FF; }
+
+  /* TOAST */
+  .toast { position:fixed; bottom:2rem; right:2rem; background:rgba(0,232,192,0.12); border:1px solid rgba(0,232,192,0.32); color:#00E8C0; padding:0.55rem 1rem; border-radius:50px; font-size:0.75rem; font-weight:500; letter-spacing:0.06em; display:flex; align-items:center; gap:0.4rem; animation:slideUp 0.25s ease; z-index:999; }
+  @keyframes slideUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+  .bv-root ::-webkit-scrollbar { width:4px; }
+  .bv-root ::-webkit-scrollbar-thumb { background:rgba(123,43,255,0.3); border-radius:2px; }
+`;
+
+function parseJSON(raw) {
+  try { return JSON.parse(raw.replace(/```json|```/g,'').trim()); }
+  catch { return null; }
+}
+
+const PLATFORM_ICONS = { instagram:'📸', tiktok:'🎵', youtube:'▶️', facebook:'👥', twitter:'𝕏', linkedin:'💼', pinterest:'📌' };
+
+function ToolzyoBrandVoiceStudio() {
+  const [step, setStep]           = useState(1);
+  const [url, setUrl]             = useState('');
+  const [brandContent, setBrandContent] = useState('');
+  const [brandDNA, setBrandDNA]   = useState(null);
+  const [campaigns, setCampaigns] = useState([]);
+  const [selectedCampaign, setSel] = useState(null);
+  const [creatives, setCreatives] = useState(null);
+  const [phase, setPhase]         = useState('idle');
+  const [loadingSteps, setLSteps] = useState([]);
+  const [error, setError]         = useState('');
+  const [copied, setCopied]       = useState('');
+  const [toast, setToast]         = useState('');
+  const [isUnlocked, setIsUnlocked] = useState(
+    typeof window !== 'undefined' && !!localStorage.getItem('tz_access')
+  );
+  const [showCodeEntry, setShowCodeEntry] = useState(false);
+
+  const showToast = msg => { setToast(msg); setTimeout(()=>setToast(''),2200); };
+  const copy = (text, key) => {
+    navigator.clipboard.writeText(text);
+    setCopied(key); showToast('Copied!');
+    setTimeout(()=>setCopied(''),2200);
+  };
+
+  const unlockAccess = (inputId) => {
+    const code = document.getElementById(inputId)?.value?.trim().toUpperCase();
+    if (code && (code==='TZ2025' || code.length>=8)) {
+      localStorage.setItem('tz_access','1'); setIsUnlocked(true);
+    } else {
+      const el = document.getElementById(inputId);
+      if (el) { el.style.borderColor='rgba(255,80,80,0.5)'; setTimeout(()=>el.style.borderColor='',1500); }
+    }
+  };
+
+  const GateOverlay = ({ codeId }) => (
+    <div className="gate-overlay">
+      <div className="gate-overlay-inner">
+        <div className="gate-lock">🔒</div>
+        <h3 className="gate-title">Your brand creatives are ready</h3>
+        <p className="gate-sub">You're seeing a preview. Unlock the full campaign creative package — all angles, all image prompts, full export.</p>
+        <div className="gate-options">
+          <button className="gate-opt gate-opt-pay" onClick={()=>{ localStorage.setItem('tz_access_session','1'); setIsUnlocked(true); window.open('https://toolzyo.com/checkout?plan=session','_blank'); }}>
+            <div className="gate-opt-label">This Result</div>
+            <div className="gate-opt-price">$57</div>
+            <div className="gate-opt-desc">Full campaign creative package for this brand</div>
+          </button>
+          <button className="gate-opt gate-opt-month" onClick={()=>window.open('https://toolzyo.com/checkout?plan=14day','_blank')}>
+            <div className="gate-opt-label">This Tool · 14 Days</div>
+            <div className="gate-opt-price">$127</div>
+            <div className="gate-opt-desc">Unlimited brand analyses for 14 days</div>
+          </button>
+        </div>
+        <div className="gate-divider">
+          <div className="gate-divider-line"/>
+          <span className="gate-divider-text">or let us do it for you</span>
+          <div className="gate-divider-line"/>
+        </div>
+        <button className="gate-opt gate-opt-dfy" style={{textAlign:'center'}} onClick={()=>window.open('https://toolzyo.com/#pricing','_blank')}>
+          <div className="gate-opt-label" style={{color:'#fbbf24'}}>⭐ Done-For-You — Strategy Snapshot</div>
+          <div className="gate-opt-price" style={{background:'linear-gradient(135deg,#fbbf24,#f59e0b)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text'}}>$397</div>
+          <div className="gate-opt-desc">Haze builds your full brand campaign kit</div>
+        </button>
+        <button className="gate-call-btn" onClick={()=>window.open('https://toolzyo.com/#start','_blank')}>📅 Book a discovery call first</button>
+        {!showCodeEntry && <button className="gate-already" onClick={()=>setShowCodeEntry(true)}>Already have an access code?</button>}
+        {showCodeEntry && (
+          <div className="gate-code-row">
+            <input className="gate-code-input" id={codeId} placeholder="Enter access code" onKeyDown={e=>e.key==='Enter'&&unlockAccess(codeId)}/>
+            <button className="gate-code-btn" onClick={()=>unlockAccess(codeId)}>Unlock</button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  /* ── STEP 1: ANALYZE BRAND DNA ─────────────────────────────────────────── */
+  const analyzeBrand = async () => {
+    if (!url.trim() && !brandContent.trim()) return;
+    setPhase('analyzing'); setError('');
+    const steps = [
+      { id:'read',     label:'Reading brand information',                   status:'idle' },
+      { id:'brand',    label:'Extracting brand identity and tone',          status:'idle' },
+      { id:'audience', label:'Profiling target audience and messaging',     status:'idle' },
+      { id:'dna',      label:'Synthesizing your Brand DNA',                 status:'idle' },
+    ];
+    setLSteps(steps);
+    const setS = (id,s) => setLSteps(p=>p.map(x=>x.id===id?{...x,status:s}:x));
+
+    try {
+      setS('read','active');
+      await new Promise(r=>setTimeout(r,300));
+
+      const contentBlock = brandContent.trim()
+        ? `\n\nWebsite content provided by user:\n"""\n${brandContent.trim()}\n"""`
+        : '';
+
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          model:'claude-sonnet-4-20250514', max_tokens:2500,
+          messages:[{ role:'user', content:
+`You are a brand strategist and creative director. Analyze this brand and extract its complete DNA.
+
+Website URL: ${url || 'Not provided'}${contentBlock}
+
+${brandContent.trim()
+  ? 'Use the provided website content above as your primary source. Supplement with any knowledge you have about this brand or industry.'
+  : `Use your knowledge about this brand/domain to extract as much as possible. If you don't know this specific brand, make intelligent inferences based on the URL, domain name, and industry conventions.`
+}
+
+Return ONLY valid JSON (no markdown, no code fences):
+{
+  "brandName": "exact brand name derived from URL or content",
+  "tagline": "their tagline or a synthesized one based on their messaging",
+  "industry": "specific industry/niche",
+  "founded": "year if available, otherwise null",
+  "businessType": "B2B / B2C / D2C / SaaS / eCommerce / Service / Creator",
+  "primaryProducts": ["product or service 1","product or service 2"],
+  "targetAudience": {
+    "primary": "primary audience description (age, demographics, psychographics)",
+    "secondary": "secondary audience if applicable",
+    "painPoints": ["pain point 1","pain point 2","pain point 3"]
+  },
+  "brandVoice": {
+    "tone": ["tone adj 1","tone adj 2","tone adj 3"],
+    "personality": ["personality trait 1","personality trait 2","personality trait 3"],
+    "writingStyle": "1-2 sentence description of their writing style"
+  },
+  "valueProp": "their core value proposition in 1 sentence",
+  "messagingPillars": ["pillar 1","pillar 2","pillar 3"],
+  "competitiveAdvantage": "what makes them different from competitors (1-2 sentences)",
+  "colorPalette": {
+    "description": "describe the visual palette (e.g. dark navy and electric purple with cyan accents)",
+    "swatches": [
+      {"name":"Primary","hex":"#1a1a2e","label":"primary color name"},
+      {"name":"Secondary","hex":"#9D4EFF","label":"secondary color name"},
+      {"name":"Accent","hex":"#00E8C0","label":"accent color name"}
+    ]
+  },
+  "brandPersonalityAdjectives": ["adj1","adj2","adj3","adj4","adj5"],
+  "contentThemes": ["theme 1","theme 2","theme 3","theme 4"],
+  "recommendedPlatforms": ["Instagram","TikTok","LinkedIn"]
+}`
+          }]
+        })
+      });
+
+      const data = await res.json();
+      const text = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
+      const parsed = parseJSON(text);
+
+      setS('read','done'); setS('brand','active');
+      await new Promise(r=>setTimeout(r,400));
+      setS('brand','done'); setS('audience','active');
+      await new Promise(r=>setTimeout(r,400));
+      setS('audience','done'); setS('dna','active');
+      await new Promise(r=>setTimeout(r,400));
+      setS('dna','done');
+
+      if (parsed?.brandName) {
+        setBrandDNA(parsed);
+        setPhase('idle');
+        setStep(1);
+      } else {
+        setError('Could not extract brand DNA. Try adding your homepage or about page text in the field below.');
+        setPhase('idle');
+      }
+    } catch(e) { console.error(e); setError('Analysis failed. Please try again.'); setPhase('idle'); }
+  };
+
+  /* ── STEP 2: GENERATE CAMPAIGN IDEAS ─────────────────────────────────── */
+  const generateCampaigns = async () => {
+    if (!brandDNA) return;
+    setPhase('campaigns'); setCampaigns([]); setSel(null);
+    const steps = [
+      { id:'strategy', label:'Mapping campaign objectives to brand goals',  status:'idle' },
+      { id:'concepts', label:'Developing 6 campaign concepts',              status:'idle' },
+      { id:'tailor',   label:'Tailoring to brand DNA and audience',         status:'idle' },
+    ];
+    setLSteps(steps);
+    const setS = (id,s) => setLSteps(p=>p.map(x=>x.id===id?{...x,status:s}:x));
+
+    try {
+      setS('strategy','active'); await new Promise(r=>setTimeout(r,400));
+      setS('strategy','done'); setS('concepts','active');
+
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          model:'claude-sonnet-4-20250514', max_tokens:2500,
+          messages:[{ role:'user', content:
+`You are a senior brand campaign strategist. Generate 6 distinct social media campaign ideas for this brand.
+
+BRAND DNA:
+${JSON.stringify(brandDNA, null, 2)}
+
+Each campaign must be meaningfully different in objective, creative direction, and target insight.
+
+Return ONLY valid JSON:
+{
+  "campaigns": [
+    {
+      "id": "camp_1",
+      "name": "Campaign name (3-5 words, evocative)",
+      "objective": "Awareness | Engagement | Conversion | Retention | Community | Authority",
+      "keyMessage": "The one thing this campaign wants the audience to feel or do (1 sentence)",
+      "concept": "The creative concept — what makes this campaign distinctive (2-3 sentences)",
+      "insight": "The audience truth or cultural moment this campaign taps into (1 sentence)",
+      "platforms": ["Instagram","TikTok"],
+      "duration": "e.g. 2-week burst / Ongoing / 30-day campaign",
+      "contentTypes": ["Reels","Carousels","Stories"],
+      "campaignHook": "The overarching hook or tagline for this campaign"
+    }
+  ]
+}`
+          }]
+        })
+      });
+
+      const data = await res.json();
+      const parsed = parseJSON(data.content?.[0]?.text || '{}');
+      setS('concepts','done'); setS('tailor','active');
+      await new Promise(r=>setTimeout(r,400));
+      setS('tailor','done');
+
+      if (parsed?.campaigns) { setCampaigns(parsed.campaigns); setPhase('idle'); setStep(2); }
+      else { setError('Failed to generate campaigns. Try again.'); setPhase('idle'); }
+    } catch(e) { console.error(e); setError('Failed. Try again.'); setPhase('idle'); }
+  };
+
+  /* ── STEP 3: GENERATE CREATIVES ──────────────────────────────────────── */
+  const generateCreatives = async () => {
+    if (!selectedCampaign || !brandDNA) return;
+    setPhase('creatives'); setCreatives(null);
+    const steps = [
+      { id:'copy',   label:'Writing 3 ad copy angles',         status:'idle' },
+      { id:'prompts',label:'Engineering image gen prompts',     status:'idle' },
+      { id:'specs',  label:'Building platform specifications',  status:'idle' },
+    ];
+    setLSteps(steps);
+    const setS = (id,s) => setLSteps(p=>p.map(x=>x.id===id?{...x,status:s}:x));
+
+    try {
+      setS('copy','active');
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          model:'claude-sonnet-4-20250514', max_tokens:3000,
+          messages:[{ role:'user', content:
+`You are an expert brand copywriter and creative director. Generate a full creative package for this campaign.
+
+BRAND DNA:
+- Brand: ${brandDNA.brandName}
+- Voice: ${brandDNA.brandVoice?.tone?.join(', ')}
+- Audience: ${brandDNA.targetAudience?.primary}
+- Value Prop: ${brandDNA.valueProp}
+- Color Palette: ${brandDNA.colorPalette?.description}
+
+CAMPAIGN:
+${JSON.stringify(selectedCampaign, null, 2)}
+
+Return ONLY valid JSON:
+{
+  "angles": [
+    {
+      "type": "Curiosity",
+      "rationale": "Why this angle works for this brand (1 sentence)",
+      "headline": "Scroll-stopping headline (max 8 words)",
+      "body": "Ad body copy (60-90 words, in brand voice, punchy line breaks)",
+      "cta": "CTA button text (2-4 words)"
+    },
+    {
+      "type": "Pain Point",
+      "rationale": "Why this angle works for this brand (1 sentence)",
+      "headline": "Headline that speaks to their biggest pain (max 8 words)",
+      "body": "Ad body copy (60-90 words)",
+      "cta": "CTA button text"
+    },
+    {
+      "type": "Social Proof",
+      "rationale": "Why this angle works for this brand (1 sentence)",
+      "headline": "Outcome-driven headline with implied proof (max 8 words)",
+      "body": "Ad body copy (60-90 words)",
+      "cta": "CTA button text"
+    }
+  ],
+  "imagePrompts": [
+    {
+      "variant": "Hero Visual",
+      "platform": "Instagram Feed / TikTok",
+      "prompt": "Full Midjourney/Leonardo AI prompt. Include: subject description, visual style, lighting, color palette matching brand (${brandDNA.colorPalette?.description}), mood, composition, photographic or illustration style. End with --ar 1:1 --v 6 --style raw"
+    },
+    {
+      "variant": "Story / Reel Cover",
+      "platform": "Instagram Stories / TikTok",
+      "prompt": "Full prompt for 9:16 vertical format. Same brand palette and style. End with --ar 9:16 --v 6 --style raw"
+    },
+    {
+      "variant": "Ad Banner",
+      "platform": "Facebook / Instagram Feed Ad",
+      "prompt": "Full prompt for horizontal ad creative. Brand colors, product/service focus, professional and conversion-optimized visual. End with --ar 16:9 --v 6 --style raw"
+    }
+  ],
+  "platformSpecs": [
+    {
+      "platform": "Instagram",
+      "format": "Reels",
+      "bestSize": "1080 x 1920px",
+      "captionLength": "150-220 words",
+      "hashtagCount": "5-10",
+      "bestTime": "Tue-Fri, 7-9 AM or 6-8 PM local",
+      "tip": "Platform-specific execution tip for this campaign"
+    },
+    {
+      "platform": "TikTok",
+      "format": "Short Video",
+      "bestSize": "1080 x 1920px",
+      "captionLength": "50-100 words",
+      "hashtagCount": "3-5",
+      "bestTime": "Tue-Fri, 7-9 PM local",
+      "tip": "Platform-specific execution tip for this campaign"
+    },
+    {
+      "platform": "LinkedIn",
+      "format": "Carousel or Document Post",
+      "bestSize": "1080 x 1080px",
+      "captionLength": "200-300 words",
+      "hashtagCount": "3-5",
+      "bestTime": "Tue-Thu, 8-10 AM",
+      "tip": "Platform-specific execution tip for this campaign"
+    }
+  ]
+}`
+          }]
+        })
+      });
+
+      const data = await res.json();
+      const parsed = parseJSON(data.content?.[0]?.text || '{}');
+      setS('copy','done'); setS('prompts','active');
+      await new Promise(r=>setTimeout(r,400));
+      setS('prompts','done'); setS('specs','active');
+      await new Promise(r=>setTimeout(r,400));
+      setS('specs','done');
+
+      if (parsed?.angles) { setCreatives(parsed); setPhase('idle'); setStep(3); }
+      else { setError('Creative generation failed. Try again.'); setPhase('idle'); }
+    } catch(e) { console.error(e); setError('Failed. Try again.'); setPhase('idle'); }
+  };
+
+  /* ── EXPORT BRAND KIT ─────────────────────────────────────────────────── */
+  const exportBrandKit = () => {
+    if (!brandDNA) return;
+    const html = `<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>${brandDNA.brandName} — Brand DNA Kit</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#070A20;color:#F0F2FF;font-family:'DM Sans',sans-serif;font-weight:300;padding:0 0 4rem}
+.wrap{max-width:800px;margin:0 auto;padding:3rem 2rem}
+.logo{font-family:'Syne',sans-serif;font-size:1rem;color:rgba(240,242,255,0.35);letter-spacing:0.08em;margin-bottom:2.5rem;text-align:center}
+.logo em{font-style:normal;color:#9D4EFF}
+.hero{background:linear-gradient(135deg,rgba(42,47,255,0.2),rgba(123,43,255,0.15),rgba(196,0,255,0.1));border:1px solid rgba(123,43,255,0.25);border-radius:20px;padding:2.5rem;margin-bottom:2rem}
+.brand-name{font-family:'Syne',sans-serif;font-size:2.5rem;font-weight:700;margin-bottom:0.4rem}
+.tagline{font-size:1rem;color:rgba(240,242,255,0.55);margin-bottom:1.5rem}
+.meta-pills{display:flex;flex-wrap:wrap;gap:0.4rem}
+.pill{font-size:0.68rem;padding:0.2rem 0.7rem;border-radius:50px;background:rgba(123,43,255,0.14);border:1px solid rgba(123,43,255,0.25);color:#c084fc}
+.sec{background:rgba(13,16,53,0.8);border:1px solid rgba(123,43,255,0.18);border-radius:16px;padding:1.5rem;margin-bottom:1.2rem}
+.sec-title{font-family:'Syne',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:#9D4EFF;margin-bottom:1rem}
+.sec-body{font-size:0.87rem;color:rgba(240,242,255,0.72);line-height:1.78}
+.pillars{display:flex;flex-direction:column;gap:0.5rem}
+.pillar{background:rgba(7,10,32,0.7);border-left:3px solid #9D4EFF;padding:0.6rem 0.9rem;border-radius:0 9px 9px 0;font-size:0.83rem;color:rgba(240,242,255,0.78)}
+.swatches{display:flex;gap:0.7rem;flex-wrap:wrap;margin-top:0.5rem}
+.swatch{border-radius:10px;height:60px;flex:1;min-width:80px;max-width:120px;display:flex;align-items:flex-end;padding:0.4rem;font-size:0.65rem;color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.1)}
+.tag-row{display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.5rem}
+.tag{font-size:0.7rem;padding:0.2rem 0.65rem;border-radius:50px;background:rgba(42,47,255,0.1);border:1px solid rgba(42,47,255,0.2);color:#8b91ff}
+.footer{text-align:center;margin-top:3rem;font-size:0.72rem;color:rgba(240,242,255,0.2)}
+</style></head><body><div class="wrap">
+<div class="logo">Toolzyo<em>.</em> Brand Voice Studio</div>
+<div class="hero">
+  <div class="brand-name">${brandDNA.brandName}</div>
+  <div class="tagline">${brandDNA.tagline||''}</div>
+  <div class="meta-pills">
+    ${brandDNA.industry?`<span class="pill">${brandDNA.industry}</span>`:''}
+    ${brandDNA.businessType?`<span class="pill">${brandDNA.businessType}</span>`:''}
+    ${(brandDNA.recommendedPlatforms||[]).map(p=>`<span class="pill">${p}</span>`).join('')}
+  </div>
+</div>
+<div class="sec"><div class="sec-title">Value Proposition</div><div class="sec-body">${brandDNA.valueProp||''}</div></div>
+<div class="sec"><div class="sec-title">Competitive Advantage</div><div class="sec-body">${brandDNA.competitiveAdvantage||''}</div></div>
+<div class="sec"><div class="sec-title">Target Audience</div><div class="sec-body"><strong style="color:#F0F2FF">Primary:</strong> ${brandDNA.targetAudience?.primary||''}<br/><br/><strong style="color:#F0F2FF">Pain Points:</strong><br/>${(brandDNA.targetAudience?.painPoints||[]).map(p=>`• ${p}`).join('<br/>')}</div></div>
+<div class="sec"><div class="sec-title">Brand Voice</div><div class="sec-body">${brandDNA.brandVoice?.writingStyle||''}<br/><br/><div class="tag-row">${(brandDNA.brandVoice?.tone||[]).map(t=>`<span class="tag">${t}</span>`).join('')}${(brandDNA.brandVoice?.personality||[]).map(t=>`<span class="tag" style="background:rgba(196,0,255,0.1);border-color:rgba(196,0,255,0.2);color:#e879f9">${t}</span>`).join('')}</div></div></div>
+<div class="sec"><div class="sec-title">Messaging Pillars</div><div class="pillars">${(brandDNA.messagingPillars||[]).map(p=>`<div class="pillar">${p}</div>`).join('')}</div></div>
+<div class="sec"><div class="sec-title">Color Palette</div><div class="sec-body">${brandDNA.colorPalette?.description||''}<div class="swatches">${(brandDNA.colorPalette?.swatches||[]).map(s=>`<div class="swatch" style="background:${s.hex}">${s.name}</div>`).join('')}</div></div></div>
+<div class="sec"><div class="sec-title">Brand Personality</div><div class="tag-row">${(brandDNA.brandPersonalityAdjectives||[]).map(a=>`<span class="tag">${a}</span>`).join('')}</div></div>
+<div class="sec"><div class="sec-title">Content Themes</div><div class="pillars">${(brandDNA.contentThemes||[]).map(t=>`<div class="pillar">${t}</div>`).join('')}</div></div>
+<div class="footer">Generated by Toolzyo Brand Voice Studio — toolzyo.com</div>
+</div></body></html>`;
+
+    const blob = new Blob([html],{type:'text/html'});
+    const url2 = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href=url2; a.download=`${brandDNA.brandName.replace(/\s+/g,'-').toLowerCase()}-brand-dna.html`;
+    a.click(); URL.revokeObjectURL(url2);
+  };
+
+  const isLoading = ['analyzing','campaigns','creatives'].includes(phase);
+
+  /* ── RENDER ─────────────────────────────────────────────────────────────── */
+  return (
+    <>
+      <style>{css}</style>
+      <div className="bv-root">
+        <div className="bv-inner">
+
+          {/* HEADER */}
+          <div className="bv-header">
+            <div className="bv-wordmark">Toolzyo<em>.</em></div>
+            <h1 className="bv-title">Brand<br/><span className="bv-grd">Voice</span><br/>Studio</h1>
+            <p className="bv-sub">Enter any website URL → extract brand DNA → get campaign ideas → generate on-brand creatives with image prompts</p>
+          </div>
+
+          {/* STEP INDICATOR */}
+          <div className="step-indicator">
+            {[
+              { n:1, label:'Brand DNA' },
+              { n:2, label:'Campaign Ideas' },
+              { n:3, label:'Creatives' },
+            ].map((s, i) => (
+              <>
+                <div key={s.n} className="step-node">
+                  <div className={`step-circle${step===s.n?' active':step>s.n?' done':''}`}>
+                    {step>s.n ? '✓' : s.n}
+                  </div>
+                  <span className={`step-label${step===s.n?' active':step>s.n?' done':''}`}>{s.label}</span>
+                </div>
+                {i < 2 && <div key={`c${i}`} className={`step-connector${step>s.n?' done':''}`}/>}
+              </>
+            ))}
+          </div>
+
+          {/* ══ LOADING STATE ══ */}
+          {isLoading && (
+            <div className="panel">
+              <div className="loading-state">
+                <Loader size={42} strokeWidth={1} color="#9D4EFF" className="spin"/>
+                <p>
+                  {phase==='analyzing' && 'Fetching and analyzing your brand website...'}
+                  {phase==='campaigns' && 'Building campaign ideas from your brand DNA...'}
+                  {phase==='creatives' && 'Generating your full creative package...'}
+                </p>
+                <div className="loading-steps">
+                  {loadingSteps.map(s=>(
+                    <div key={s.id} className={`lstep${s.status==='active'?' active':s.status==='done'?' done':''}`}>
+                      <div className="ldot"/>
+                      {s.status==='done'?'✓ ':s.status==='active'?'⟳ ':''}{s.label}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ══ STEP 1: URL INPUT + DNA ══ */}
+          {!isLoading && step===1 && (
+            <div className="panel">
+              <span className="eyebrow">Step 1 — Analyze Brand DNA</span>
+              <h2 style={{fontFamily:"'Gambarino',Georgia,serif",fontSize:'1.5rem',marginBottom:'0.6rem',marginTop:'0.3rem'}}>Enter a brand or website</h2>
+              <p style={{fontSize:'0.83rem',color:'rgba(240,242,255,0.48)',lineHeight:1.7,marginBottom:'1.5rem'}}>
+                We'll extract the brand's identity, voice, audience, messaging, and visual palette — then build tailored campaign ideas.
+              </p>
+
+              <span className="eyebrow">Website URL</span>
+              <div className="url-row">
+                <div className="url-input-wrap">
+                  <Globe size={15} className="url-icon"/>
+                  <input className="t-input url-input" type="url" placeholder="https://yourbrand.com"
+                    value={url} onChange={e=>setUrl(e.target.value)}
+                    onKeyDown={e=>e.key==='Enter'&&analyzeBrand()}/>
+                </div>
+              </div>
+
+              <div style={{marginTop:'1rem'}}>
+                <span className="eyebrow">Paste Homepage or About Page Text <span style={{color:'rgba(240,242,255,0.3)',fontWeight:300,letterSpacing:0,textTransform:'none',fontSize:'0.72rem'}}>(recommended for best results)</span></span>
+                <textarea className="t-input" rows={6}
+                  placeholder="Copy and paste your homepage copy, about page, or any brand text here. The more you give it, the more accurate your Brand DNA will be..."
+                  value={brandContent} onChange={e=>setBrandContent(e.target.value)}/>
+                <p style={{fontSize:'0.68rem',color:'rgba(240,242,255,0.25)',marginTop:'0.35rem',lineHeight:1.6}}>
+                  💡 On your website: Ctrl+A → Ctrl+C → paste here. Or just paste your About page copy.
+                </p>
+              </div>
+
+              <button className="url-analyze-btn" style={{marginTop:'1rem',width:'100%',justifyContent:'center',padding:'0.9rem'}}
+                onClick={analyzeBrand}
+                disabled={!url.trim() && !brandContent.trim()}>
+                <Zap size={14}/> Analyze Brand DNA
+              </button>
+
+              {error && (
+                <div style={{display:'flex',alignItems:'flex-start',gap:'0.5rem',marginTop:'0.85rem',padding:'0.7rem 0.9rem',borderRadius:10,background:'rgba(255,80,80,0.07)',border:'1px solid rgba(255,80,80,0.2)'}}>
+                  <AlertCircle size={14} color="#ff8080" style={{flexShrink:0,marginTop:'0.1rem'}}/>
+                  <p style={{fontSize:'0.77rem',color:'#ff8080',lineHeight:1.65}}>{error}</p>
+                </div>
+              )}
+
+              {/* DNA RESULTS */}
+              {brandDNA && (
+                <>
+                  {/* Brand banner */}
+                  <div style={{marginTop:'1.8rem'}}>
+                    <div className="brand-banner">
+                      <div className="brand-banner-bg" style={{
+                        background: brandDNA.colorPalette?.swatches?.[0]?.hex
+                          ? `linear-gradient(135deg, ${brandDNA.colorPalette.swatches[0].hex}33, ${brandDNA.colorPalette.swatches[1]?.hex||'#9D4EFF'}22)`
+                          : 'linear-gradient(135deg,rgba(42,47,255,0.2),rgba(123,43,255,0.15))'
+                      }}/>
+                      <div className="brand-banner-content">
+                        <p style={{fontSize:'0.62rem',fontWeight:600,letterSpacing:'0.14em',textTransform:'uppercase',color:'rgba(240,242,255,0.5)',marginBottom:'0.3rem'}}>{brandDNA.industry} · {brandDNA.businessType}</p>
+                        <div className="brand-banner-name">{brandDNA.brandName}</div>
+                        <div className="brand-banner-tagline">{brandDNA.tagline}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="dna-grid">
+                    <div className="dna-card">
+                      <div className="dna-card-icon" style={{background:'rgba(42,47,255,0.15)',border:'1px solid rgba(42,47,255,0.25)'}}><Users size={16} color="#8b91ff"/></div>
+                      <p className="dna-card-label">Target Audience</p>
+                      <p className="dna-card-value">{brandDNA.targetAudience?.primary}</p>
+                      {brandDNA.targetAudience?.painPoints?.length > 0 && (
+                        <div className="dna-card-pills" style={{marginTop:'0.5rem'}}>
+                          {brandDNA.targetAudience.painPoints.slice(0,3).map((p,i)=>(
+                            <span key={i} className="dna-pill">{p}</span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="dna-card">
+                      <div className="dna-card-icon" style={{background:'rgba(196,0,255,0.12)',border:'1px solid rgba(196,0,255,0.22)'}}><MessageSquare size={16} color="#e879f9"/></div>
+                      <p className="dna-card-label">Brand Voice</p>
+                      <p className="dna-card-value" style={{marginBottom:'0.5rem'}}>{brandDNA.brandVoice?.writingStyle}</p>
+                      <div className="dna-card-pills">
+                        {(brandDNA.brandVoice?.tone||[]).map((t,i)=><span key={i} className="dna-pill">{t}</span>)}
+                      </div>
+                    </div>
+
+                    <div className="dna-card">
+                      <div className="dna-card-icon" style={{background:'rgba(0,232,192,0.1)',border:'1px solid rgba(0,232,192,0.2)'}}><Target size={16} color="#00E8C0"/></div>
+                      <p className="dna-card-label">Value Proposition</p>
+                      <p className="dna-card-value">{brandDNA.valueProp}</p>
+                    </div>
+
+                    <div className="dna-card">
+                      <div className="dna-card-icon" style={{background:'rgba(255,200,0,0.1)',border:'1px solid rgba(255,200,0,0.2)'}}><Palette size={16} color="#fbbf24"/></div>
+                      <p className="dna-card-label">Color Palette</p>
+                      <p className="dna-card-value" style={{marginBottom:'0.5rem'}}>{brandDNA.colorPalette?.description}</p>
+                      <div className="color-swatches">
+                        {(brandDNA.colorPalette?.swatches||[]).map((s,i)=>(
+                          <div key={i} className="color-swatch" style={{background:s.hex}}>
+                            <span className="color-label">{s.name}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="dna-card">
+                      <div className="dna-card-icon" style={{background:'rgba(123,43,255,0.12)',border:'1px solid rgba(123,43,255,0.22)'}}><Star size={16} color="#9D4EFF"/></div>
+                      <p className="dna-card-label">Brand Personality</p>
+                      <div className="dna-card-pills">
+                        {(brandDNA.brandPersonalityAdjectives||[]).map((a,i)=>(
+                          <span key={i} className="dna-pill cyan">{a}</span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="dna-card">
+                      <div className="dna-card-icon" style={{background:'rgba(42,47,255,0.12)',border:'1px solid rgba(42,47,255,0.22)'}}><Hash size={16} color="#8b91ff"/></div>
+                      <p className="dna-card-label">Messaging Pillars</p>
+                      <div className="dna-card-pills">
+                        {(brandDNA.messagingPillars||[]).map((p,i)=>(
+                          <span key={i} className="dna-pill blue">{p}</span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="nav-row">
+                    <div style={{display:'flex',gap:'0.6rem',flexWrap:'wrap'}}>
+                      <button className="btn btn-cyan btn-sm" onClick={exportBrandKit}><Download size={11}/> Export Brand Kit</button>
+                      <button className="btn btn-ghost btn-sm" onClick={()=>{ setBrandDNA(null); setUrl(''); }}><RefreshCw size={11}/> Re-analyze</button>
+                    </div>
+                    <button className="btn btn-primary btn-nav" onClick={generateCampaigns}>
+                      Get Campaign Ideas <ArrowRight size={14}/>
+                    </button>
+                  </div>
+                </>
+              )}
+
+              {!brandDNA && !error && (
+                <div style={{marginTop:'2rem',display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:'1rem'}}>
+                  {[
+                    { icon:<Dna size={22}/>, title:'Business DNA', desc:'Brand identity, voice, audience, and positioning extracted from your content' },
+                    { icon:<Palette size={22}/>, title:'Visual Profile', desc:'Color palette, typography style, and visual personality mapped from your brand' },
+                    { icon:<Megaphone size={22}/>, title:'Campaign Ready', desc:'6 campaign ideas + full ad copy, image prompts, and platform specs generated' },
+                  ].map((f,i) => (
+                    <div key={i} style={{background:'rgba(7,10,32,0.6)',border:'1px solid rgba(123,43,255,0.14)',borderRadius:14,padding:'1.2rem',textAlign:'center'}}>
+                      <div style={{color:'#9D4EFF',marginBottom:'0.6rem',display:'flex',justifyContent:'center'}}>{f.icon}</div>
+                      <p style={{fontFamily:"'Gambarino',Georgia,serif",fontSize:'0.95rem',marginBottom:'0.35rem'}}>{f.title}</p>
+                      <p style={{fontSize:'0.75rem',color:'rgba(240,242,255,0.42)',lineHeight:1.65}}>{f.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ══ STEP 2: CAMPAIGN IDEAS ══ */}
+          {!isLoading && step===2 && (
+            <div className="panel">
+              <div style={{display:'flex',alignItems:'flex-start',justifyContent:'space-between',flexWrap:'wrap',gap:'0.75rem',marginBottom:'0.5rem'}}>
+                <div>
+                  <span className="eyebrow">Step 2 — Campaign Ideas</span>
+                  <h2 style={{fontFamily:"'Gambarino',Georgia,serif",fontSize:'1.4rem',marginTop:'0.2rem'}}>
+                    {campaigns.length} campaigns for {brandDNA?.brandName}
+                  </h2>
+                </div>
+                <button className="btn btn-ghost btn-sm" onClick={generateCampaigns}><RefreshCw size={11}/> Regenerate</button>
+              </div>
+
+              <p style={{fontSize:'0.8rem',color:'rgba(240,242,255,0.4)',marginBottom:'1.2rem',lineHeight:1.65}}>
+                Select a campaign to generate its full creative package — ad copy angles, image generation prompts, and platform specs.
+              </p>
+
+              <div className="campaign-grid">
+                {campaigns.map((camp, i) => (
+                  <div key={camp.id||i}
+                    className={`campaign-card${selectedCampaign?.id===camp.id?' selected':''}`}
+                    onClick={()=>setSel(selectedCampaign?.id===camp.id ? null : camp)}>
+                    <span className="campaign-num">{String(i+1).padStart(2,'0')}</span>
+                    <div className="campaign-check">{selectedCampaign?.id===camp.id?'✓':''}</div>
+                    <p className="campaign-objective"><Target size={10}/> {camp.objective}</p>
+                    <p className="campaign-name">{camp.name}</p>
+                    <p className="campaign-concept">{camp.concept}</p>
+                    <div style={{marginBottom:'0.6rem',padding:'0.55rem 0.7rem',background:'rgba(42,47,255,0.07)',borderRadius:8,fontSize:'0.77rem',color:'rgba(240,242,255,0.6)',lineHeight:1.6}}>
+                      <em style={{color:'#9D4EFF',fontStyle:'normal',fontWeight:600}}>Insight: </em>{camp.insight}
+                    </div>
+                    <div className="campaign-platform-row">
+                      {(camp.platforms||[]).map((p,j)=>(
+                        <span key={j} className="campaign-plat-badge">{PLATFORM_ICONS[p.toLowerCase()]||'📱'} {p}</span>
+                      ))}
+                      <span style={{fontSize:'0.62rem',color:'rgba(240,242,255,0.3)',marginLeft:'auto',alignSelf:'center'}}>{camp.duration}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {!selectedCampaign && <p className="select-hint">👆 Select a campaign to generate its creative package</p>}
+
+              <div className="nav-row">
+                <button className="btn btn-ghost btn-nav" onClick={()=>setStep(1)}>
+                  <ChevronLeft size={14}/> Back to DNA
+                </button>
+                <button className="btn btn-primary btn-nav"
+                  disabled={!selectedCampaign}
+                  onClick={generateCreatives}>
+                  Generate Creatives <ArrowRight size={14}/>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* ══ STEP 3: CREATIVES ══ */}
+          {!isLoading && step===3 && creatives && (
+            <div className="panel">
+              <span className="eyebrow">Step 3 — Creative Package</span>
+
+              <div className="creative-header">
+                <h2 style={{fontFamily:"'Gambarino',Georgia,serif",fontSize:'1.4rem'}}>
+                  {selectedCampaign?.name}
+                </h2>
+                <span className="creative-campaign-badge">
+                  <Target size={11}/> {selectedCampaign?.objective}
+                </span>
+              </div>
+
+              <div className="gate-wrap">
+                <span className="gate-preview-badge">👁 Sample Preview — Curiosity angle visible · Pain Point + Social Proof + all image prompts locked</span>
+
+                {/* AD COPY ANGLES — show first, gate rest */}
+                <div className="creative-section">
+                  <h3 className="creative-section-title"><Megaphone size={16}/> Ad Copy Angles</h3>
+                  <div className="angles-grid">
+                    {/* First angle always visible */}
+                    {creatives.angles?.slice(0,1).map((angle, i) => (
+                      <div key={i} className={`angle-card ${angle.type?.toLowerCase().replace(' ','')}`}>
+                        <button className="btn btn-ghost btn-sm angle-copy-btn" onClick={()=>copy(`${angle.headline}\n\n${angle.body}\n\nCTA: ${angle.cta}`,`angle${i}`)}>
+                          {copied===`angle${i}`?<Check size={10}/>:<Copy size={10}/>}
+                        </button>
+                        <p className="angle-type">🎯 {angle.type} Angle</p>
+                        <p style={{fontSize:'0.7rem',color:'rgba(240,242,255,0.4)',marginBottom:'0.75rem',lineHeight:1.55,fontStyle:'italic'}}>{angle.rationale}</p>
+                        <div className="angle-field">
+                          <p className="angle-field-label">Headline</p>
+                          <p className="angle-field-val headline">{angle.headline}</p>
+                        </div>
+                        <div className="angle-field">
+                          <p className="angle-field-label">Body Copy</p>
+                          <p className="angle-field-val">{angle.body}</p>
+                        </div>
+                        <div className="angle-field">
+                          <p className="angle-field-label">CTA</p>
+                          <span className="angle-cta-badge">{angle.cta}</span>
+                        </div>
+                      </div>
+                    ))}
+
+                    {/* Remaining angles — gated */}
+                    {!isUnlocked && creatives.angles?.length > 1 && (
+                      <div className="gate-blurred">
+                        {creatives.angles.slice(1).map((angle, i) => (
+                          <div key={i} className={`angle-card ${['pain','social'][i]}`}>
+                            <p className="angle-type">🎯 {angle.type} Angle</p>
+                            <div className="angle-field"><p className="angle-field-val headline">{angle.headline}</p></div>
+                            <div className="angle-field"><p className="angle-field-val">{angle.body}</p></div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {isUnlocked && creatives.angles?.slice(1).map((angle, i) => (
+                      <div key={i+1} className={`angle-card ${angle.type?.toLowerCase().replace(' ','')}`}>
+                        <button className="btn btn-ghost btn-sm angle-copy-btn" onClick={()=>copy(`${angle.headline}\n\n${angle.body}\n\nCTA: ${angle.cta}`,`angle${i+1}`)}>
+                          {copied===`angle${i+1}`?<Check size={10}/>:<Copy size={10}/>}
+                        </button>
+                        <p className="angle-type">🎯 {angle.type} Angle</p>
+                        <p style={{fontSize:'0.7rem',color:'rgba(240,242,255,0.4)',marginBottom:'0.75rem',lineHeight:1.55,fontStyle:'italic'}}>{angle.rationale}</p>
+                        <div className="angle-field">
+                          <p className="angle-field-label">Headline</p>
+                          <p className="angle-field-val headline">{angle.headline}</p>
+                        </div>
+                        <div className="angle-field">
+                          <p className="angle-field-label">Body Copy</p>
+                          <p className="angle-field-val">{angle.body}</p>
+                        </div>
+                        <div className="angle-field">
+                          <p className="angle-field-label">CTA</p>
+                          <span className="angle-cta-badge">{angle.cta}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* IMAGE PROMPTS — fully gated */}
+                {!isUnlocked && (
+                  <div className="gate-blurred">
+                    <div className="creative-section">
+                      <h3 className="creative-section-title"><Image size={16}/> Image Generation Prompts</h3>
+                      <div className="img-prompt-section">
+                        <div className="img-prompt-variants">
+                          {(creatives.imagePrompts||[]).map((p,i)=>(
+                            <div key={i} className="img-prompt-variant">
+                              <p className="img-variant-label">🖼 {p.variant} · {p.platform}</p>
+                              <p className="img-prompt-text">{p.prompt}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {isUnlocked && (
+                  <div className="creative-section">
+                    <h3 className="creative-section-title"><Image size={16}/> Image Generation Prompts</h3>
+                    <div className="img-prompt-section">
+                      <div className="img-prompt-header">
+                        <span className="img-prompt-title">🎨 Drop into your preferred image generator</span>
+                        <div className="img-model-tags">
+                          <span className="img-model-tag">Midjourney</span>
+                          <span className="img-model-tag">Leonardo AI</span>
+                          <span className="img-model-tag">Grok</span>
+                          <span className="img-model-tag">Flux</span>
+                          <span className="img-model-tag">DALL-E 3</span>
+                        </div>
+                      </div>
+                      <div className="img-prompt-variants">
+                        {(creatives.imagePrompts||[]).map((p,i)=>(
+                          <div key={i} className="img-prompt-variant">
+                            <p className="img-variant-label">🖼 {p.variant} · {p.platform}</p>
+                            <p className="img-prompt-text">{p.prompt}</p>
+                            <div className="img-copy-row">
+                              <button className="btn btn-ghost btn-sm" onClick={()=>copy(p.prompt,`img${i}`)}>
+                                {copied===`img${i}`?<Check size={10}/>:<Copy size={10}/>} Copy Prompt
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* PLATFORM SPECS — gated */}
+                {!isUnlocked && (
+                  <div className="gate-blurred">
+                    <div className="creative-section">
+                      <h3 className="creative-section-title"><Target size={16}/> Platform Specifications</h3>
+                      <div className="specs-grid">
+                        {(creatives.platformSpecs||[]).map((spec,i)=>(
+                          <div key={i} className="spec-card">
+                            <p className="spec-plat">{PLATFORM_ICONS[spec.platform?.toLowerCase()]||'📱'} {spec.platform}</p>
+                            <p className="spec-item"><strong>Format:</strong> {spec.format}</p>
+                            <p className="spec-item"><strong>Size:</strong> {spec.bestSize}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {isUnlocked && (
+                  <div className="creative-section">
+                    <h3 className="creative-section-title"><Target size={16}/> Platform Specifications</h3>
+                    <div className="specs-grid">
+                      {(creatives.platformSpecs||[]).map((spec,i)=>(
+                        <div key={i} className="spec-card">
+                          <p className="spec-plat">{PLATFORM_ICONS[spec.platform?.toLowerCase()]||'📱'} {spec.platform}</p>
+                          <p className="spec-item"><strong>Format:</strong> {spec.format}</p>
+                          <p className="spec-item"><strong>Size:</strong> {spec.bestSize}</p>
+                          <p className="spec-item"><strong>Caption:</strong> {spec.captionLength}</p>
+                          <p className="spec-item"><strong>Hashtags:</strong> {spec.hashtagCount}</p>
+                          <p className="spec-item"><strong>Best Time:</strong> {spec.bestTime}</p>
+                          {spec.tip && <p className="spec-item" style={{marginTop:'0.5rem',color:'rgba(0,232,192,0.7)',borderTop:'1px solid rgba(0,232,192,0.15)',paddingTop:'0.4rem'}}>{spec.tip}</p>}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {!isUnlocked && <GateOverlay codeId="brandVoiceCode"/>}
+              </div>
+
+              <div className="nav-row">
+                <button className="btn btn-ghost btn-nav" onClick={()=>setStep(2)}>
+                  <ChevronLeft size={14}/> Back to Campaigns
+                </button>
+                <div style={{display:'flex',gap:'0.6rem',flexWrap:'wrap'}}>
+                  <button className="btn btn-ghost btn-sm" onClick={()=>setSel(null)||setStep(2)}><RefreshCw size={11}/> Try Another Campaign</button>
+                  {isUnlocked && <button className="btn btn-cyan btn-sm" onClick={exportBrandKit}><Download size={11}/> Export Brand Kit</button>}
+                </div>
+              </div>
+            </div>
+          )}
+
+        </div>
+      </div>
+      {toast && <div className="toast"><Check size={13}/> {toast}</div>}
+    </>
+  );
+}
+
+
+const container = document.getElementById('root');
+const root = ReactDOM.createRoot(container);
+root.render(React.createElement(ToolzyoBrandVoiceStudio));
+</script>
+</body>
+</html>

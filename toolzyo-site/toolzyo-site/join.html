@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Toolzyo Studio — Join the Community</title>
+<link href="https://fonts.cdnfonts.com/css/gambarino" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/switzer" rel="stylesheet">
+<style>
+  :root {
+    --navy:   #070A20;
+    --navy2:  #0A0D28;
+    --navy3:  #0D1035;
+    --royal:  #2A2FFF;
+    --purple: #7B2BFF;
+    --purpv:  #9D4EFF;
+    --mag:    #C400FF;
+    --cyan:   #00E8C0;
+    --white:  #F0F2FF;
+    --dim:    rgba(240,242,255,0.58);
+    --faint:  rgba(240,242,255,0.22);
+    --border: rgba(123,43,255,0.22);
+    --G: 'Gambarino', Georgia, serif;
+    --S: 'Switzer', 'DM Sans', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  html { scroll-behavior:smooth; }
+
+  body {
+    background:var(--navy);
+    color:var(--white);
+    font-family:var(--S);
+    font-weight:300;
+    min-height:100vh;
+    overflow-x:hidden;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:2rem 1.5rem;
+    position:relative;
+  }
+
+  /* BACKGROUND */
+  body::before {
+    content:'';
+    position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 70% 60% at 15% 10%,  rgba(42,47,255,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 55% at 85% 90%,  rgba(196,0,255,0.13) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 45% at 50% 50%,  rgba(0,232,192,0.05) 0%, transparent 55%);
+  }
+
+  /* NOISE GRAIN */
+  body::after {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0; opacity:0.018;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)'/%3E%3C/svg%3E");
+  }
+
+  /* CARD */
+  .card {
+    position:relative; z-index:1;
+    width:100%; max-width:520px;
+    background:rgba(13,16,53,0.88);
+    border:1px solid rgba(123,43,255,0.25);
+    border-radius:28px;
+    padding:3rem 2.8rem;
+    backdrop-filter:blur(20px);
+    box-shadow:0 40px 100px rgba(4,5,26,0.7);
+    animation:fadeUp 0.6s ease both;
+  }
+  .card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:1px;
+    background:linear-gradient(90deg,transparent,rgba(157,78,255,0.7),transparent);
+    border-radius:28px 28px 0 0;
+  }
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(24px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  /* WORDMARK */
+  .wordmark {
+    font-family:var(--G); font-size:1.1rem;
+    color:rgba(240,242,255,0.35); letter-spacing:0.04em;
+    text-align:center; margin-bottom:2rem;
+    text-decoration:none; display:block;
+  }
+  .wordmark em { font-style:normal; color:var(--purpv); }
+
+  /* MODE BADGE */
+  .mode-badge {
+    display:inline-flex; align-items:center; gap:0.45rem;
+    font-family:var(--S); font-size:0.65rem; font-weight:500;
+    letter-spacing:0.14em; text-transform:uppercase;
+    padding:0.28rem 0.9rem; border-radius:50px;
+    margin:0 auto 1.5rem; display:flex; width:fit-content; margin:0 auto 1.5rem;
+  }
+  .mode-badge.tools     { background:rgba(0,232,192,0.1); border:1px solid rgba(0,232,192,0.28); color:var(--cyan); }
+  .mode-badge.community { background:rgba(123,43,255,0.12); border:1px solid rgba(123,43,255,0.28); color:#c084fc; }
+
+  /* HEADLINE */
+  .headline {
+    font-family:var(--G); font-size:clamp(1.9rem,5vw,2.6rem);
+    line-height:1.05; letter-spacing:0.01em;
+    text-align:center; margin-bottom:0.9rem;
+    color:var(--white);
+  }
+  .headline .grd {
+    background:linear-gradient(135deg,var(--royal),var(--purpv),var(--mag));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  }
+
+  /* SUBHEADLINE */
+  .sub {
+    font-family:var(--S); font-weight:300;
+    font-size:0.92rem; color:var(--dim);
+    line-height:1.8; text-align:center;
+    margin-bottom:2rem; max-width:400px;
+    margin-left:auto; margin-right:auto;
+  }
+
+  /* BENEFIT LIST */
+  .benefits {
+    display:flex; flex-direction:column; gap:0.55rem;
+    margin-bottom:2rem;
+  }
+  .benefit {
+    display:flex; align-items:flex-start; gap:0.7rem;
+    background:rgba(7,10,32,0.6);
+    border:1px solid rgba(123,43,255,0.14);
+    border-radius:11px; padding:0.75rem 0.9rem;
+    font-size:0.84rem; color:var(--dim); line-height:1.55;
+    animation:fadeUp 0.5s ease both;
+  }
+  .benefit:nth-child(1) { animation-delay:0.1s; }
+  .benefit:nth-child(2) { animation-delay:0.18s; }
+  .benefit:nth-child(3) { animation-delay:0.26s; }
+  .benefit:nth-child(4) { animation-delay:0.34s; }
+  .benefit-icon { font-size:1.1rem; flex-shrink:0; margin-top:0.05rem; }
+  .benefit strong { color:var(--white); font-weight:500; display:block; margin-bottom:0.1rem; }
+
+  /* FORM */
+  .kit-form { display:flex; flex-direction:column; gap:0.75rem; }
+  .kit-form input[type="text"],
+  .kit-form input[type="email"] {
+    width:100%;
+    background:rgba(7,10,32,0.85);
+    border:1px solid rgba(123,43,255,0.24);
+    border-radius:13px;
+    padding:0.88rem 1.1rem;
+    font-family:var(--S); font-weight:300;
+    font-size:0.9rem; color:var(--white);
+    outline:none;
+    transition:border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance:none;
+  }
+  .kit-form input:focus {
+    border-color:var(--purpv);
+    box-shadow:0 0 0 3px rgba(157,78,255,0.12);
+  }
+  .kit-form input::placeholder { color:rgba(240,242,255,0.22); }
+
+  .kit-form button[type="submit"] {
+    width:100%;
+    padding:1.05rem;
+    border:none; border-radius:50px; cursor:pointer;
+    background:linear-gradient(135deg,var(--royal),var(--purple),var(--mag));
+    background-size:200%;
+    color:var(--white);
+    font-family:var(--S); font-weight:600;
+    font-size:0.9rem; letter-spacing:0.1em; text-transform:uppercase;
+    transition:all 0.25s;
+    margin-top:0.3rem;
+  }
+  .kit-form button[type="submit"]:hover {
+    transform:translateY(-2px);
+    box-shadow:0 14px 42px rgba(123,43,255,0.5);
+  }
+  .kit-form button[type="submit"]:active {
+    transform:translateY(0);
+  }
+
+  /* PRIVACY */
+  .privacy {
+    font-size:0.72rem; color:rgba(240,242,255,0.28);
+    text-align:center; margin-top:1rem; line-height:1.7;
+  }
+  .privacy a {
+    color:var(--purpv); text-decoration:none;
+    border-bottom:1px solid rgba(157,78,255,0.3);
+    transition:all 0.18s;
+  }
+  .privacy a:hover { color:var(--white); border-bottom-color:var(--purpv); }
+
+  /* DIVIDER */
+  .divider {
+    display:flex; align-items:center; gap:0.75rem;
+    margin:1.5rem 0;
+  }
+  .divider-line { flex:1; height:1px; background:rgba(123,43,255,0.14); }
+  .divider-text { font-size:0.65rem; color:rgba(240,242,255,0.25); letter-spacing:0.12em; text-transform:uppercase; }
+
+  /* SOCIAL PROOF */
+  .social-proof {
+    display:flex; align-items:center; justify-content:center; gap:0.6rem;
+    margin-bottom:1.5rem;
+  }
+  .sp-avatars { display:flex; }
+  .sp-avatar {
+    width:28px; height:28px; border-radius:50%;
+    border:2px solid var(--navy3);
+    background:linear-gradient(135deg,var(--royal),var(--purpv));
+    margin-left:-8px; font-size:0.65rem;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .sp-avatar:first-child { margin-left:0; }
+  .sp-text { font-size:0.76rem; color:var(--dim); line-height:1.5; }
+  .sp-text strong { color:var(--white); font-weight:500; }
+
+  /* TOOL CHIPS — shown in tools mode */
+  .tool-chips {
+    display:flex; flex-wrap:wrap; gap:0.4rem;
+    justify-content:center; margin-bottom:1.8rem;
+  }
+  .tool-chip {
+    font-size:0.65rem; font-weight:500; letter-spacing:0.07em;
+    padding:0.2rem 0.65rem; border-radius:50px;
+    background:rgba(123,43,255,0.1); border:1px solid rgba(123,43,255,0.2);
+    color:#c084fc;
+    animation:fadeUp 0.4s ease both;
+  }
+  .tool-chip:nth-child(odd)  { animation-delay:0.05s; }
+  .tool-chip:nth-child(even) { animation-delay:0.12s; }
+
+  /* SUCCESS STATE */
+  .success-state {
+    display:none; text-align:center; padding:1rem 0;
+    animation:fadeUp 0.4s ease;
+  }
+  .success-icon { font-size:3rem; margin-bottom:1rem; }
+  .success-title {
+    font-family:var(--G); font-size:1.8rem;
+    background:linear-gradient(135deg,var(--purpv),var(--mag));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    margin-bottom:0.6rem;
+  }
+  .success-sub { font-size:0.88rem; color:var(--dim); line-height:1.75; }
+
+  /* BACK LINK */
+  .back-link {
+    display:block; text-align:center; margin-top:1.4rem;
+    font-size:0.76rem; color:rgba(240,242,255,0.28);
+    text-decoration:none; transition:color 0.18s;
+  }
+  .back-link:hover { color:var(--dim); }
+
+  /* MOBILE */
+  @media(max-width:480px){
+    .card { padding:2.2rem 1.6rem; border-radius:22px; }
+    .headline { font-size:1.7rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="card" id="mainCard">
+
+  <!-- WORDMARK -->
+  <a href="https://toolzyo.com" class="wordmark">Toolzyo<em>.</em></a>
+
+  <!-- MODE BADGE — swapped by JS -->
+  <div class="mode-badge community" id="modeBadge">
+    <span>✦</span> <span id="modeLabel">Join the Community</span>
+  </div>
+
+  <!-- HEADLINE — swapped by JS -->
+  <h1 class="headline" id="headline">
+    Stay ahead of<br/><span class="grd">AI, every week</span>
+  </h1>
+
+  <!-- SUBHEADLINE — swapped by JS -->
+  <p class="sub" id="subline">
+    The Toolzyo AI Intel feed — the most important AI, LLM, and automation updates, filtered through the Toolzyo lens. No noise. Just signal. Straight to your inbox.
+  </p>
+
+  <!-- TOOL CHIPS — only shown in tools mode -->
+  <div class="tool-chips" id="toolChips" style="display:none;">
+    <span class="tool-chip">📡 Signal Studio</span>
+    <span class="tool-chip">⚔️ Rivalry Insights</span>
+    <span class="tool-chip">🧬 Brand Voice Studio</span>
+    <span class="tool-chip">🎯 Marketing Maven</span>
+    <span class="tool-chip">🔍 Lead Engine</span>
+    <span class="tool-chip">💡 Spark Studio</span>
+    <span class="tool-chip">📰 AI Intel Engine</span>
+    <span class="tool-chip">📣 Ad Copy Studio</span>
+  </div>
+
+  <!-- BENEFITS — swapped by JS -->
+  <div class="benefits" id="benefits">
+    <!-- filled by JS -->
+  </div>
+
+  <!-- SOCIAL PROOF -->
+  <div class="social-proof">
+    <div class="sp-avatars">
+      <div class="sp-avatar">H</div>
+      <div class="sp-avatar" style="background:linear-gradient(135deg,#C400FF,#7B2BFF);">A</div>
+      <div class="sp-avatar" style="background:linear-gradient(135deg,#00E8C0,#2A2FFF);">T</div>
+    </div>
+    <p class="sp-text"><strong>Toolzyo Studio</strong><br/>Human-led. AI-enhanced.</p>
+  </div>
+
+  <!-- KIT FORM -->
+  <form
+    action="https://app.kit.com/forms/2de92f8f0d/subscriptions"
+    method="post"
+    class="kit-form"
+    id="kitForm"
+    onsubmit="handleSubmit(event)"
+  >
+    <input
+      type="text"
+      name="fields[first_name]"
+      id="firstName"
+      placeholder="Your first name"
+      required
+      autocomplete="given-name"
+    />
+    <input
+      type="email"
+      name="email_address"
+      id="emailAddress"
+      placeholder="Your best email address"
+      required
+      autocomplete="email"
+    />
+    <!-- Hidden field to track source — passes ref param into Kit tag field -->
+    <input type="hidden" name="fields[source]" id="sourceField" value="community"/>
+
+    <button type="submit" id="submitBtn">
+      <span id="submitLabel">Join the Community →</span>
+    </button>
+  </form>
+
+  <p class="privacy">
+    No spam, ever. Unsubscribe any time.<br/>
+    By signing up you agree to our
+    <a href="https://toolzyo.com/refund-policy.html" target="_blank">Terms &amp; Refund Policy</a>.
+  </p>
+
+  <!-- SUCCESS STATE -->
+  <div class="success-state" id="successState">
+    <div class="success-icon">✅</div>
+    <h2 class="success-title" id="successTitle">You're in.</h2>
+    <p class="success-sub" id="successSub">
+      Welcome to the Toolzyo community. Check your inbox for a confirmation — then watch for your first AI Intel drop.
+    </p>
+  </div>
+
+  <a href="https://toolzyo.com" class="back-link" id="backLink">← Back to Toolzyo Studio</a>
+
+</div>
+
+<script>
+  /* ── DETECT MODE FROM URL PARAM ──────────────────────────────────── */
+  const params   = new URLSearchParams(window.location.search);
+  const ref      = (params.get('ref') || '').toLowerCase();
+  const isTools  = ref === 'tools' || ref === 'packages';
+
+  const COPY = {
+    tools: {
+      badgeClass:  'tools',
+      badgeLabel:  '🔓 Get Free Access',
+      headline:    'Try the tools.<br/><span class="grd">See your results.</span>',
+      subline:     'Drop your details and get free access to the Toolzyo tool suite — generate your first personalized output and see what AI-powered strategy actually looks like for your business.',
+      submitLabel: 'Get Free Tool Access →',
+      successTitle: 'Access granted.',
+      successSub:  "You're on the list. Redirecting you back to the tools now...",
+      benefits: [
+        { icon:'📡', title:'Signal Studio', desc:'30/60/90-day social content calendars — written in full, ready to post' },
+        { icon:'⚔️', title:'Rivalry Insights', desc:'SWOT profiles, battle cards and positioning maps for up to 5 competitors' },
+        { icon:'🧬', title:'Brand Voice Studio', desc:'URL → Brand DNA → 6 campaign ideas → ad copy + image prompts' },
+        { icon:'📣', title:'Ad Copy Studio', desc:'5 ready-to-run ads per platform for Meta, TikTok, Google & LinkedIn' },
+      ]
+    },
+    community: {
+      badgeClass:  'community',
+      badgeLabel:  '✦ Join the Community',
+      headline:    'Stay ahead of<br/><span class="grd">AI, every week</span>',
+      subline:     'The Toolzyo AI Intel feed — the most important AI, LLM, and automation updates filtered through the Toolzyo lens. No noise. Just signal. Straight to your inbox.',
+      submitLabel: 'Join the Community →',
+      successTitle: "You're in.",
+      successSub:  "Welcome to the Toolzyo community. Check your inbox for a confirmation — then watch for your first AI Intel drop.",
+      benefits: [
+        { icon:'📰', title:'Weekly AI Intel', desc:'Curated AI and LLM updates written in the Toolzyo voice — sharp, no fluff' },
+        { icon:'⚡', title:'Tool Access', desc:'Early access to new Toolzyo tools as they launch — community first' },
+        { icon:'🎯', title:'Strategy Insights', desc:'How creators and businesses are actually using AI to grow right now' },
+        { icon:'🔓', title:'Free Forever', desc:'No credit card. No trial. Just Toolzyo in your inbox.' },
+      ]
+    }
+  };
+
+  const mode = isTools ? 'tools' : 'community';
+  const c    = COPY[mode];
+
+  /* ── APPLY COPY ───────────────────────────────────────────────────── */
+  const badge = document.getElementById('modeBadge');
+  badge.className = `mode-badge ${c.badgeClass}`;
+  document.getElementById('modeLabel').textContent = c.badgeLabel;
+  document.getElementById('headline').innerHTML    = c.headline;
+  document.getElementById('subline').textContent   = c.subline;
+  document.getElementById('submitLabel').textContent = c.submitLabel;
+  document.getElementById('sourceField').value     = mode;
+
+  if (isTools) {
+    document.getElementById('toolChips').style.display = 'flex';
+  }
+
+  /* ── RENDER BENEFITS ──────────────────────────────────────────────── */
+  const benefitsEl = document.getElementById('benefits');
+  c.benefits.forEach((b, i) => {
+    const el = document.createElement('div');
+    el.className = 'benefit';
+    el.style.animationDelay = `${0.08 + i * 0.07}s`;
+    el.innerHTML = `
+      <span class="benefit-icon">${b.icon}</span>
+      <div><strong>${b.title}</strong>${b.desc}</div>
+    `;
+    benefitsEl.appendChild(el);
+  });
+
+  /* ── UPDATE PAGE TITLE ────────────────────────────────────────────── */
+  document.title = isTools
+    ? 'Try the Tools Free — Toolzyo Studio'
+    : 'Join the Community — Toolzyo Studio';
+
+  /* ── FORM SUBMIT ─────────────────────────────────────────────────── */
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    const form   = document.getElementById('kitForm');
+    const btn    = document.getElementById('submitBtn');
+    const data   = new FormData(form);
+
+    btn.disabled = true;
+    btn.innerHTML = '<span style="opacity:0.7">Submitting...</span>';
+
+    fetch(form.action, {
+      method: 'POST',
+      body: data,
+      mode: 'no-cors' // Kit requires no-cors for direct form posts
+    })
+    .then(() => showSuccess())
+    .catch(() => showSuccess()); // no-cors always triggers catch — treat as success
+
+    function showSuccess() {
+      form.style.display = 'none';
+      document.querySelector('.privacy').style.display = 'none';
+      document.getElementById('toolChips').style.display = 'none';
+      document.getElementById('benefits').style.display = 'none';
+      document.querySelector('.social-proof').style.display = 'none';
+      document.getElementById('subline').style.display = 'none';
+
+      const successEl = document.getElementById('successState');
+      document.getElementById('successTitle').textContent = c.successTitle;
+      document.getElementById('successSub').textContent   = c.successSub;
+      successEl.style.display = 'block';
+
+      // If tools mode — redirect back to tools after 2.5 seconds
+      if (isTools) {
+        setTimeout(() => {
+          window.location.href = 'https://toolzyo.com/#tools';
+        }, 2500);
+      }
+    }
+  }
+</script>
+
+</body>
+</html>

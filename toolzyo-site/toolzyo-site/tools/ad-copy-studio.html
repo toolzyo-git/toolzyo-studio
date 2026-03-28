@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Ad Copy Studio — Toolzyo Studio</title>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://unpkg.com/lucide-react@0.383.0/dist/umd/lucide-react.min.js"></script>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:#070A20; }
+  #root { min-height:100vh; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-presets="react">
+const { useState } = React;
+const Zap = LucideReact.Zap;
+const Megaphone = LucideReact.Megaphone;
+const Target = LucideReact.Target;
+const Users = LucideReact.Users;
+const Copy = LucideReact.Copy;
+const Check = LucideReact.Check;
+const Loader = LucideReact.Loader;
+const Download = LucideReact.Download;
+const AlertCircle = LucideReact.AlertCircle;
+const ChevronDown = LucideReact.ChevronDown;
+const ChevronUp = LucideReact.ChevronUp;
+const Image = LucideReact.Image;
+const FileText = LucideReact.FileText;
+const BarChart2 = LucideReact.BarChart2;
+const DollarSign = LucideReact.DollarSign;
+const Globe = LucideReact.Globe;
+const Smartphone = LucideReact.Smartphone;
+const Linkedin = LucideReact.Linkedin;
+const Hash = LucideReact.Hash;
+
+/* ─────────────────────────────────────────────────────────────────────────
+   CSS
+───────────────────────────────────────────────────────────────────────── */
+const css = `
+  @import url('https://fonts.cdnfonts.com/css/gambarino');
+  @import url('https://fonts.cdnfonts.com/css/switzer');
+
+  .ac-root *, .ac-root *::before, .ac-root *::after { box-sizing:border-box; margin:0; padding:0; }
+  .ac-root {
+    font-family:'Switzer','DM Sans',sans-serif;
+    background:#070A20; color:#F0F2FF;
+    min-height:100vh; overflow-x:hidden; position:relative;
+  }
+  .ac-root::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 60% 50% at 3% 8%,   rgba(42,47,255,0.16) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 45% at 97% 92%,  rgba(196,0,255,0.11) 0%, transparent 60%);
+  }
+  .ac-inner { position:relative; z-index:1; max-width:1340px; margin:0 auto; padding:2rem 2rem 5rem; }
+
+  /* HEADER */
+  .ac-header { text-align:center; padding:2.5rem 0 3rem; }
+  .ac-wordmark { font-family:'Gambarino',Georgia,serif; font-size:1.1rem; color:rgba(240,242,255,0.38); letter-spacing:0.04em; margin-bottom:1rem; }
+  .ac-wordmark em { font-style:normal; color:#9D4EFF; }
+  .ac-title { font-family:'Gambarino',Georgia,serif; font-size:clamp(2.4rem,5vw,4.8rem); line-height:0.92; }
+  .ac-grd { background:linear-gradient(135deg,#2A2FFF,#9D4EFF,#C400FF); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .ac-sub { font-weight:300; font-size:0.92rem; color:rgba(240,242,255,0.48); margin-top:0.9rem; line-height:1.7; }
+  .ac-chips { display:flex; gap:0.5rem; justify-content:center; flex-wrap:wrap; margin-top:1rem; }
+  .chip { display:inline-flex; align-items:center; gap:0.3rem; padding:0.24rem 0.78rem; border-radius:50px; font-size:0.66rem; letter-spacing:0.1em; text-transform:uppercase; }
+  .cb { background:rgba(42,47,255,0.12); border:1px solid rgba(42,47,255,0.28); color:#8b91ff; }
+  .cp { background:rgba(123,43,255,0.12); border:1px solid rgba(123,43,255,0.28); color:#c084fc; }
+  .cc { background:rgba(0,232,192,0.09); border:1px solid rgba(0,232,192,0.24); color:#00E8C0; }
+  .cm { background:rgba(196,0,255,0.1); border:1px solid rgba(196,0,255,0.25); color:#e879f9; }
+  .cy { background:rgba(255,200,0,0.1); border:1px solid rgba(255,200,0,0.25); color:#fbbf24; }
+
+  /* LAYOUT */
+  .ac-layout { display:grid; grid-template-columns:360px 1fr; gap:1.6rem; align-items:start; }
+  @media(max-width:1050px){ .ac-layout{ grid-template-columns:1fr; } }
+
+  /* DISCLAIMER */
+  .disclaimer { background:rgba(255,200,0,0.06); border:1px solid rgba(255,200,0,0.2); border-radius:14px; padding:0.9rem 1.1rem; margin-bottom:1.2rem; display:flex; gap:0.6rem; align-items:flex-start; }
+  .disclaimer svg { color:#fbbf24; flex-shrink:0; margin-top:0.05rem; }
+  .disclaimer p { font-size:0.75rem; color:rgba(240,242,255,0.55); line-height:1.65; }
+  .disclaimer strong { color:#fbbf24; }
+
+  /* PANEL */
+  .panel { background:rgba(13,16,53,0.82); border:1px solid rgba(123,43,255,0.2); border-radius:20px; padding:1.6rem; backdrop-filter:blur(16px); position:relative; overflow:hidden; margin-bottom:1.2rem; }
+  .panel::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,rgba(157,78,255,0.5),transparent); }
+  .panel-title { font-family:'Gambarino',Georgia,serif; font-size:1.05rem; letter-spacing:0.02em; margin-bottom:1.2rem; display:flex; align-items:center; gap:0.5rem; }
+  .panel-title svg { color:#9D4EFF; }
+  .eyebrow { font-size:0.63rem; font-weight:500; letter-spacing:0.16em; text-transform:uppercase; color:#9D4EFF; margin-bottom:0.45rem; display:block; }
+  .divider { height:1px; background:rgba(123,43,255,0.14); margin:1rem 0; }
+
+  /* INPUTS */
+  .t-input { width:100%; background:rgba(7,10,32,0.8); border:1px solid rgba(123,43,255,0.22); border-radius:11px; padding:0.7rem 1rem; font-family:'Switzer',sans-serif; font-size:0.83rem; color:#F0F2FF; outline:none; resize:none; transition:border-color 0.2s; line-height:1.6; }
+  .t-input:focus { border-color:#9D4EFF; }
+  .t-input::placeholder { color:rgba(240,242,255,0.2); }
+  .t-select { width:100%; background:rgba(7,10,32,0.8); border:1px solid rgba(123,43,255,0.22); border-radius:11px; padding:0.7rem 1rem; font-family:'Switzer',sans-serif; font-size:0.83rem; color:#F0F2FF; outline:none; cursor:pointer; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239D4EFF' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 1rem center; background-size:0.9rem; }
+  .t-select option { background:#0d1035; }
+
+  /* PLATFORM GRID */
+  .plat-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:0.42rem; }
+  .plat { background:rgba(7,10,32,0.6); border:1px solid rgba(123,43,255,0.14); border-radius:10px; padding:0.6rem 0.5rem; text-align:center; cursor:pointer; transition:all 0.2s; font-size:0.7rem; color:rgba(240,242,255,0.48); }
+  .plat:hover { border-color:rgba(123,43,255,0.38); }
+  .plat.on { background:rgba(123,43,255,0.15); border-color:#9D4EFF; color:#F0F2FF; }
+  .plat-ico { font-size:1.2rem; display:block; margin-bottom:0.18rem; }
+
+  /* PILL ROW */
+  .pill-row { display:flex; flex-wrap:wrap; gap:0.38rem; }
+  .pill { background:rgba(255,255,255,0.04); border:1px solid rgba(123,43,255,0.16); border-radius:50px; padding:0.24rem 0.72rem; font-size:0.7rem; color:rgba(240,242,255,0.5); cursor:pointer; transition:all 0.18s; }
+  .pill:hover { border-color:#9D4EFF; color:#F0F2FF; }
+  .pill.on { background:rgba(123,43,255,0.18); border-color:#9D4EFF; color:#F0F2FF; }
+
+  /* BUTTONS */
+  .btn { border:none; cursor:pointer; font-family:'Switzer',sans-serif; font-weight:500; font-size:0.8rem; letter-spacing:0.08em; text-transform:uppercase; border-radius:50px; padding:0.78rem 1.6rem; transition:all 0.22s; display:inline-flex; align-items:center; gap:0.45rem; justify-content:center; }
+  .btn:disabled { opacity:0.35; cursor:not-allowed; }
+  .btn-gen { background:linear-gradient(135deg,#2A2FFF,#7B2BFF,#C400FF); background-size:200%; color:#F0F2FF; width:100%; padding:1rem; font-size:0.88rem; }
+  .btn-gen:hover:not(:disabled) { transform:translateY(-2px); box-shadow:0 14px 38px rgba(123,43,255,0.45); }
+  .btn-gen.running { animation:gradpulse 2s linear infinite; }
+  .btn-ghost { background:transparent; border:1px solid rgba(123,43,255,0.32); color:#9D4EFF; }
+  .btn-ghost:hover:not(:disabled) { background:rgba(123,43,255,0.1); border-color:#9D4EFF; color:#F0F2FF; }
+  .btn-cyan { background:rgba(0,232,192,0.1); border:1px solid rgba(0,232,192,0.28); color:#00E8C0; }
+  .btn-cyan:hover:not(:disabled) { background:rgba(0,232,192,0.18); }
+  .btn-sm { padding:0.35rem 0.9rem; font-size:0.68rem; }
+  @keyframes gradpulse { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+  @keyframes spin { to{transform:rotate(360deg)} }
+  .spin { animation:spin 0.8s linear infinite; }
+
+  /* EMPTY STATE */
+  .out-empty { min-height:480px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.75rem; opacity:0.38; }
+  .out-empty p { font-size:0.83rem; color:rgba(240,242,255,0.5); text-align:center; max-width:260px; line-height:1.65; }
+
+  /* STRATEGY BOX */
+  .strategy-box { background:rgba(42,47,255,0.07); border:1px solid rgba(42,47,255,0.2); border-radius:14px; padding:1.2rem; margin-bottom:1.4rem; }
+  .strategy-box-title { font-size:0.63rem; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:#8b91ff; margin-bottom:0.9rem; display:flex; align-items:center; gap:0.35rem; }
+  .strategy-field { margin-bottom:0.7rem; }
+  .strategy-label { font-size:0.62rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:rgba(240,242,255,0.35); margin-bottom:0.22rem; }
+  .strategy-value { font-size:0.83rem; color:rgba(240,242,255,0.75); line-height:1.65; }
+  .strategy-pills { display:flex; flex-wrap:wrap; gap:0.35rem; margin-top:0.3rem; }
+  .strategy-pill { font-size:0.68rem; padding:0.18rem 0.6rem; border-radius:50px; background:rgba(42,47,255,0.12); border:1px solid rgba(42,47,255,0.22); color:#8b91ff; }
+
+  /* PLATFORM SECTION */
+  .plat-section { margin-bottom:1.5rem; }
+  .plat-section-header { display:flex; align-items:center; justify-content:space-between; padding:0.9rem 1.1rem; background:rgba(7,10,32,0.7); border:1px solid rgba(123,43,255,0.18); border-radius:14px; cursor:pointer; transition:all 0.2s; }
+  .plat-section-header:hover { border-color:rgba(123,43,255,0.35); }
+  .plat-section-header.open { border-radius:14px 14px 0 0; border-bottom-color:transparent; }
+  .plat-section-title { font-family:'Gambarino',Georgia,serif; font-size:1.1rem; display:flex; align-items:center; gap:0.6rem; }
+  .plat-section-title svg { color:#9D4EFF; }
+  .plat-section-body { background:rgba(7,10,32,0.55); border:1px solid rgba(123,43,255,0.18); border-top:none; border-radius:0 0 14px 14px; padding:1.2rem; }
+
+  /* AD CARDS */
+  .ads-list { display:flex; flex-direction:column; gap:0.85rem; }
+  .ad-card { background:rgba(13,16,53,0.8); border:1px solid rgba(123,43,255,0.16); border-radius:14px; overflow:hidden; }
+  .ad-card-head { padding:0.85rem 1.1rem; border-bottom:1px solid rgba(123,43,255,0.1); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.5rem; }
+  .ad-num-badge { font-family:'Gambarino',Georgia,serif; font-size:0.95rem; color:#9D4EFF; background:rgba(123,43,255,0.1); border:1px solid rgba(123,43,255,0.22); border-radius:50px; padding:0.18rem 0.65rem; }
+  .ad-type-badge { font-size:0.62rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; padding:0.18rem 0.6rem; border-radius:50px; background:rgba(0,232,192,0.08); border:1px solid rgba(0,232,192,0.2); color:#00E8C0; }
+  .ad-body { padding:1rem 1.1rem; }
+  .ad-field { margin-bottom:0.7rem; }
+  .ad-field-label { font-size:0.6rem; font-weight:600; letter-spacing:0.13em; text-transform:uppercase; color:rgba(240,242,255,0.35); margin-bottom:0.2rem; }
+  .ad-headline { font-family:'Gambarino',Georgia,serif; font-size:1.1rem; line-height:1.25; color:#F0F2FF; }
+  .ad-body-text { font-size:0.83rem; color:rgba(240,242,255,0.72); line-height:1.72; white-space:pre-wrap; }
+  .ad-cta-badge { display:inline-block; background:rgba(0,232,192,0.08); border:1px solid rgba(0,232,192,0.2); border-radius:50px; padding:0.22rem 0.75rem; font-size:0.75rem; color:#00E8C0; margin-top:0.2rem; }
+  .ad-angle-tag { font-size:0.62rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; padding:0.16rem 0.55rem; border-radius:50px; margin-left:0.4rem; }
+  .ad-angle-curiosity { background:rgba(123,43,255,0.12); border:1px solid rgba(123,43,255,0.24); color:#c084fc; }
+  .ad-angle-pain      { background:rgba(196,0,255,0.1); border:1px solid rgba(196,0,255,0.22); color:#e879f9; }
+  .ad-angle-proof     { background:rgba(0,232,192,0.08); border:1px solid rgba(0,232,192,0.2); color:#00E8C0; }
+  .ad-angle-feature   { background:rgba(42,47,255,0.12); border:1px solid rgba(42,47,255,0.24); color:#8b91ff; }
+  .ad-angle-urgency   { background:rgba(255,200,0,0.1); border:1px solid rgba(255,200,0,0.22); color:#fbbf24; }
+  .ad-actions { padding:0.6rem 1.1rem 0.85rem; display:flex; gap:0.45rem; border-top:1px solid rgba(123,43,255,0.08); }
+
+  /* IMAGE PROMPT */
+  .img-prompt-box { background:rgba(7,10,32,0.85); border:1px solid rgba(196,0,255,0.22); border-radius:13px; padding:1rem 1.1rem; margin-top:1.2rem; }
+  .img-prompt-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:0.65rem; flex-wrap:wrap; gap:0.5rem; }
+  .img-prompt-label { font-size:0.63rem; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:#C400FF; display:flex; align-items:center; gap:0.35rem; }
+  .img-model-tags { display:flex; gap:0.3rem; flex-wrap:wrap; }
+  .img-model-tag { font-size:0.6rem; font-weight:500; padding:0.14rem 0.5rem; border-radius:50px; background:rgba(196,0,255,0.1); border:1px solid rgba(196,0,255,0.22); color:#e879f9; }
+  .img-prompt-text { font-family:'DM Mono','Courier New',monospace; font-size:0.77rem; color:rgba(240,242,255,0.7); line-height:1.72; background:rgba(0,0,0,0.3); border-radius:8px; padding:0.7rem 0.85rem; white-space:pre-wrap; word-break:break-word; margin-bottom:0.6rem; border:1px solid rgba(255,255,255,0.05); }
+
+  /* STEP TRACKER */
+  .step-list { display:flex; flex-direction:column; gap:0.4rem; margin:0.9rem 0; }
+  .step-item { display:flex; align-items:center; gap:0.6rem; padding:0.5rem 0.75rem; border-radius:9px; background:rgba(7,10,32,0.6); border:1px solid rgba(123,43,255,0.1); transition:all 0.3s; }
+  .step-item.active { border-color:rgba(157,78,255,0.38); background:rgba(123,43,255,0.1); }
+  .step-item.done { border-color:rgba(0,232,192,0.25); background:rgba(0,232,192,0.05); }
+  .sdot { width:7px; height:7px; border-radius:50%; background:rgba(123,43,255,0.22); flex-shrink:0; }
+  .step-item.active .sdot { background:#9D4EFF; animation:dpulse 1s infinite; }
+  .step-item.done .sdot { background:#00E8C0; }
+  .slabel { font-size:0.74rem; color:rgba(240,242,255,0.4); }
+  .step-item.active .slabel { color:#F0F2FF; }
+  .step-item.done .slabel { color:rgba(0,232,192,0.72); }
+  @keyframes dpulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.3)} }
+
+  /* GATE */
+  .gate-wrap { position:relative; }
+  .gate-preview-badge { display:inline-flex; align-items:center; gap:0.4rem; background:rgba(255,200,0,0.1); border:1px solid rgba(255,200,0,0.25); border-radius:50px; padding:0.22rem 0.75rem; font-size:0.62rem; font-weight:600; letter-spacing:0.13em; text-transform:uppercase; color:#fbbf24; margin-bottom:0.85rem; }
+  .gate-blurred { filter:blur(5px); pointer-events:none; user-select:none; opacity:0.55; overflow:hidden; max-height:320px; }
+  .gate-overlay { position:relative; margin-top:-2rem; background:linear-gradient(to bottom,transparent 0%,rgba(7,10,32,0.97) 28%); border-radius:0 0 20px 20px; padding:2.5rem 1.8rem 2rem; text-align:center; z-index:10; }
+  .gate-overlay-inner { background:linear-gradient(135deg,rgba(13,16,53,0.95),rgba(30,10,55,0.9)); border:1px solid rgba(123,43,255,0.32); border-radius:20px; padding:2rem 1.8rem; position:relative; overflow:hidden; }
+  .gate-overlay-inner::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,#9D4EFF,transparent); }
+  .gate-lock { font-size:1.8rem; margin-bottom:0.6rem; }
+  .gate-title { font-family:'Gambarino',Georgia,serif; font-size:1.35rem; color:#F0F2FF; margin-bottom:0.4rem; }
+  .gate-sub { font-size:0.8rem; color:rgba(240,242,255,0.48); line-height:1.7; margin-bottom:1.4rem; max-width:360px; margin-left:auto; margin-right:auto; }
+  .gate-options { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-bottom:1rem; }
+  @media(max-width:600px){ .gate-options{ grid-template-columns:1fr; } }
+  .gate-opt { padding:1rem; border-radius:14px; cursor:pointer; border:none; font-family:'Switzer',sans-serif; text-align:center; transition:all 0.22s; }
+  .gate-opt-pay { background:linear-gradient(135deg,rgba(42,47,255,0.2),rgba(123,43,255,0.2)); border:1px solid rgba(123,43,255,0.35); }
+  .gate-opt-pay:hover { border-color:#9D4EFF; transform:translateY(-2px); box-shadow:0 10px 30px rgba(123,43,255,0.3); }
+  .gate-opt-month { background:rgba(0,232,192,0.08); border:1px solid rgba(0,232,192,0.22); }
+  .gate-opt-month:hover { background:rgba(0,232,192,0.14); border-color:#00E8C0; transform:translateY(-2px); }
+  .gate-opt-dfy { background:rgba(251,191,36,0.07); border:1px solid rgba(251,191,36,0.22); width:100%; margin-bottom:0.65rem; }
+  .gate-opt-dfy:hover { background:rgba(251,191,36,0.13); border-color:#fbbf24; transform:translateY(-2px); }
+  .gate-opt-price { font-family:'Gambarino',Georgia,serif; font-size:1.5rem; line-height:1; margin-bottom:0.2rem; }
+  .gate-opt-pay .gate-opt-price { background:linear-gradient(135deg,#2A2FFF,#9D4EFF); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .gate-opt-month .gate-opt-price { color:#00E8C0; }
+  .gate-opt-label { font-size:0.7rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.22rem; }
+  .gate-opt-pay .gate-opt-label { color:#9D4EFF; }
+  .gate-opt-month .gate-opt-label { color:#00E8C0; }
+  .gate-opt-desc { font-size:0.72rem; color:rgba(240,242,255,0.45); line-height:1.5; }
+  .gate-divider { display:flex; align-items:center; gap:0.7rem; margin:0.5rem 0; }
+  .gate-divider-line { flex:1; height:1px; background:rgba(123,43,255,0.15); }
+  .gate-divider-text { font-size:0.65rem; color:rgba(240,242,255,0.25); letter-spacing:0.1em; text-transform:uppercase; }
+  .gate-call-btn { width:100%; padding:0.82rem; border-radius:50px; border:1px solid rgba(123,43,255,0.25); background:transparent; color:rgba(240,242,255,0.55); font-family:'Switzer',sans-serif; font-size:0.77rem; font-weight:500; letter-spacing:0.08em; text-transform:uppercase; cursor:pointer; transition:all 0.2s; }
+  .gate-call-btn:hover { background:rgba(123,43,255,0.1); border-color:#9D4EFF; color:#F0F2FF; }
+  .gate-already { font-size:0.68rem; color:rgba(240,242,255,0.22); margin-top:0.75rem; cursor:pointer; transition:color 0.18s; background:none; border:none; font-family:'Switzer',sans-serif; width:100%; }
+  .gate-already:hover { color:rgba(240,242,255,0.5); }
+  .gate-code-row { display:flex; gap:0.45rem; margin-top:0.6rem; }
+  .gate-code-input { flex:1; background:rgba(7,10,32,0.8); border:1px solid rgba(123,43,255,0.22); border-radius:9px; padding:0.5rem 0.8rem; font-size:0.8rem; color:#F0F2FF; outline:none; font-family:'Switzer',sans-serif; }
+  .gate-code-input::placeholder { color:rgba(240,242,255,0.2); }
+  .gate-code-btn { background:rgba(123,43,255,0.18); border:1px solid rgba(123,43,255,0.28); border-radius:9px; padding:0.5rem 0.9rem; font-size:0.7rem; font-weight:500; letter-spacing:0.07em; text-transform:uppercase; color:#9D4EFF; cursor:pointer; font-family:'Switzer',sans-serif; white-space:nowrap; }
+  .gate-code-btn:hover { background:rgba(123,43,255,0.28); color:#F0F2FF; }
+
+  /* TOAST */
+  .toast { position:fixed; bottom:2rem; right:2rem; background:rgba(0,232,192,0.12); border:1px solid rgba(0,232,192,0.32); color:#00E8C0; padding:0.55rem 1rem; border-radius:50px; font-size:0.75rem; font-weight:500; letter-spacing:0.06em; display:flex; align-items:center; gap:0.4rem; animation:slideUp 0.25s ease; z-index:999; }
+  @keyframes slideUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+  .ac-root ::-webkit-scrollbar { width:4px; }
+  .ac-root ::-webkit-scrollbar-thumb { background:rgba(123,43,255,0.3); border-radius:2px; }
+`;
+
+/* ─────────────────────────────────────────────────────────────────────────
+   CONSTANTS
+───────────────────────────────────────────────────────────────────────── */
+const PLATFORMS = [
+  { id:'meta',     icon:'👥', label:'Meta (FB/IG)' },
+  { id:'tiktok',   icon:'🎵', label:'TikTok Ads' },
+  { id:'google',   icon:'🔍', label:'Google Ads' },
+  { id:'linkedin', icon:'💼', label:'LinkedIn Ads' },
+];
+
+const OBJECTIVES = ['Drive Sales / Conversions','Generate Leads','Build Brand Awareness','App Installs','Website Traffic','Retargeting / Warm Audience'];
+const BUDGETS    = ['Under $500/mo','$500–$2,000/mo','$2,000–$5,000/mo','$5,000–$10,000/mo','$10,000+/mo'];
+const AUDIENCES  = ['Cold — never heard of us','Warm — visited site/engaged','Lookalike — similar to customers','Retargeting — past customers'];
+
+const ANGLE_CLASS = { Curiosity:'curiosity', 'Pain Point':'pain', 'Social Proof':'proof', 'Feature/Benefit':'feature', Urgency:'urgency' };
+
+function parseJSON(raw) {
+  try { return JSON.parse(raw.replace(/```json|```/g,'').trim()); }
+  catch { return null; }
+}
+
+function download(content, filename) {
+  const blob = new Blob([content],{type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download=filename; a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   MAIN COMPONENT
+───────────────────────────────────────────────────────────────────────── */
+function ToolzyoAdCopyStudio() {
+  // Inputs
+  const [brandName, setBrandName]   = useState('');
+  const [product, setProduct]       = useState('');
+  const [offer, setOffer]           = useState('');
+  const [audience, setAudience]     = useState('');
+  const [objective, setObjective]   = useState('Drive Sales / Conversions');
+  const [budget, setBudget]         = useState('$500–$2,000/mo');
+  const [audienceTemp, setAudienceTemp] = useState('Cold — never heard of us');
+  const [platforms, setPlatforms]   = useState(['meta','tiktok']);
+  const [industry, setIndustry]     = useState('');
+
+  // Output
+  const [result, setResult]         = useState(null);
+  const [phase, setPhase]           = useState('idle');
+  const [steps, setSteps]           = useState([]);
+  const [expanded, setExpanded]     = useState({});
+  const [copied, setCopied]         = useState('');
+  const [toast, setToast]           = useState('');
+
+  // Gate
+  const [isUnlocked, setIsUnlocked] = useState(
+    typeof window !== 'undefined' && !!localStorage.getItem('tz_access')
+  );
+  const [showCodeEntry, setShowCodeEntry] = useState(false);
+
+  const showToast = msg => { setToast(msg); setTimeout(()=>setToast(''),2200); };
+  const copy = (text, key) => {
+    navigator.clipboard.writeText(text);
+    setCopied(key); showToast('Copied!');
+    setTimeout(()=>setCopied(''),2200);
+  };
+
+  const togglePlat = id => setPlatforms(p => p.includes(id)?p.filter(x=>x!==id):[...p,id]);
+  const toggleExp  = id => setExpanded(p => ({...p,[id]:!p[id]}));
+
+  const unlockAccess = (inputId) => {
+    const code = document.getElementById(inputId)?.value?.trim().toUpperCase();
+    if (code && (code==='TZ2025'||code.length>=8)) {
+      localStorage.setItem('tz_access','1'); setIsUnlocked(true);
+    } else {
+      const el = document.getElementById(inputId);
+      if (el) { el.style.borderColor='rgba(255,80,80,0.5)'; setTimeout(()=>el.style.borderColor='',1500); }
+    }
+  };
+
+  const GateOverlay = ({ codeId }) => (
+    <div className="gate-overlay">
+      <div className="gate-overlay-inner">
+        <div className="gate-lock">🔒</div>
+        <h3 className="gate-title">Your ad copy is ready</h3>
+        <p className="gate-sub">Strategy is visible. Unlock all 5 ads per platform, every image prompt, and the full export.</p>
+        <div className="gate-options">
+          <button className="gate-opt gate-opt-pay" onClick={()=>{ localStorage.setItem('tz_access_session','1'); setIsUnlocked(true); window.open('https://toolzyo.com/checkout?plan=session','_blank'); }}>
+            <div className="gate-opt-label">This Result</div>
+            <div className="gate-opt-price">$57</div>
+            <div className="gate-opt-desc">All ads + image prompts for this session</div>
+          </button>
+          <button className="gate-opt gate-opt-month" onClick={()=>window.open('https://toolzyo.com/checkout?plan=14day','_blank')}>
+            <div className="gate-opt-label">This Tool · 14 Days</div>
+            <div className="gate-opt-price">$127</div>
+            <div className="gate-opt-desc">Unlimited campaigns for 14 days</div>
+          </button>
+        </div>
+        <div className="gate-divider">
+          <div className="gate-divider-line"/>
+          <span className="gate-divider-text">or let us do it for you</span>
+          <div className="gate-divider-line"/>
+        </div>
+        <button className="gate-opt gate-opt-dfy" style={{textAlign:'center'}} onClick={()=>window.open('https://toolzyo.com/#pricing','_blank')}>
+          <div className="gate-opt-label" style={{color:'#fbbf24'}}>⭐ Done-For-You — Strategy Snapshot</div>
+          <div className="gate-opt-price" style={{background:'linear-gradient(135deg,#fbbf24,#f59e0b)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text'}}>$397</div>
+          <div className="gate-opt-desc">Haze writes your full ad campaign — you hand it to your team</div>
+        </button>
+        <button className="gate-call-btn" onClick={()=>window.open('https://toolzyo.com/#start','_blank')}>📅 Book a discovery call first</button>
+        {!showCodeEntry && <button className="gate-already" onClick={()=>setShowCodeEntry(true)}>Already have an access code?</button>}
+        {showCodeEntry && (
+          <div className="gate-code-row">
+            <input className="gate-code-input" id={codeId} placeholder="Enter access code" onKeyDown={e=>e.key==='Enter'&&unlockAccess(codeId)}/>
+            <button className="gate-code-btn" onClick={()=>unlockAccess(codeId)}>Unlock</button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  /* ── GENERATE ─────────────────────────────────────────────────────────── */
+  const generate = async () => {
+    if (!brandName.trim() || !product.trim()) return;
+    setPhase('running'); setResult(null); setExpanded({});
+    const platStr = platforms.map(id=>PLATFORMS.find(p=>p.id===id)?.label||id).join(', ');
+    const initSteps = [
+      { id:'strategy', label:'Building ad strategy and audience analysis',   status:'idle' },
+      { id:'copy',     label:`Writing ads for ${platStr}`,                   status:'idle' },
+      { id:'prompts',  label:'Engineering image generation prompts',         status:'idle' },
+    ];
+    setSteps(initSteps);
+    const setS = (id,s) => setSteps(p=>p.map(x=>x.id===id?{...x,status:s}:x));
+
+    try {
+      setS('strategy','active');
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          model:'claude-sonnet-4-20250514', max_tokens:4096,
+          messages:[{ role:'user', content:
+`You are an expert paid advertising strategist and direct response copywriter with deep expertise in Meta Ads, TikTok Ads, Google Ads, and LinkedIn Ads.
+
+IMPORTANT: You are providing ad STRATEGY and COPY only. No campaign setup, no account management, no budget allocation. Just the strategy document and ready-to-use copy that the client can hand to their own media buyer or ad team.
+
+CAMPAIGN BRIEF:
+- Brand: ${brandName}
+- Product/Service: ${product}
+- Offer/USP: ${offer || 'Not specified — infer from product'}
+- Target Audience: ${audience || 'Infer from product/industry'}
+- Audience Temperature: ${audienceTemp}
+- Objective: ${objective}
+- Monthly Budget: ${budget}
+- Platforms: ${platStr}
+- Industry: ${industry || 'General'}
+
+Return ONLY valid JSON:
+{
+  "strategy": {
+    "overview": "2-3 sentence campaign strategy overview",
+    "audienceInsight": "Key insight about who to target and why (2 sentences)",
+    "messagingApproach": "The core messaging angle that will work for this offer (1-2 sentences)",
+    "budgetSplit": "How to split budget across platforms (e.g. 60% Meta, 40% TikTok)",
+    "testingPriority": "Which ad angle to test first and why (1 sentence)",
+    "audienceTargeting": ["targeting suggestion 1","targeting suggestion 2","targeting suggestion 3"],
+    "keyDifferentiators": ["differentiator 1","differentiator 2"]
+  },
+  "platforms": [
+    {
+      "platform": "Meta (FB/IG)",
+      "platformIcon": "👥",
+      "adFormat": "Single Image / Video Ad",
+      "specs": "1080x1080 or 1080x1920 · Primary text 125 chars · Headline 40 chars",
+      "strategicNote": "1 sentence on why this platform and format for this specific offer",
+      "ads": [
+        {
+          "num": 1,
+          "angle": "Curiosity",
+          "adType": "Awareness / Top of Funnel",
+          "headline": "Compelling headline max 8 words",
+          "primaryText": "Ad body copy (80-120 words). Hook first line. Speak to pain/desire. Build desire. Include offer. End with CTA direction.",
+          "cta": "CTA button text (2-4 words)",
+          "whyItWorks": "1 sentence on the psychology behind this ad"
+        },
+        { "num": 2, "angle": "Pain Point", ... },
+        { "num": 3, "angle": "Social Proof", ... },
+        { "num": 4, "angle": "Feature/Benefit", ... },
+        { "num": 5, "angle": "Urgency", ... }
+      ],
+      "imagePrompt": "Full Midjourney/Leonardo AI prompt for the hero visual. Match brand and offer. Professional, conversion-optimized. No text in image. --ar 1:1 --v 6 --style raw"
+    }
+  ]
+}
+
+Generate ads ONLY for the platforms selected: ${platStr}. Make every ad meaningfully different in angle and copy. Write in direct response style — specific, benefit-driven, zero fluff. Every headline must stop the scroll.`
+          }]
+        })
+      });
+
+      const data = await res.json();
+      const parsed = parseJSON(data.content?.[0]?.text||'{}');
+      setS('strategy','done'); setS('copy','active');
+      await new Promise(r=>setTimeout(r,300));
+      setS('copy','done'); setS('prompts','active');
+      await new Promise(r=>setTimeout(r,300));
+      setS('prompts','done');
+
+      if (parsed?.strategy && parsed?.platforms) {
+        setResult(parsed);
+        setPhase('done');
+        // Auto-expand first platform
+        if (parsed.platforms?.[0]) setExpanded({[parsed.platforms[0].platform]:true});
+      } else {
+        setPhase('error');
+      }
+    } catch(e) { console.error(e); setPhase('error'); }
+  };
+
+  /* ── EXPORT ───────────────────────────────────────────────────────────── */
+  const exportReport = () => {
+    if (!result) return;
+    const html = `<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>${brandName} — Ad Copy Strategy</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#070A20;color:#F0F2FF;font-family:'DM Sans',sans-serif;font-weight:300;padding:0 0 4rem}
+.wrap{max-width:800px;margin:0 auto;padding:3rem 2rem}
+.logo{font-family:'Syne',sans-serif;font-size:1rem;color:rgba(240,242,255,0.35);letter-spacing:0.08em;margin-bottom:2.5rem;text-align:center}
+.logo em{font-style:normal;color:#9D4EFF}
+header{background:linear-gradient(135deg,rgba(42,47,255,0.15),rgba(123,43,255,0.1));border:1px solid rgba(123,43,255,0.25);border-radius:18px;padding:2rem;margin-bottom:2rem;text-align:center}
+h1{font-family:'Syne',sans-serif;font-size:2rem;font-weight:700;margin-bottom:0.4rem}
+.meta{font-size:0.82rem;color:rgba(240,242,255,0.45)}
+.sec{background:rgba(13,16,53,0.8);border:1px solid rgba(123,43,255,0.18);border-radius:16px;margin-bottom:1.5rem;overflow:hidden}
+.sec-h{padding:1rem 1.4rem;border-bottom:1px solid rgba(123,43,255,0.12);font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;display:flex;align-items:center;gap:0.5rem}
+.sec-b{padding:1.4rem}
+.field{margin-bottom:0.85rem}
+.field-lbl{font-size:0.62rem;font-weight:700;letter-spacing:0.13em;text-transform:uppercase;color:#9D4EFF;margin-bottom:0.3rem}
+.field-val{font-size:0.84rem;color:rgba(240,242,255,0.75);line-height:1.72}
+.pills{display:flex;flex-wrap:wrap;gap:0.35rem;margin-top:0.3rem}
+.pill{font-size:0.68rem;padding:0.18rem 0.6rem;border-radius:50px;background:rgba(123,43,255,0.12);border:1px solid rgba(123,43,255,0.22);color:#c084fc}
+.ad{background:rgba(7,10,32,0.7);border:1px solid rgba(123,43,255,0.15);border-radius:12px;padding:1.1rem;margin-bottom:0.85rem}
+.ad-head{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem}
+.ad-num{font-family:'Syne',sans-serif;font-size:0.8rem;font-weight:700;color:#9D4EFF;background:rgba(123,43,255,0.12);border:1px solid rgba(123,43,255,0.22);border-radius:50px;padding:0.18rem 0.65rem}
+.ad-angle{font-size:0.62rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:0.18rem 0.6rem;border-radius:50px;background:rgba(0,232,192,0.08);border:1px solid rgba(0,232,192,0.2);color:#00E8C0}
+.headline{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:#F0F2FF;margin-bottom:0.5rem}
+.body{font-size:0.82rem;color:rgba(240,242,255,0.7);line-height:1.75;white-space:pre-wrap;margin-bottom:0.5rem}
+.cta{display:inline-block;background:rgba(0,232,192,0.08);border:1px solid rgba(0,232,192,0.2);border-radius:50px;padding:0.2rem 0.7rem;font-size:0.74rem;color:#00E8C0}
+.img-prompt{background:rgba(7,10,32,0.8);border:1px solid rgba(196,0,255,0.2);border-radius:12px;padding:1rem;margin-top:1.2rem}
+.img-lbl{font-size:0.62rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#C400FF;margin-bottom:0.5rem}
+.img-text{font-family:monospace;font-size:0.75rem;color:rgba(240,242,255,0.65);line-height:1.7;white-space:pre-wrap}
+.disclaimer{text-align:center;margin-top:3rem;padding:1.2rem;background:rgba(255,200,0,0.05);border:1px solid rgba(255,200,0,0.15);border-radius:12px;font-size:0.75rem;color:rgba(240,242,255,0.4);line-height:1.7}
+.disclaimer strong{color:#fbbf24}
+footer{text-align:center;margin-top:2rem;font-size:0.72rem;color:rgba(240,242,255,0.2)}
+</style></head><body><div class="wrap">
+<div class="logo">Toolzyo<em>.</em> Ad Copy Studio</div>
+<header>
+  <h1>${brandName}</h1>
+  <p class="meta">${product} · ${objective} · ${platforms.map(id=>PLATFORMS.find(p=>p.id===id)?.label||id).join(', ')}</p>
+</header>
+<div class="sec">
+  <div class="sec-h">📊 Campaign Strategy</div>
+  <div class="sec-b">
+    <div class="field"><div class="field-lbl">Overview</div><div class="field-val">${result.strategy.overview}</div></div>
+    <div class="field"><div class="field-lbl">Audience Insight</div><div class="field-val">${result.strategy.audienceInsight}</div></div>
+    <div class="field"><div class="field-lbl">Messaging Approach</div><div class="field-val">${result.strategy.messagingApproach}</div></div>
+    <div class="field"><div class="field-lbl">Budget Split</div><div class="field-val">${result.strategy.budgetSplit}</div></div>
+    <div class="field"><div class="field-lbl">Test First</div><div class="field-val">${result.strategy.testingPriority}</div></div>
+    <div class="field"><div class="field-lbl">Targeting Suggestions</div><div class="pills">${(result.strategy.audienceTargeting||[]).map(t=>`<span class="pill">${t}</span>`).join('')}</div></div>
+  </div>
+</div>
+${(result.platforms||[]).map(plat=>`
+<div class="sec">
+  <div class="sec-h">${plat.platformIcon} ${plat.platform} — ${plat.adFormat}</div>
+  <div class="sec-b">
+    <div class="field"><div class="field-lbl">Specs</div><div class="field-val">${plat.specs}</div></div>
+    <div class="field"><div class="field-lbl">Strategic Note</div><div class="field-val">${plat.strategicNote}</div></div>
+    ${(plat.ads||[]).map(ad=>`
+    <div class="ad">
+      <div class="ad-head"><span class="ad-num">Ad ${ad.num}</span><span class="ad-angle">${ad.angle}</span></div>
+      <div class="headline">${ad.headline}</div>
+      <div class="body">${ad.primaryText}</div>
+      <span class="cta">${ad.cta}</span>
+    </div>`).join('')}
+    <div class="img-prompt"><div class="img-lbl">🎨 Image Prompt — Midjourney / Leonardo AI / Flux</div><div class="img-text">${plat.imagePrompt}</div></div>
+  </div>
+</div>`).join('')}
+<div class="disclaimer">
+  <strong>⚠️ For strategy and copy use only.</strong><br/>
+  This document provides ad strategy and copy recommendations. No ad accounts, budgets, or campaigns are set up or managed by Toolzyo. Hand this to your media buyer, ad manager, or internal team for implementation.
+</div>
+<footer>Generated by Toolzyo Ad Copy Studio — toolzyo.com</footer>
+</div></body></html>`;
+
+    download(html, `${brandName.replace(/\s+/g,'-').toLowerCase()}-ad-strategy.html`);
+  };
+
+  const isRunning = phase === 'running';
+
+  /* ── RENDER ─────────────────────────────────────────────────────────────── */
+  return (
+    <>
+      <style>{css}</style>
+      <div className="ac-root">
+        <div className="ac-inner">
+
+          {/* HEADER */}
+          <div className="ac-header">
+            <div className="ac-wordmark">Toolzyo<em>.</em></div>
+            <h1 className="ac-title">Ad Copy<br/><span className="ac-grd">Studio</span></h1>
+            <p className="ac-sub">Paid ad strategy + 5 ready-to-run ads per platform — for Meta, TikTok, Google & LinkedIn. No ad account access. No budget handling. Just the strategy and copy.</p>
+            <div className="ac-chips">
+              <span className="chip cb"><BarChart2 size={10}/> Ad Strategy</span>
+              <span className="chip cp"><FileText size={10}/> 5 Ads Per Platform</span>
+              <span className="chip cc"><Image size={10}/> Image Gen Prompts</span>
+              <span className="chip cy"><DollarSign size={10}/> No Account Access</span>
+            </div>
+          </div>
+
+          <div className="ac-layout">
+            {/* ── LEFT ── */}
+            <div>
+              <div className="disclaimer">
+                <AlertCircle size={14}/>
+                <p><strong>Strategy + copy only.</strong> This tool writes your ad strategy and copy. No ad accounts, no budget management, no campaign setup — ever. Hand the output to your team or media buyer.</p>
+              </div>
+
+              <div className="panel">
+                <p className="panel-title"><FileText size={15}/> Campaign Brief</p>
+                <span className="eyebrow">Brand Name *</span>
+                <input className="t-input" placeholder="e.g. Toolzyo Studio" value={brandName} onChange={e=>setBrandName(e.target.value)}/>
+                <div style={{marginTop:'0.75rem'}}>
+                  <span className="eyebrow">Product / Service *</span>
+                  <input className="t-input" placeholder="e.g. AI-powered social media content calendars" value={product} onChange={e=>setProduct(e.target.value)}/>
+                </div>
+                <div style={{marginTop:'0.75rem'}}>
+                  <span className="eyebrow">Offer / USP</span>
+                  <textarea className="t-input" rows={2} placeholder="e.g. First 30-day calendar free, then $97/mo. No contracts." value={offer} onChange={e=>setOffer(e.target.value)}/>
+                </div>
+                <div style={{marginTop:'0.75rem'}}>
+                  <span className="eyebrow">Target Audience</span>
+                  <input className="t-input" placeholder="e.g. Small business owners aged 25-45 wanting more online visibility" value={audience} onChange={e=>setAudience(e.target.value)}/>
+                </div>
+                <div style={{marginTop:'0.75rem'}}>
+                  <span className="eyebrow">Industry</span>
+                  <input className="t-input" placeholder="e.g. Creator Economy, SaaS, eCommerce..." value={industry} onChange={e=>setIndustry(e.target.value)}/>
+                </div>
+              </div>
+
+              <div className="panel">
+                <p className="panel-title"><Target size={15}/> Campaign Settings</p>
+                <span className="eyebrow">Objective</span>
+                <select className="t-select" value={objective} onChange={e=>setObjective(e.target.value)}>
+                  {OBJECTIVES.map(o=><option key={o}>{o}</option>)}
+                </select>
+                <div style={{marginTop:'0.75rem'}}>
+                  <span className="eyebrow">Monthly Budget Range</span>
+                  <select className="t-select" value={budget} onChange={e=>setBudget(e.target.value)}>
+                    {BUDGETS.map(b=><option key={b}>{b}</option>)}
+                  </select>
+                </div>
+                <div style={{marginTop:'0.75rem'}}>
+                  <span className="eyebrow">Audience Temperature</span>
+                  <select className="t-select" value={audienceTemp} onChange={e=>setAudienceTemp(e.target.value)}>
+                    {AUDIENCES.map(a=><option key={a}>{a}</option>)}
+                  </select>
+                </div>
+                <div className="divider"/>
+                <span className="eyebrow">Target Platforms</span>
+                <div className="plat-grid">
+                  {PLATFORMS.map(p=>(
+                    <div key={p.id} className={`plat${platforms.includes(p.id)?' on':''}`} onClick={()=>togglePlat(p.id)}>
+                      <span className="plat-ico">{p.icon}</span>{p.label}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <button className={`btn btn-gen${isRunning?' running':''}`}
+                disabled={isRunning||!brandName.trim()||!product.trim()||!platforms.length}
+                onClick={generate}>
+                {isRunning ? <><Loader size={14} className="spin"/> Building Ad Package...</> : <><Zap size={14}/> Generate Ad Strategy + Copy</>}
+              </button>
+
+              {steps.length > 0 && (
+                <div className="step-list">
+                  {steps.map(s=>(
+                    <div key={s.id} className={`step-item${s.status==='active'?' active':s.status==='done'?' done':''}`}>
+                      <div className="sdot"/>
+                      <span className="slabel">{s.status==='done'?'✓ ':s.status==='active'?'⟳ ':''}{s.label}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* ── RIGHT ── */}
+            <div className="panel" style={{minHeight:520}}>
+              {phase==='idle' && (
+                <div className="out-empty">
+                  <Megaphone size={44} strokeWidth={1} color="#9D4EFF"/>
+                  <p>Fill in your campaign brief and generate a full ad strategy with 5 ads per platform</p>
+                </div>
+              )}
+              {isRunning && !result && (
+                <div className="out-empty">
+                  <Loader size={36} strokeWidth={1} color="#9D4EFF" className="spin"/>
+                  <p>Building your ad strategy and writing copy...</p>
+                </div>
+              )}
+              {phase==='error' && (
+                <div className="out-empty">
+                  <AlertCircle size={34} color="#ff8080"/>
+                  <p style={{color:'#ff8080'}}>Something went wrong. Try again.</p>
+                </div>
+              )}
+
+              {result && (
+                <div className="gate-wrap">
+                  <span className="gate-preview-badge">👁 Sample Preview — Strategy + Ad 1 per platform visible · Ads 2–5 + image prompts locked</span>
+
+                  {/* STRATEGY — always visible */}
+                  <div style={{marginBottom:'1.5rem'}}>
+                    <p style={{fontFamily:"'Gambarino',Georgia,serif",fontSize:'1.1rem',marginBottom:'0.85rem',display:'flex',alignItems:'center',gap:'0.5rem'}}>
+                      <BarChart2 size={16} color="#9D4EFF"/> Campaign Strategy
+                    </p>
+                    <div className="strategy-box">
+                      <p className="strategy-box-title"><Target size={12}/> Ad Strategy Overview</p>
+                      <div className="strategy-field">
+                        <p className="strategy-label">Overview</p>
+                        <p className="strategy-value">{result.strategy.overview}</p>
+                      </div>
+                      <div className="strategy-field">
+                        <p className="strategy-label">Audience Insight</p>
+                        <p className="strategy-value">{result.strategy.audienceInsight}</p>
+                      </div>
+                      <div className="strategy-field">
+                        <p className="strategy-label">Messaging Approach</p>
+                        <p className="strategy-value">{result.strategy.messagingApproach}</p>
+                      </div>
+                      <div className="strategy-field">
+                        <p className="strategy-label">Budget Split</p>
+                        <p className="strategy-value">{result.strategy.budgetSplit}</p>
+                      </div>
+                      <div className="strategy-field">
+                        <p className="strategy-label">Test First</p>
+                        <p className="strategy-value">{result.strategy.testingPriority}</p>
+                      </div>
+                      {result.strategy.audienceTargeting?.length > 0 && (
+                        <div className="strategy-field">
+                          <p className="strategy-label">Targeting Suggestions</p>
+                          <div className="strategy-pills">
+                            {result.strategy.audienceTargeting.map((t,i)=>(
+                              <span key={i} className="strategy-pill">{t}</span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {isUnlocked && (
+                      <div style={{display:'flex',gap:'0.6rem',marginBottom:'1.2rem',flexWrap:'wrap'}}>
+                        <button className="btn btn-cyan btn-sm" onClick={exportReport}><Download size={11}/> Export Full Report</button>
+                        <button className="btn btn-ghost btn-sm" onClick={()=>copy(JSON.stringify(result,null,2),'json')}>{copied==='json'?<Check size={10}/>:<Copy size={10}/>} Copy JSON</button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* ADS PER PLATFORM */}
+                  {(result.platforms||[]).map((plat,pi) => (
+                    <div key={pi} className="plat-section">
+                      <div className={`plat-section-header${expanded[plat.platform]?' open':''}`}
+                        onClick={()=>toggleExp(plat.platform)}>
+                        <span className="plat-section-title">
+                          <span style={{fontSize:'1.3rem'}}>{plat.platformIcon}</span>
+                          {plat.platform}
+                          <span style={{fontSize:'0.7rem',color:'rgba(240,242,255,0.38)',fontFamily:"'Switzer',sans-serif",fontWeight:300}}>{plat.adFormat}</span>
+                        </span>
+                        {expanded[plat.platform] ? <ChevronUp size={15} color="#9D4EFF"/> : <ChevronDown size={15} color="#9D4EFF"/>}
+                      </div>
+
+                      {expanded[plat.platform] && (
+                        <div className="plat-section-body">
+                          <p style={{fontSize:'0.77rem',color:'rgba(240,242,255,0.45)',marginBottom:'0.6rem',lineHeight:1.65,fontStyle:'italic'}}>{plat.strategicNote}</p>
+                          <p style={{fontSize:'0.65rem',color:'rgba(240,242,255,0.28)',marginBottom:'1rem',letterSpacing:'0.08em'}}>{plat.specs}</p>
+
+                          <div className="ads-list">
+                            {/* Ad 1 — always visible */}
+                            {(plat.ads||[]).slice(0,1).map((ad,ai) => (
+                              <div key={ai} className="ad-card">
+                                <div className="ad-card-head">
+                                  <div style={{display:'flex',alignItems:'center',gap:'0.4rem'}}>
+                                    <span className="ad-num-badge">Ad {ad.num}</span>
+                                    <span className={`ad-angle-tag ad-angle-${(ANGLE_CLASS[ad.angle]||'curiosity')}`}>{ad.angle}</span>
+                                    <span style={{fontSize:'0.68rem',color:'rgba(240,242,255,0.3)'}}>{ad.adType}</span>
+                                  </div>
+                                  <button className="btn btn-ghost btn-sm" onClick={()=>copy(`${ad.headline}\n\n${ad.primaryText}\n\nCTA: ${ad.cta}`,`ad${pi}_${ai}`)}>
+                                    {copied===`ad${pi}_${ai}`?<Check size={10}/>:<Copy size={10}/>}
+                                  </button>
+                                </div>
+                                <div className="ad-body">
+                                  <div className="ad-field">
+                                    <p className="ad-field-label">Headline</p>
+                                    <p className="ad-headline">{ad.headline}</p>
+                                  </div>
+                                  <div className="ad-field">
+                                    <p className="ad-field-label">Primary Text / Body</p>
+                                    <p className="ad-body-text">{ad.primaryText}</p>
+                                  </div>
+                                  <div className="ad-field">
+                                    <p className="ad-field-label">CTA</p>
+                                    <span className="ad-cta-badge">{ad.cta}</span>
+                                  </div>
+                                  {ad.whyItWorks && (
+                                    <p style={{fontSize:'0.72rem',color:'rgba(240,242,255,0.35)',marginTop:'0.6rem',fontStyle:'italic',lineHeight:1.6}}>{ad.whyItWorks}</p>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+
+                            {/* Ads 2–5 + image prompt — gated */}
+                            {!isUnlocked && (plat.ads||[]).length > 1 && (
+                              <div className="gate-blurred">
+                                {(plat.ads||[]).slice(1).map((ad,ai)=>(
+                                  <div key={ai} className="ad-card">
+                                    <div className="ad-card-head">
+                                      <span className="ad-num-badge">Ad {ad.num}</span>
+                                      <span className={`ad-angle-tag ad-angle-${(ANGLE_CLASS[ad.angle]||'curiosity')}`}>{ad.angle}</span>
+                                    </div>
+                                    <div className="ad-body">
+                                      <p className="ad-headline">{ad.headline}</p>
+                                      <p className="ad-body-text">{ad.primaryText}</p>
+                                    </div>
+                                  </div>
+                                ))}
+                                {plat.imagePrompt && (
+                                  <div className="img-prompt-box">
+                                    <p className="img-prompt-label">🎨 Image Prompt</p>
+                                    <p className="img-prompt-text">{plat.imagePrompt}</p>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+
+                            {isUnlocked && (plat.ads||[]).slice(1).map((ad,ai)=>(
+                              <div key={ai+1} className="ad-card">
+                                <div className="ad-card-head">
+                                  <div style={{display:'flex',alignItems:'center',gap:'0.4rem'}}>
+                                    <span className="ad-num-badge">Ad {ad.num}</span>
+                                    <span className={`ad-angle-tag ad-angle-${(ANGLE_CLASS[ad.angle]||'curiosity')}`}>{ad.angle}</span>
+                                    <span style={{fontSize:'0.68rem',color:'rgba(240,242,255,0.3)'}}>{ad.adType}</span>
+                                  </div>
+                                  <button className="btn btn-ghost btn-sm" onClick={()=>copy(`${ad.headline}\n\n${ad.primaryText}\n\nCTA: ${ad.cta}`,`ad${pi}_${ai+1}`)}>
+                                    {copied===`ad${pi}_${ai+1}`?<Check size={10}/>:<Copy size={10}/>}
+                                  </button>
+                                </div>
+                                <div className="ad-body">
+                                  <div className="ad-field">
+                                    <p className="ad-field-label">Headline</p>
+                                    <p className="ad-headline">{ad.headline}</p>
+                                  </div>
+                                  <div className="ad-field">
+                                    <p className="ad-field-label">Primary Text / Body</p>
+                                    <p className="ad-body-text">{ad.primaryText}</p>
+                                  </div>
+                                  <div className="ad-field">
+                                    <p className="ad-field-label">CTA</p>
+                                    <span className="ad-cta-badge">{ad.cta}</span>
+                                  </div>
+                                  {ad.whyItWorks && (
+                                    <p style={{fontSize:'0.72rem',color:'rgba(240,242,255,0.35)',marginTop:'0.6rem',fontStyle:'italic',lineHeight:1.6}}>{ad.whyItWorks}</p>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+
+                            {isUnlocked && plat.imagePrompt && (
+                              <div className="img-prompt-box">
+                                <div className="img-prompt-header">
+                                  <span className="img-prompt-label">🎨 Image Generation Prompt</span>
+                                  <div className="img-model-tags">
+                                    <span className="img-model-tag">Midjourney</span>
+                                    <span className="img-model-tag">Leonardo AI</span>
+                                    <span className="img-model-tag">Flux</span>
+                                    <span className="img-model-tag">Grok</span>
+                                  </div>
+                                </div>
+                                <p className="img-prompt-text">{plat.imagePrompt}</p>
+                                <button className="btn btn-ghost btn-sm" onClick={()=>copy(plat.imagePrompt,`img${pi}`)}>
+                                  {copied===`img${pi}`?<Check size={10}/>:<Copy size={10}/>} Copy Prompt
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+
+                  {!isUnlocked && <GateOverlay codeId="adCopyCode"/>}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+      {toast && <div className="toast"><Check size={13}/> {toast}</div>}
+    </>
+  );
+}
+
+
+const container = document.getElementById('root');
+const root = ReactDOM.createRoot(container);
+root.render(React.createElement(ToolzyoAdCopyStudio));
+</script>
+</body>
+</html>

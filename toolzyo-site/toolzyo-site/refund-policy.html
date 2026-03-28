@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Refund & Cancellation Policy — Toolzyo Studio</title>
+<link href="https://fonts.cdnfonts.com/css/gambarino" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/switzer" rel="stylesheet">
+<style>
+  :root {
+    --navy:   #070A20;
+    --navy2:  #0A0D28;
+    --navy3:  #0D1035;
+    --purpv:  #9D4EFF;
+    --purple: #7B2BFF;
+    --royal:  #2A2FFF;
+    --cyan:   #00E8C0;
+    --mag:    #C400FF;
+    --white:  #F0F2FF;
+    --dim:    rgba(240,242,255,0.58);
+    --faint:  rgba(240,242,255,0.22);
+    --border: rgba(123,43,255,0.2);
+    --card:   rgba(13,16,53,0.82);
+    --G: 'Gambarino', Georgia, serif;
+    --S: 'Switzer', 'DM Sans', sans-serif;
+  }
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  html { scroll-behavior:smooth; }
+  body {
+    background:var(--navy); color:var(--white);
+    font-family:var(--S); font-weight:300;
+    overflow-x:hidden; line-height:1.6;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 55% 45% at 2% 5%,  rgba(42,47,255,0.14) 0%, transparent 60%),
+      radial-gradient(ellipse 45% 40% at 98% 95%, rgba(196,0,255,0.09) 0%, transparent 60%);
+  }
+
+  /* NAV */
+  nav {
+    position:fixed; top:0; width:100%; z-index:500;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:1.1rem 4rem;
+    background:rgba(4,5,26,0.85); backdrop-filter:blur(28px);
+    border-bottom:1px solid rgba(123,43,255,0.13);
+  }
+  .nav-logo { font-family:var(--G); font-size:1.7rem; letter-spacing:0.02em; color:var(--white); text-decoration:none; }
+  .nav-logo em { font-style:normal; color:var(--purpv); }
+  .nav-back {
+    display:inline-flex; align-items:center; gap:0.45rem;
+    font-family:var(--S); font-weight:400; font-size:0.82rem;
+    color:var(--dim); text-decoration:none; letter-spacing:0.04em;
+    transition:color 0.2s;
+  }
+  .nav-back:hover { color:var(--white); }
+  .nav-back::before { content:'←'; font-size:1rem; }
+
+  /* HERO */
+  .hero {
+    position:relative; z-index:1;
+    padding:9rem 4rem 5rem;
+    max-width:860px; margin:0 auto;
+    text-align:center;
+  }
+  .hero-eyebrow {
+    display:inline-flex; align-items:center; gap:0.5rem;
+    font-family:var(--S); font-weight:400; font-size:0.72rem;
+    letter-spacing:0.18em; text-transform:uppercase; color:var(--purpv);
+    background:rgba(123,43,255,0.1); border:1px solid rgba(123,43,255,0.25);
+    padding:0.28rem 0.9rem; border-radius:50px; margin-bottom:1.4rem;
+  }
+  .hero h1 {
+    font-family:var(--G); font-size:clamp(2.4rem,5vw,4rem);
+    line-height:1.0; letter-spacing:0.01em; color:var(--white);
+    margin-bottom:1.2rem;
+  }
+  .hero h1 span {
+    background:linear-gradient(135deg,var(--purpv),var(--mag));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  }
+  .hero-sub {
+    font-size:0.95rem; color:var(--dim); line-height:1.8;
+    max-width:560px; margin:0 auto 1rem;
+  }
+  .last-updated {
+    display:inline-block; font-size:0.72rem; color:var(--faint);
+    letter-spacing:0.08em; margin-top:0.4rem;
+  }
+
+  /* CONTENT */
+  .content-wrap {
+    position:relative; z-index:1;
+    max-width:780px; margin:0 auto;
+    padding:0 4rem 6rem;
+  }
+
+  /* DISCLAIMER BANNER */
+  .disclaimer-banner {
+    background:rgba(255,200,0,0.06); border:1px solid rgba(255,200,0,0.2);
+    border-radius:16px; padding:1.3rem 1.5rem; margin-bottom:3rem;
+    display:flex; gap:0.8rem; align-items:flex-start;
+  }
+  .disclaimer-banner .icon { font-size:1.3rem; flex-shrink:0; margin-top:0.1rem; }
+  .disclaimer-banner p { font-size:0.84rem; color:rgba(240,242,255,0.6); line-height:1.75; }
+  .disclaimer-banner strong { color:#fbbf24; font-weight:500; }
+
+  /* SECTION */
+  .policy-section {
+    background:var(--card); border:1px solid var(--border);
+    border-radius:20px; padding:2.2rem; margin-bottom:1.5rem;
+    position:relative; overflow:hidden;
+  }
+  .policy-section::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:1px;
+    background:linear-gradient(90deg,transparent,var(--purpv),transparent);
+  }
+  .section-num {
+    display:inline-flex; align-items:center; justify-content:center;
+    width:32px; height:32px; border-radius:50%;
+    background:linear-gradient(135deg,var(--royal),var(--purple));
+    font-family:var(--G); font-size:1rem; color:var(--white);
+    margin-bottom:1rem; flex-shrink:0;
+  }
+  .section-head { display:flex; align-items:center; gap:0.75rem; margin-bottom:1rem; }
+  .section-title { font-family:var(--G); font-size:1.4rem; letter-spacing:0.01em; }
+  .section-badge {
+    font-family:var(--S); font-size:0.65rem; font-weight:500;
+    letter-spacing:0.1em; text-transform:uppercase;
+    padding:0.22rem 0.75rem; border-radius:50px;
+  }
+  .badge-session  { background:rgba(42,47,255,0.12); border:1px solid rgba(42,47,255,0.26); color:#8b91ff; }
+  .badge-14day    { background:rgba(0,232,192,0.09); border:1px solid rgba(0,232,192,0.22); color:#00E8C0; }
+  .badge-retainer { background:rgba(196,0,255,0.1);  border:1px solid rgba(196,0,255,0.22); color:#e879f9; }
+  .badge-general  { background:rgba(123,43,255,0.12); border:1px solid rgba(123,43,255,0.24); color:#c084fc; }
+  .badge-chargeback { background:rgba(255,80,80,0.1); border:1px solid rgba(255,80,80,0.2); color:#fca5a5; }
+
+  .policy-body {
+    font-size:0.9rem; color:var(--dim); line-height:1.85;
+  }
+  .policy-body p { margin-bottom:0.9rem; }
+  .policy-body p:last-child { margin-bottom:0; }
+  .policy-body strong { color:var(--white); font-weight:500; }
+  .policy-body em { color:var(--purpv); font-style:normal; }
+
+  /* RULE LIST */
+  .rule-list { list-style:none; padding:0; margin:0.8rem 0; display:flex; flex-direction:column; gap:0.6rem; }
+  .rule-list li {
+    display:flex; align-items:flex-start; gap:0.75rem;
+    background:rgba(7,10,32,0.6); border:1px solid rgba(123,43,255,0.14);
+    border-radius:10px; padding:0.75rem 0.9rem;
+    font-size:0.86rem; color:var(--dim); line-height:1.65;
+  }
+  .rule-list li::before {
+    content:''; width:7px; height:7px; border-radius:50%;
+    background:var(--purpv); flex-shrink:0; margin-top:0.42rem;
+  }
+  .rule-list.green li::before { background:var(--cyan); }
+  .rule-list.red li::before { background:#f87171; }
+
+  /* CONDITION BOX */
+  .condition-box {
+    background:rgba(0,232,192,0.05); border:1px solid rgba(0,232,192,0.18);
+    border-radius:12px; padding:1rem 1.1rem; margin:0.9rem 0;
+  }
+  .condition-box-label {
+    font-size:0.63rem; font-weight:600; letter-spacing:0.13em;
+    text-transform:uppercase; color:#00E8C0; margin-bottom:0.5rem;
+  }
+  .condition-box p { font-size:0.84rem; color:rgba(240,242,255,0.7); line-height:1.7; margin:0; }
+
+  /* DIVIDER */
+  .rule-divider { height:1px; background:rgba(123,43,255,0.12); margin:1.2rem 0; }
+
+  /* CONTACT SECTION */
+  .contact-section {
+    background:linear-gradient(135deg,rgba(42,47,255,0.08),rgba(123,43,255,0.08));
+    border:1px solid rgba(123,43,255,0.2); border-radius:20px;
+    padding:2rem; text-align:center; margin-bottom:1.5rem;
+  }
+  .contact-section h3 { font-family:var(--G); font-size:1.4rem; margin-bottom:0.6rem; }
+  .contact-section p { font-size:0.88rem; color:var(--dim); line-height:1.75; margin-bottom:1.2rem; }
+  .contact-email {
+    display:inline-flex; align-items:center; gap:0.5rem;
+    background:rgba(123,43,255,0.12); border:1px solid rgba(123,43,255,0.28);
+    color:var(--purpv); padding:0.65rem 1.4rem; border-radius:50px;
+    font-family:var(--S); font-weight:500; font-size:0.82rem;
+    letter-spacing:0.06em; text-decoration:none; transition:all 0.22s;
+  }
+  .contact-email:hover { background:rgba(123,43,255,0.22); color:var(--white); transform:translateY(-2px); }
+
+  /* FOOTER */
+  footer {
+    position:relative; z-index:1;
+    background:rgba(4,5,26,0.8); border-top:1px solid var(--border);
+    padding:2.5rem 4rem; text-align:center;
+  }
+  .flogo { font-family:var(--G); font-size:1.8rem; letter-spacing:0.02em; margin-bottom:0.4rem; }
+  .flogo em { font-style:normal; color:var(--purpv); }
+  footer p { font-family:var(--S); font-weight:300; color:var(--faint); font-size:0.82rem; }
+  .fnav { display:flex; justify-content:center; gap:2rem; flex-wrap:wrap; margin:1.2rem 0; list-style:none; }
+  .fnav a { font-family:var(--S); font-weight:300; font-size:0.8rem; color:var(--dim); text-decoration:none; transition:color 0.2s; }
+  .fnav a:hover { color:var(--white); }
+  .copy { margin-top:1rem; font-size:0.7rem !important; color:rgba(240,242,255,0.16) !important; }
+
+  @media(max-width:768px){
+    nav { padding:1rem 1.5rem; }
+    .hero { padding:7rem 1.5rem 4rem; }
+    .content-wrap { padding:0 1.5rem 5rem; }
+    footer { padding:2rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">Toolzyo<em>.</em></a>
+  <a href="index.html#about" class="nav-back">Back to Site</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">📋 Legal & Policy</div>
+  <h1>Refund &amp; <span>Cancellation</span> Policy</h1>
+  <p class="hero-sub">We believe in clear, fair terms. Read this before purchasing — so there are no surprises on either side.</p>
+  <span class="last-updated">Last updated: March 2026</span>
+</div>
+
+<!-- CONTENT -->
+<div class="content-wrap">
+
+  <!-- DISCLAIMER -->
+  <div class="disclaimer-banner">
+    <span class="icon">⚠️</span>
+    <p>
+      <strong>Important:</strong> By completing any purchase on Toolzyo Studio — including session access, 14-day tool access, or retainer packages — you confirm that you have read and agreed to this policy. Please review it carefully before purchasing. If you have questions, contact us at <strong>[your@email.com]</strong> before completing your transaction.
+    </p>
+  </div>
+
+  <!-- SECTION 1 -->
+  <div class="policy-section">
+    <div class="section-head">
+      <div class="section-num">1</div>
+      <div>
+        <div class="section-title">One-Time Session Access</div>
+        <span class="section-badge badge-session">$57 · Single Output</span>
+      </div>
+    </div>
+    <div class="policy-body">
+      <p>Session access unlocks a single AI-generated output — the specific result you generated using your personal business information. Because this output is <strong>immediately delivered and personalized to you</strong>, all session-based purchases are <em>final and non-refundable</em> once payment is confirmed and access is granted.</p>
+      <div class="condition-box">
+        <p class="condition-box-label">Why no refunds apply here</p>
+        <p>Before purchasing, every user is shown approximately 30% of their personalized output as a free preview. By choosing to purchase, you have already seen a meaningful portion of your specific result and made an informed decision. This preview-before-payment model means the product has been partially delivered prior to any transaction.</p>
+      </div>
+      <div class="rule-divider"></div>
+      <p><strong>The only exception:</strong> A full refund will be issued if a verified technical failure on our end prevents the output from being delivered to you. Refund requests under this exception must be submitted within <strong>48 hours of purchase</strong> with a description of the technical issue.</p>
+      <ul class="rule-list red">
+        <li>No refunds once output is generated and accessible — regardless of whether you downloaded it</li>
+        <li>No refunds based on a change of mind or dissatisfaction with AI output quality</li>
+        <li>No refunds if you entered incorrect business information that affected the result</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="policy-section">
+    <div class="section-head">
+      <div class="section-num">2</div>
+      <div>
+        <div class="section-title">14-Day Tool Access</div>
+        <span class="section-badge badge-14day">$127 · Single Tool · 14 Days</span>
+      </div>
+    </div>
+    <div class="policy-body">
+      <p>14-day access grants unlimited use of a single Toolzyo tool for a period of 14 calendar days from the time of purchase. A refund may be requested only if <strong>both</strong> of the following conditions are met simultaneously:</p>
+      <ul class="rule-list green">
+        <li>The refund request is submitted within <strong>48 hours</strong> of the original purchase time</li>
+        <li>The tool has been used to generate <strong>2 or fewer outputs</strong> during the access period</li>
+      </ul>
+      <div class="condition-box">
+        <p class="condition-box-label">Once either condition is no longer met, the purchase is final</p>
+        <p>If more than 48 hours have passed since purchase, or if you have generated 3 or more outputs — whichever occurs first — the purchase becomes non-refundable. Both conditions must be true at the time of the refund request for it to be approved.</p>
+      </div>
+      <div class="rule-divider"></div>
+      <ul class="rule-list red">
+        <li>No refunds after 48 hours from purchase, regardless of tool usage</li>
+        <li>No refunds if 3 or more outputs have been generated, regardless of time elapsed</li>
+        <li>Access period begins at time of purchase and cannot be paused or extended</li>
+        <li>Unused days at the end of the 14-day period are not refundable or transferable</li>
+      </ul>
+      <div class="rule-divider"></div>
+      <p>To request a refund under this policy, email <strong>[your@email.com]</strong> with the subject line: <em>"14-Day Access Refund Request"</em> and include your purchase confirmation and the date/time of purchase.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 3 -->
+  <div class="policy-section">
+    <div class="section-head">
+      <div class="section-num">3</div>
+      <div>
+        <div class="section-title">Monthly Retainer Packages</div>
+        <span class="section-badge badge-retainer">$1,200/mo · $2,500/mo</span>
+      </div>
+    </div>
+    <div class="policy-body">
+      <p>Retainer agreements are billed monthly on a rolling cycle. The following terms apply to all active retainer clients:</p>
+
+      <p style="font-weight:500;color:var(--white);margin-top:0.5rem;">Cancellation</p>
+      <ul class="rule-list">
+        <li>Clients may cancel their retainer at any time by providing <strong>30 days written notice</strong> via email to <strong>[your@email.com]</strong></li>
+        <li>No further billing will occur after the 30-day notice period ends</li>
+        <li>Written notice must come from the email address on the account</li>
+        <li>Verbal or social media cancellation requests are not accepted — written email only</li>
+      </ul>
+
+      <div class="rule-divider"></div>
+      <p style="font-weight:500;color:var(--white);">Refunds for the Current Billing Period</p>
+      <ul class="rule-list">
+        <li>The current billing period is <strong>non-refundable</strong> once work for that period has commenced — including research, planning, drafting, or delivery of any deliverable</li>
+        <li>If a client cancels within the first <strong>7 calendar days</strong> of a new billing cycle <em>and</em> no deliverables for that cycle have been initiated, a prorated refund for unused days may be issued at Toolzyo Studio's sole discretion</li>
+        <li>Cancellations on day 8 or later in a billing cycle, or after any deliverable has been started or delivered, will not be eligible for a refund of that period's fee</li>
+      </ul>
+
+      <div class="condition-box">
+        <p class="condition-box-label">What counts as "work commenced"</p>
+        <p>Work is considered commenced as soon as any of the following occurs for the current billing cycle: a content calendar has been initiated, a strategy document has been started, any deliverable has been drafted or delivered, a strategy call has taken place, or any research or planning work has begun on the client's behalf.</p>
+      </div>
+
+      <div class="rule-divider"></div>
+      <p style="font-weight:500;color:var(--white);">Billing Disputes on Retainers</p>
+      <ul class="rule-list red">
+        <li>No refunds will be issued for any billing period in which deliverables have been delivered, started, or scheduled — regardless of client satisfaction with individual deliverables</li>
+        <li>If a client is dissatisfied with a specific deliverable, the remedy is a revision (per the agreed revision policy in the service agreement) — not a refund</li>
+        <li>Retainer fees are not contingent on business results achieved using Toolzyo-delivered content</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SECTION 4 -->
+  <div class="policy-section">
+    <div class="section-head">
+      <div class="section-num">4</div>
+      <div>
+        <div class="section-title">Universal Exceptions</div>
+        <span class="section-badge badge-general">Applies to All Purchases</span>
+      </div>
+    </div>
+    <div class="policy-body">
+      <p>Regardless of the terms above, a full refund will be issued without dispute in the following circumstances:</p>
+      <ul class="rule-list green">
+        <li>Toolzyo Studio fails to deliver the purchased service or output due to our own verified technical error or platform failure</li>
+        <li>A client is charged incorrectly or charged twice due to a billing system malfunction</li>
+        <li>A purchase was made fraudulently using the client's payment method without their knowledge or consent (subject to verification)</li>
+      </ul>
+      <p>These exceptions are initiated by contacting us at <strong>[your@email.com]</strong> within <strong>7 days</strong> of the relevant billing event.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 5 -->
+  <div class="policy-section">
+    <div class="section-head">
+      <div class="section-num">5</div>
+      <div>
+        <div class="section-title">Chargeback & Dispute Policy</div>
+        <span class="section-badge badge-chargeback">Payment Disputes</span>
+      </div>
+    </div>
+    <div class="policy-body">
+      <p>We are committed to resolving any billing issue or concern directly and fairly. Before initiating a chargeback or payment dispute with your bank or payment provider, we require that you <strong>contact us first</strong> and allow us a reasonable opportunity to resolve the matter.</p>
+      <div class="rule-divider"></div>
+      <ul class="rule-list red">
+        <li>Initiating a chargeback without first contacting Toolzyo Studio will result in <strong>immediate suspension</strong> of access to all services, tools, and active retainer deliverables</li>
+        <li>Accounts subject to chargebacks will not be eligible for future access to Toolzyo Studio services</li>
+        <li>Fraudulent or bad-faith chargebacks will be disputed with full documentation of service delivery</li>
+      </ul>
+      <div class="condition-box">
+        <p class="condition-box-label">How to resolve a billing issue the right way</p>
+        <p>Email us at <strong>[your@email.com]</strong> with your order details and a description of the issue. We respond to all billing inquiries within 2 business days and will work with you to reach a fair resolution before any formal dispute process becomes necessary.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 6 -->
+  <div class="policy-section">
+    <div class="section-head">
+      <div class="section-num">6</div>
+      <div>
+        <div class="section-title">Governing Law & Jurisdiction</div>
+        <span class="section-badge badge-general">Legal</span>
+      </div>
+    </div>
+    <div class="policy-body">
+      <p>This policy is governed by the laws of <strong>[Your State], United States</strong>. Any disputes arising from purchases made on Toolzyo Studio that cannot be resolved through direct communication will be subject to binding arbitration in accordance with the terms set out in your service agreement.</p>
+      <p>Customers located in the <strong>European Union</strong> or <strong>United Kingdom</strong> retain any statutory rights afforded to them under applicable consumer protection law, including the EU Digital Content Directive, which may supersede certain provisions of this policy. Nothing in this policy is intended to limit or override those statutory rights.</p>
+      <div class="rule-divider"></div>
+      <p style="font-size:0.82rem;color:rgba(240,242,255,0.4);font-style:italic;line-height:1.75;">
+        This policy was prepared with AI assistance and represents Toolzyo Studio's intended terms. It does not constitute legal advice. Toolzyo Studio recommends that clients seeking clarification on their specific rights consult with a licensed attorney in their jurisdiction.
+      </p>
+    </div>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="contact-section">
+    <h3>Questions about this policy?</h3>
+    <p>Before purchasing, if anything here is unclear — reach out. We'd rather answer a question upfront than have a dispute later.</p>
+    <a href="mailto:[your@email.com]" class="contact-email">✉️ [your@email.com]</a>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="flogo">Toolzyo<em>.</em></div>
+  <p>Human-led. AI-enhanced. Built for brands ready to grow smarter.</p>
+  <ul class="fnav">
+    <li><a href="index.html#services">Services</a></li>
+    <li><a href="index.html#tools">Tools</a></li>
+    <li><a href="index.html#pricing">Pricing</a></li>
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="refund-policy.html">Refund Policy</a></li>
+    <li><a href="index.html#start">Start a Project</a></li>
+  </ul>
+  <p class="copy">© 2026 Toolzyo Studio. All rights reserved.</p>
+</footer>
+
+</body>
+</html>
