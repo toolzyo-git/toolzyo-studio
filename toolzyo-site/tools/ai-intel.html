@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AI Intel Engine — Toolzyo Studio</title>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://unpkg.com/lucide-react@0.383.0/dist/umd/lucide-react.min.js"></script>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:#070A20; }
+  #root { min-height:100vh; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-presets="react">
+const { useState, useRef } = React;
+const Zap = LucideReact.Zap;
+const Sparkles = LucideReact.Sparkles;
+const Search = LucideReact.Search;
+const FileText = LucideReact.FileText;
+const Download = LucideReact.Download;
+const Copy = LucideReact.Copy;
+const Check = LucideReact.Check;
+const Loader = LucideReact.Loader;
+const Rss = LucideReact.Rss;
+const BookOpen = LucideReact.BookOpen;
+const Linkedin = LucideReact.Linkedin;
+const Twitter = LucideReact.Twitter;
+const Mail = LucideReact.Mail;
+const Hash = LucideReact.Hash;
+const Clock = LucideReact.Clock;
+const ExternalLink = LucideReact.ExternalLink;
+const ChevronRight = LucideReact.ChevronRight;
+const AlertCircle = LucideReact.AlertCircle;
+const RefreshCw = LucideReact.RefreshCw;
+const Globe = LucideReact.Globe;
+const Cpu = LucideReact.Cpu;
+const Workflow = LucideReact.Workflow;
+const Layers = LucideReact.Layers;
+const TrendingUp = LucideReact.TrendingUp;
+const Radio = LucideReact.Radio;
+
+const css = `
+  @import url('https://fonts.cdnfonts.com/css/gambarino');
+  @import url('https://fonts.cdnfonts.com/css/switzer');
+
+  .ai-root *, .ai-root *::before, .ai-root *::after { box-sizing:border-box; margin:0; padding:0; }
+  .ai-root {
+    font-family:'Switzer','DM Sans',sans-serif;
+    background:#070A20; color:#F0F2FF;
+    min-height:100vh; overflow-x:hidden; position:relative;
+  }
+  .ai-root::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 55% 50% at 0% 5%,   rgba(42,47,255,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse 45% 40% at 100% 95%, rgba(196,0,255,0.1)  0%, transparent 60%),
+      radial-gradient(ellipse 35% 30% at 50% 50%,  rgba(0,232,192,0.04) 0%, transparent 55%);
+  }
+  .ai-inner { position:relative; z-index:1; max-width:1300px; margin:0 auto; padding:2rem 2rem 5rem; }
+
+  /* HEADER */
+  .ai-header { text-align:center; padding:2.5rem 0 3rem; }
+  .ai-wordmark { font-family:'Gambarino',Georgia,serif; font-size:1.15rem; color:rgba(240,242,255,0.4); letter-spacing:0.04em; margin-bottom:1.2rem; }
+  .ai-wordmark em { font-style:normal; color:#9D4EFF; }
+  .ai-title { font-family:'Gambarino',Georgia,serif; font-size:clamp(2.4rem,5vw,4.8rem); line-height:0.92; }
+  .ai-grd { background:linear-gradient(135deg,#2A2FFF,#9D4EFF,#C400FF); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .ai-sub { font-weight:300; font-size:0.93rem; color:rgba(240,242,255,0.5); margin-top:0.9rem; line-height:1.7; }
+  .ai-chips { display:flex; gap:0.5rem; justify-content:center; flex-wrap:wrap; margin-top:1.1rem; }
+  .chip { display:inline-flex; align-items:center; gap:0.3rem; padding:0.24rem 0.78rem; border-radius:50px; font-size:0.66rem; letter-spacing:0.1em; text-transform:uppercase; }
+  .cb { background:rgba(42,47,255,0.12); border:1px solid rgba(42,47,255,0.28); color:#8b91ff; }
+  .cp { background:rgba(123,43,255,0.12); border:1px solid rgba(123,43,255,0.28); color:#c084fc; }
+  .cc { background:rgba(0,232,192,0.09); border:1px solid rgba(0,232,192,0.24); color:#00E8C0; }
+  .cm { background:rgba(196,0,255,0.1); border:1px solid rgba(196,0,255,0.25); color:#e879f9; }
+
+  /* LAYOUT */
+  .ai-layout { display:grid; grid-template-columns:360px 1fr; gap:1.6rem; align-items:start; }
+  @media(max-width:1020px){ .ai-layout{ grid-template-columns:1fr; } }
+
+  /* PANEL */
+  .panel { background:rgba(13,16,53,0.82); border:1px solid rgba(123,43,255,0.2); border-radius:20px; padding:1.75rem; backdrop-filter:blur(16px); position:relative; overflow:hidden; margin-bottom:1.2rem; }
+  .panel::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,rgba(157,78,255,0.5),transparent); }
+  .panel-title { font-family:'Gambarino',Georgia,serif; font-size:1.05rem; letter-spacing:0.02em; margin-bottom:1.2rem; display:flex; align-items:center; gap:0.5rem; }
+  .panel-title svg { color:#9D4EFF; }
+  .eyebrow { font-size:0.66rem; font-weight:400; letter-spacing:0.16em; text-transform:uppercase; color:#9D4EFF; margin-bottom:0.5rem; display:block; }
+  .divider { height:1px; background:rgba(123,43,255,0.14); margin:1rem 0; }
+
+  /* INPUTS */
+  .t-input { width:100%; background:rgba(7,10,32,0.8); border:1px solid rgba(123,43,255,0.22); border-radius:11px; padding:0.72rem 1rem; font-family:'Switzer',sans-serif; font-size:0.83rem; color:#F0F2FF; outline:none; resize:none; transition:border-color 0.2s; line-height:1.65; }
+  .t-input:focus { border-color:#9D4EFF; }
+  .t-input::placeholder { color:rgba(240,242,255,0.2); }
+
+  /* TOPIC PRESETS */
+  .preset-grid { display:flex; flex-direction:column; gap:0.42rem; }
+  .preset-cat { font-size:0.65rem; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; color:rgba(240,242,255,0.3); margin:0.6rem 0 0.3rem; }
+  .preset-btn { display:flex; align-items:center; gap:0.6rem; padding:0.55rem 0.8rem; border-radius:9px; background:rgba(7,10,32,0.6); border:1px solid rgba(123,43,255,0.14); cursor:pointer; transition:all 0.18s; width:100%; text-align:left; font-family:'Switzer',sans-serif; }
+  .preset-btn:hover { border-color:rgba(123,43,255,0.38); background:rgba(13,16,53,0.8); }
+  .preset-btn.on { border-color:#9D4EFF; background:rgba(123,43,255,0.12); }
+  .preset-ico { width:28px; height:28px; border-radius:7px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .preset-text { }
+  .preset-title { font-size:0.78rem; color:#F0F2FF; line-height:1.2; }
+  .preset-sub { font-size:0.68rem; color:rgba(240,242,255,0.38); margin-top:0.1rem; }
+
+  /* FORMAT TOGGLE */
+  .fmt-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.42rem; }
+  .fmt-btn { padding:0.65rem 0.5rem; border-radius:10px; border:1px solid rgba(123,43,255,0.16); background:rgba(7,10,32,0.6); cursor:pointer; text-align:center; transition:all 0.2s; font-family:'Switzer',sans-serif; font-size:0.72rem; color:rgba(240,242,255,0.48); display:flex; align-items:center; justify-content:center; gap:0.35rem; }
+  .fmt-btn:hover { border-color:rgba(123,43,255,0.38); color:#F0F2FF; }
+  .fmt-btn.on { background:rgba(123,43,255,0.16); border-color:#9D4EFF; color:#F0F2FF; }
+
+  /* BUTTONS */
+  .btn { border:none; cursor:pointer; font-family:'Switzer',sans-serif; font-weight:500; font-size:0.82rem; letter-spacing:0.08em; text-transform:uppercase; border-radius:50px; padding:0.8rem 1.8rem; transition:all 0.22s; display:inline-flex; align-items:center; gap:0.5rem; justify-content:center; }
+  .btn:disabled { opacity:0.35; cursor:not-allowed; }
+  .btn-gen { background:linear-gradient(135deg,#2A2FFF,#7B2BFF,#C400FF); background-size:200% 200%; color:#F0F2FF; width:100%; padding:1rem; font-size:0.88rem; }
+  .btn-gen:hover:not(:disabled) { transform:translateY(-2px); box-shadow:0 16px 42px rgba(123,43,255,0.5); }
+  .btn-gen.running { animation:gradpulse 2s linear infinite; }
+  .btn-ghost { background:transparent; border:1px solid rgba(123,43,255,0.32); color:#9D4EFF; }
+  .btn-ghost:hover:not(:disabled) { background:rgba(123,43,255,0.1); border-color:#9D4EFF; color:#F0F2FF; }
+  .btn-cyan { background:rgba(0,232,192,0.1); border:1px solid rgba(0,232,192,0.28); color:#00E8C0; }
+  .btn-cyan:hover:not(:disabled) { background:rgba(0,232,192,0.18); }
+  .btn-sm { padding:0.38rem 0.95rem; font-size:0.7rem; }
+  @keyframes gradpulse { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+  @keyframes spin { to{transform:rotate(360deg)} }
+  .spin { animation:spin 0.8s linear infinite; }
+
+  /* PROGRESS */
+  .step-list { display:flex; flex-direction:column; gap:0.42rem; margin:1rem 0; }
+  .step-item { display:flex; align-items:center; gap:0.65rem; padding:0.55rem 0.8rem; border-radius:9px; background:rgba(7,10,32,0.6); border:1px solid rgba(123,43,255,0.1); transition:all 0.3s; }
+  .step-item.active { border-color:rgba(157,78,255,0.38); background:rgba(123,43,255,0.1); }
+  .step-item.done { border-color:rgba(0,232,192,0.25); background:rgba(0,232,192,0.05); }
+  .sdot { width:7px; height:7px; border-radius:50%; background:rgba(123,43,255,0.22); flex-shrink:0; }
+  .step-item.active .sdot { background:#9D4EFF; box-shadow:0 0 8px rgba(157,78,255,0.7); animation:dpulse 1s infinite; }
+  .step-item.done .sdot { background:#00E8C0; }
+  .slabel { font-size:0.75rem; color:rgba(240,242,255,0.42); }
+  .step-item.active .slabel { color:#F0F2FF; }
+  .step-item.done .slabel { color:rgba(0,232,192,0.72); }
+  @keyframes dpulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.3)} }
+
+  /* EMPTY */
+  .out-empty { min-height:500px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.75rem; opacity:0.38; }
+  .out-empty p { font-size:0.83rem; color:rgba(240,242,255,0.5); text-align:center; max-width:260px; line-height:1.65; }
+
+  /* OUTPUT TABS */
+  .out-tabs { display:flex; gap:0.3rem; margin-bottom:1.4rem; border-bottom:1px solid rgba(123,43,255,0.14); padding-bottom:0.1rem; flex-wrap:wrap; }
+  .out-tab { font-family:'Switzer',sans-serif; font-size:0.73rem; letter-spacing:0.07em; text-transform:uppercase; color:rgba(240,242,255,0.38); background:transparent; border:none; cursor:pointer; padding:0.52rem 0.88rem; border-radius:7px 7px 0 0; transition:all 0.2s; display:flex; align-items:center; gap:0.35rem; position:relative; white-space:nowrap; }
+  .out-tab:hover { color:rgba(240,242,255,0.7); }
+  .out-tab.on { color:#F0F2FF; }
+  .out-tab.on::after { content:''; position:absolute; bottom:-2px; left:0; right:0; height:2px; background:linear-gradient(90deg,#2A2FFF,#9D4EFF); border-radius:2px; }
+
+  /* EDITORIAL BANNER */
+  .editorial-banner {
+    position:relative; border-radius:16px; overflow:hidden;
+    height:220px; margin-bottom:1.5rem;
+    background:linear-gradient(135deg,#070A20,#0d1035,#1a0a30);
+    border:1px solid rgba(123,43,255,0.25);
+  }
+  .banner-bg-mesh {
+    position:absolute; inset:0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 50%, rgba(42,47,255,0.25) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 85% 30%, rgba(196,0,255,0.2) 0%, transparent 55%),
+      radial-gradient(ellipse 40% 50% at 60% 80%, rgba(0,232,192,0.12) 0%, transparent 50%);
+  }
+  .banner-grid-lines {
+    position:absolute; inset:0; opacity:0.06;
+    background-image: linear-gradient(rgba(240,242,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(240,242,255,0.5) 1px, transparent 1px);
+    background-size:40px 40px;
+  }
+  .banner-content { position:relative; z-index:1; padding:1.8rem 2rem; height:100%; display:flex; flex-direction:column; justify-content:flex-end; }
+  .banner-cat { display:inline-flex; align-items:center; gap:0.35rem; font-size:0.65rem; font-weight:500; letter-spacing:0.14em; text-transform:uppercase; background:rgba(157,78,255,0.2); border:1px solid rgba(157,78,255,0.35); color:#c084fc; padding:0.2rem 0.7rem; border-radius:50px; margin-bottom:0.75rem; width:fit-content; }
+  .banner-title { font-family:'Gambarino',Georgia,serif; font-size:clamp(1.3rem,3vw,2rem); line-height:1.15; color:#F0F2FF; max-width:600px; }
+  .banner-meta-row { display:flex; align-items:center; gap:1rem; margin-top:0.75rem; }
+  .banner-meta-item { display:flex; align-items:center; gap:0.3rem; font-size:0.7rem; color:rgba(240,242,255,0.42); }
+  .banner-dots { position:absolute; top:1.5rem; right:2rem; display:flex; flex-direction:column; gap:4px; opacity:0.15; }
+  .banner-dot-row { display:flex; gap:4px; }
+  .banner-dot { width:4px; height:4px; border-radius:50%; background:#F0F2FF; }
+
+  /* ARTICLE BODY */
+  .article-body {
+    font-size:0.88rem; line-height:1.9; color:rgba(240,242,255,0.78);
+  }
+  .article-body h1, .article-body h2, .article-body h3 {
+    font-family:'Gambarino',Georgia,serif; color:#F0F2FF;
+    margin:1.6rem 0 0.7rem; line-height:1.2;
+  }
+  .article-body h1 { font-size:1.6rem; }
+  .article-body h2 { font-size:1.25rem; border-left:3px solid #9D4EFF; padding-left:0.8rem; }
+  .article-body h3 { font-size:1rem; color:#c084fc; }
+  .article-body p { margin-bottom:1rem; }
+  .article-body strong { color:#F0F2FF; font-weight:600; }
+  .article-body em { color:#c084fc; font-style:normal; font-weight:500; }
+  .article-body ul, .article-body ol { padding-left:1.4rem; margin-bottom:1rem; }
+  .article-body li { margin-bottom:0.45rem; color:rgba(240,242,255,0.72); }
+  .article-body blockquote { border-left:3px solid #00E8C0; padding:0.8rem 1rem; margin:1.2rem 0; background:rgba(0,232,192,0.05); border-radius:0 10px 10px 0; }
+  .article-body blockquote p { color:rgba(240,242,255,0.8); margin:0; font-style:italic; }
+  .article-body a { color:#9D4EFF; text-decoration:none; }
+  .article-body hr { border:none; border-top:1px solid rgba(123,43,255,0.2); margin:1.5rem 0; }
+
+  /* SEO META BOX */
+  .seo-box { background:rgba(7,10,32,0.7); border:1px solid rgba(42,47,255,0.22); border-radius:14px; padding:1.2rem 1.3rem; margin-bottom:1.2rem; }
+  .seo-box-title { font-size:0.67rem; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:#8b91ff; margin-bottom:0.9rem; display:flex; align-items:center; gap:0.35rem; }
+  .seo-field { margin-bottom:0.75rem; }
+  .seo-field-label { font-size:0.63rem; letter-spacing:0.1em; text-transform:uppercase; color:rgba(240,242,255,0.35); margin-bottom:0.25rem; }
+  .seo-field-val { font-size:0.8rem; color:rgba(240,242,255,0.72); line-height:1.6; }
+  .seo-field-val.slug { font-family:monospace; color:#00E8C0; font-size:0.78rem; background:rgba(0,232,192,0.07); padding:0.25rem 0.55rem; border-radius:5px; }
+  .seo-tags { display:flex; flex-wrap:wrap; gap:0.3rem; margin-top:0.3rem; }
+  .seo-tag { font-size:0.68rem; padding:0.15rem 0.55rem; border-radius:50px; background:rgba(123,43,255,0.12); border:1px solid rgba(123,43,255,0.22); color:#c084fc; }
+
+  /* FORMAT-SPECIFIC: THREAD */
+  .thread-posts { display:flex; flex-direction:column; gap:0; }
+  .thread-post { padding:1.1rem 1.2rem; border:1px solid rgba(123,43,255,0.18); border-radius:14px; margin-bottom:0.6rem; background:rgba(7,10,32,0.7); position:relative; }
+  .thread-num { position:absolute; top:0.9rem; right:1rem; font-family:'Gambarino',Georgia,serif; font-size:1.4rem; color:rgba(123,43,255,0.1); line-height:1; }
+  .thread-post-text { font-size:0.85rem; line-height:1.78; color:rgba(240,242,255,0.78); white-space:pre-wrap; }
+  .thread-connector { width:2px; height:14px; background:linear-gradient(to bottom,rgba(123,43,255,0.3),transparent); margin:0 auto -6px; }
+
+  /* FORMAT-SPECIFIC: NEWSLETTER */
+  .newsletter-wrap { background:rgba(7,10,32,0.6); border:1px solid rgba(123,43,255,0.18); border-radius:14px; overflow:hidden; }
+  .newsletter-header { background:linear-gradient(135deg,rgba(42,47,255,0.15),rgba(123,43,255,0.12)); padding:1.2rem 1.5rem; border-bottom:1px solid rgba(123,43,255,0.15); }
+  .newsletter-label { font-size:0.63rem; letter-spacing:0.14em; text-transform:uppercase; color:#8b91ff; margin-bottom:0.3rem; }
+  .newsletter-subject { font-family:'Gambarino',Georgia,serif; font-size:1.1rem; }
+  .newsletter-body { padding:1.4rem 1.5rem; font-size:0.85rem; line-height:1.85; color:rgba(240,242,255,0.75); white-space:pre-wrap; }
+
+  /* EXPORT ROW */
+  .export-bar { display:flex; gap:0.6rem; flex-wrap:wrap; margin-bottom:1.1rem; }
+
+  /* TOAST */
+  .toast { position:fixed; bottom:2rem; right:2rem; background:rgba(0,232,192,0.12); border:1px solid rgba(0,232,192,0.32); color:#00E8C0; padding:0.6rem 1.1rem; border-radius:50px; font-size:0.77rem; font-weight:500; letter-spacing:0.06em; display:flex; align-items:center; gap:0.4rem; animation:slideUp 0.25s ease; z-index:999; }
+  @keyframes slideUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+  .ai-root ::-webkit-scrollbar { width:4px; }
+  .ai-root ::-webkit-scrollbar-thumb { background:rgba(123,43,255,0.3); border-radius:2px; }
+
+  /* IMAGE PROMPT BOX */
+  .img-prompt-box { background:rgba(7,10,32,0.85); border:1px solid rgba(196,0,255,0.22); border-radius:13px; padding:1rem 1.1rem; margin-top:1rem; }
+  .img-prompt-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:0.65rem; flex-wrap:wrap; gap:0.5rem; }
+  .img-prompt-label { font-size:0.63rem; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:#C400FF; display:flex; align-items:center; gap:0.35rem; }
+  .img-prompt-models { display:flex; gap:0.3rem; flex-wrap:wrap; }
+  .img-model-tag { font-size:0.6rem; font-weight:500; letter-spacing:0.08em; padding:0.15rem 0.5rem; border-radius:50px; background:rgba(196,0,255,0.1); border:1px solid rgba(196,0,255,0.22); color:#e879f9; }
+  .img-prompt-text { font-family:'DM Mono','Courier New',monospace; font-size:0.77rem; color:rgba(240,242,255,0.72); line-height:1.72; background:rgba(0,0,0,0.3); border-radius:8px; padding:0.7rem 0.85rem; white-space:pre-wrap; word-break:break-word; margin-bottom:0.65rem; border:1px solid rgba(255,255,255,0.05); }
+  .img-prompt-copy { display:inline-flex; align-items:center; gap:0.3rem; background:rgba(196,0,255,0.12); border:1px solid rgba(196,0,255,0.28); border-radius:50px; padding:0.28rem 0.85rem; font-size:0.68rem; font-weight:500; letter-spacing:0.07em; text-transform:uppercase; color:#e879f9; cursor:pointer; transition:all 0.18s; font-family:'Switzer',sans-serif; }
+  .img-prompt-copy:hover { background:rgba(196,0,255,0.22); color:#F0F2FF; }
+
+  /* ── OUTPUT GATE ── */
+  .gate-wrap { position:relative; }
+  .gate-preview-badge { display:inline-flex; align-items:center; gap:0.4rem; background:rgba(255,200,0,0.1); border:1px solid rgba(255,200,0,0.25); border-radius:50px; padding:0.22rem 0.75rem; font-size:0.62rem; font-weight:600; letter-spacing:0.13em; text-transform:uppercase; color:#fbbf24; margin-bottom:0.85rem; }
+  .gate-visible { position:relative; }
+  .gate-blurred { filter:blur(5px); pointer-events:none; user-select:none; opacity:0.6; overflow:hidden; max-height:340px; }
+  .gate-overlay { position:relative; margin-top:-2rem; background:linear-gradient(to bottom, transparent 0%, rgba(7,10,32,0.97) 28%); border-radius:0 0 20px 20px; padding:2.5rem 1.8rem 2rem; text-align:center; z-index:10; }
+  .gate-overlay-inner { background:linear-gradient(135deg,rgba(13,16,53,0.95),rgba(30,10,55,0.9)); border:1px solid rgba(123,43,255,0.32); border-radius:20px; padding:2rem 1.8rem; position:relative; overflow:hidden; }
+  .gate-overlay-inner::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,#9D4EFF,transparent); }
+  .gate-lock { font-size:1.8rem; margin-bottom:0.6rem; }
+  .gate-title { font-family:'Gambarino',Georgia,serif; font-size:1.35rem; color:#F0F2FF; margin-bottom:0.4rem; line-height:1.2; }
+  .gate-sub { font-size:0.8rem; color:rgba(240,242,255,0.48); line-height:1.7; margin-bottom:1.4rem; max-width:360px; margin-left:auto; margin-right:auto; }
+  .gate-options { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-bottom:1rem; }
+  @media(max-width:600px){ .gate-options{ grid-template-columns:1fr; } }
+  .gate-opt { padding:1rem 1rem; border-radius:14px; cursor:pointer; border:none; font-family:'Switzer','DM Sans',sans-serif; text-align:center; transition:all 0.22s; }
+  .gate-opt-pay { background:linear-gradient(135deg,rgba(42,47,255,0.2),rgba(123,43,255,0.2)); border:1px solid rgba(123,43,255,0.35); }
+  .gate-opt-pay:hover { border-color:#9D4EFF; transform:translateY(-2px); box-shadow:0 10px 30px rgba(123,43,255,0.3); }
+  .gate-opt-month { background:rgba(0,232,192,0.08); border:1px solid rgba(0,232,192,0.22); }
+  .gate-opt-month:hover { background:rgba(0,232,192,0.14); border-color:#00E8C0; transform:translateY(-2px); }
+  .gate-opt-price { font-family:'Gambarino',Georgia,serif; font-size:1.5rem; line-height:1; margin-bottom:0.2rem; }
+  .gate-opt-pay .gate-opt-price { background:linear-gradient(135deg,#2A2FFF,#9D4EFF); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .gate-opt-month .gate-opt-price { color:#00E8C0; }
+  .gate-opt-label { font-size:0.7rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.22rem; }
+  .gate-opt-pay .gate-opt-label { color:#9D4EFF; }
+  .gate-opt-month .gate-opt-label { color:#00E8C0; }
+  .gate-opt-desc { font-size:0.72rem; color:rgba(240,242,255,0.45); line-height:1.5; }
+  .gate-divider { display:flex; align-items:center; gap:0.7rem; margin:0.5rem 0; }
+  .gate-divider-line { flex:1; height:1px; background:rgba(123,43,255,0.15); }
+  .gate-divider-text { font-size:0.65rem; color:rgba(240,242,255,0.25); letter-spacing:0.1em; text-transform:uppercase; }
+  .gate-call-btn { width:100%; padding:0.85rem; border-radius:50px; border:1px solid rgba(123,43,255,0.28); background:transparent; color:rgba(240,242,255,0.6); font-family:'Switzer','DM Sans',sans-serif; font-size:0.78rem; font-weight:500; letter-spacing:0.08em; text-transform:uppercase; cursor:pointer; transition:all 0.2s; }
+  .gate-call-btn:hover { background:rgba(123,43,255,0.1); border-color:#9D4EFF; color:#F0F2FF; }
+  .gate-already { font-size:0.68rem; color:rgba(240,242,255,0.22); margin-top:0.75rem; cursor:pointer; transition:color 0.18s; background:none; border:none; font-family:'Switzer','DM Sans',sans-serif; width:100%; }
+  .gate-already:hover { color:rgba(240,242,255,0.5); }
+  .gate-code-row { display:flex; gap:0.45rem; margin-top:0.6rem; }
+  .gate-code-input { flex:1; background:rgba(7,10,32,0.8); border:1px solid rgba(123,43,255,0.22); border-radius:9px; padding:0.5rem 0.8rem; font-size:0.8rem; color:#F0F2FF; outline:none; font-family:'Switzer','DM Sans',sans-serif; }
+  .gate-code-input::placeholder { color:rgba(240,242,255,0.2); }
+  .gate-code-btn { background:rgba(123,43,255,0.18); border:1px solid rgba(123,43,255,0.28); border-radius:9px; padding:0.5rem 0.9rem; font-size:0.7rem; font-weight:500; letter-spacing:0.07em; text-transform:uppercase; color:#9D4EFF; cursor:pointer; font-family:'Switzer','DM Sans',sans-serif; white-space:nowrap; }
+  .gate-code-btn:hover { background:rgba(123,43,255,0.28); color:#F0F2FF; }
+`;
+
+const PRESETS = [
+  {
+    cat: 'AI Models & LLMs',
+    items: [
+      { icon:'🧠', bg:'rgba(42,47,255,0.18)', title:'Latest LLM Releases', sub:'GPT, Claude, Gemini updates', topic:'The latest large language model releases and what makes each one different — GPT, Claude, Gemini, Llama, and what creators should care about' },
+      { icon:'⚡', bg:'rgba(196,0,255,0.15)', title:'AI Reasoning Models', sub:'o1, R1, thinking models', topic:'AI reasoning models like OpenAI o1, DeepSeek R1 — what chain-of-thought actually means and why it matters for real-world use' },
+      { icon:'🎯', bg:'rgba(0,232,192,0.12)', title:'Prompt Engineering 2025', sub:'What actually works now', topic:'The state of prompt engineering in 2025 — what techniques still work, what is overhyped, and how to get better outputs from any model' },
+    ]
+  },
+  {
+    cat: 'AI Tools & Workflows',
+    items: [
+      { icon:'🔧', bg:'rgba(123,43,255,0.18)', title:'AI Workflow Automation', sub:'n8n, Make, Zapier + AI', topic:'How creators and businesses are automating workflows with AI — n8n, Make, Zapier integrations and what is actually worth building in 2025' },
+      { icon:'🎨', bg:'rgba(255,100,50,0.15)', title:'AI for Content Creation', sub:'Video, image, copy tools', topic:'The best AI tools for content creation in 2025 — video generation, image AI, copywriting tools, and which ones creators are actually using' },
+      { icon:'💼', bg:'rgba(0,168,139,0.15)', title:'AI Agents Are Here', sub:'Autonomous AI in the wild', topic:'The rise of AI agents in 2025 — what they are, what they can actually do autonomously, and how small businesses are using them right now' },
+    ]
+  },
+  {
+    cat: 'Industry & Business',
+    items: [
+      { icon:'📈', bg:'rgba(255,200,0,0.12)', title:'AI Monetization Strategies', sub:'How creators make money with AI', topic:'How creators and entrepreneurs are monetizing AI tools and skills in 2025 — digital products, services, affiliate marketing and what is working' },
+      { icon:'🌐', bg:'rgba(42,47,255,0.15)', title:'Open Source AI Surge', sub:'Why open models are winning', topic:'The open source AI movement in 2025 — why open models like Llama and Mistral are challenging closed models and what it means for the industry' },
+    ]
+  }
+];
+
+const FORMATS = [
+  { id:'blog',       label:'Blog Post',     icon:<BookOpen size={13}/> },
+  { id:'linkedin',   label:'LinkedIn',      icon:<Linkedin size={13}/> },
+  { id:'thread',     label:'X Thread',      icon:<Hash size={13}/> },
+  { id:'newsletter', label:'Newsletter',    icon:<Mail size={13}/> },
+];
+
+function parseJSON(raw) {
+  try { return JSON.parse(raw.replace(/```json|```/g,'').trim()); }
+  catch { return null; }
+}
+
+function readingTime(text) {
+  if (!text) return '—';
+  const words = text.split(/\s+/).length;
+  const mins = Math.max(1, Math.round(words / 200));
+  return `${mins} min read`;
+}
+
+function formatMarkdown(text) {
+  if (!text) return '';
+  return text
+    .replace(/^#{3}\s(.+)$/gm, '<h3>$1</h3>')
+    .replace(/^#{2}\s(.+)$/gm, '<h2>$1</h2>')
+    .replace(/^#{1}\s(.+)$/gm, '<h1>$1</h1>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/^>\s(.+)$/gm, '<blockquote><p>$1</p></blockquote>')
+    .replace(/^---$/gm, '<hr/>')
+    .replace(/^[-*]\s(.+)$/gm, '<li>$1</li>')
+    .replace(/(<li>.*<\/li>\n?)+/g, s => `<ul>${s}</ul>`)
+    .replace(/^\d+\.\s(.+)$/gm, '<li>$1</li>')
+    .replace(/\n{2,}/g, '</p><p>')
+    .replace(/^(?!<[hublp])/gm, '<p>')
+    .replace(/(?<![>])$/gm, '</p>')
+    .replace(/<p><\/p>/g, '')
+    .replace(/<p>(<[hublhr])/g, '$1')
+    .replace(/(<\/[hublhr][^>]*>)<\/p>/g, '$1');
+}
+
+function ToolzyoAIIntel() {
+  const [topic, setTopic]         = useState('');
+
+  const [isUnlocked, setIsUnlocked] = useState(
+    typeof window !== 'undefined' && !!localStorage.getItem('tz_access')
+  );
+  const [showCodeEntry, setShowCodeEntry] = useState(false);
+
+  const unlockAccess = (inputId) => {
+    const code = document.getElementById(inputId)?.value?.trim().toUpperCase();
+    if (code && (code === 'TZ2025' || code.length >= 8)) {
+      localStorage.setItem('tz_access', '1');
+      setIsUnlocked(true);
+    } else {
+      const el = document.getElementById(inputId);
+      if (el) { el.style.borderColor='rgba(255,80,80,0.5)'; setTimeout(()=>el.style.borderColor='',1500); }
+    }
+  };
+
+
+  const [showPaywall, setShowPaywall] = useState(false);
+  const [pendingDownload, setPendingDownload] = useState(null);
+
+  const gatedDownload = (fn) => {
+    if (typeof window !== 'undefined' && localStorage.getItem('tz_access')) { fn(); return; }
+    setPendingDownload(() => fn);
+    setShowPaywall(true);
+  };
+
+  const unlockWithCode = (inputId) => {
+    const code = document.getElementById(inputId)?.value?.trim().toUpperCase();
+    const valid = code && (code === 'TZ2025' || code.length >= 8);
+    if (valid) {
+      localStorage.setItem('tz_access', '1');
+      setShowPaywall(false);
+      if (pendingDownload) { pendingDownload(); setPendingDownload(null); }
+    } else {
+      const el = document.getElementById(inputId);
+      if (el) { el.style.borderColor = 'rgba(255,80,80,0.5)'; setTimeout(()=>el.style.borderColor='',1500); }
+    }
+  };
+
+  const [selectedPreset, setSel]  = useState(null);
+  const [format, setFormat]       = useState('blog');
+  const [audience, setAudience]   = useState('creators and entrepreneurs');
+  const [phase, setPhase]         = useState('idle');
+  const [steps, setSteps]         = useState([]);
+  const [result, setResult]       = useState(null);
+  const [activeTab, setActiveTab] = useState('article');
+  const [copied, setCopied]       = useState('');
+  const [toast, setToast]         = useState('');
+
+  const isRunning = phase === 'running';
+
+  const selectPreset = (preset) => {
+    setSel(preset.title);
+    setTopic(preset.topic);
+  };
+
+  const copy = (text, key) => {
+    navigator.clipboard.writeText(text);
+    setCopied(key); setToast('Copied!');
+    setTimeout(()=>{ setCopied(''); setToast(''); }, 2000);
+  };
+
+  const setStep = (id, s) => setSteps(p => p.map(x => x.id===id ? {...x,status:s} : x));
+
+  const generate = async () => {
+    if (!topic.trim()) return;
+    setPhase('running'); setResult(null);
+
+    const initSteps = [
+      { id:'research', label:'Researching topic — gathering sources & context', status:'idle' },
+      { id:'outline',  label:'Structuring outline & narrative arc',             status:'idle' },
+      { id:'write',    label:`Writing ${format === 'blog' ? 'article' : format === 'linkedin' ? 'LinkedIn post' : format === 'thread' ? 'X thread' : 'newsletter section'}`, status:'idle' },
+      { id:'seo',      label:'Generating SEO metadata & repurposing formats',  status:'idle' },
+    ];
+    setSteps(initSteps);
+    setActiveTab('article');
+
+    try {
+      setStep('research','active');
+
+      // Step 1: Research
+      const resRes = await fetch('https://api.anthropic.com/v1/messages', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          model:'claude-sonnet-4-20250514', max_tokens:1500,
+          messages:[{ role:'user', content:
+`You are a senior AI and tech researcher. Research this topic thoroughly for a Toolzyo AI Intel article.
+
+Topic: ${topic}
+Target Audience: ${audience}
+
+Produce a structured research brief covering:
+1. Core concept overview (what it is, why it matters NOW)
+2. Key developments, releases, or updates (with specifics)
+3. Current debate or controversy in the AI community around this
+4. Real-world applications and who is using it
+5. What's coming next — near-future developments
+6. 3 key data points, stats or quotes that make this feel credible and timely
+
+Keep it tight, factual, and relevant to AI/creator/entrepreneur audience. No fluff.`
+          }]
+        })
+      });
+      const resData = await resRes.json();
+      const research = resData.content?.[0]?.text || '';
+
+      setStep('research','done'); setStep('outline','active');
+      await new Promise(r=>setTimeout(r,200));
+      setStep('outline','done'); setStep('write','active');
+
+      // Step 2: Write full content (all formats in one call)
+      const writeRes = await fetch('https://api.anthropic.com/v1/messages', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          model:'claude-sonnet-4-20250514', max_tokens:3000,
+          messages:[{ role:'user', content:
+`You are the voice of Toolzyo — a sharp, intellectually curious AI authority writing for creators and entrepreneurs who want to stay ahead of AI trends. Your writing is direct, opinionated, occasionally provocative, always insightful. Think: the smart friend who actually understands AI explaining it over coffee, not a textbook.
+
+Topic: ${topic}
+Research brief: ${research}
+Target Audience: ${audience}
+
+Return ONLY valid JSON with this structure:
+
+{
+  "title": "Compelling article title (max 12 words)",
+  "subtitle": "One-line subtitle that expands on the title",
+  "category": "AI Models | AI Tools | Workflows | Industry | Strategy",
+  "readingTime": estimated reading time string,
+  "blogPost": "Full blog post in markdown. 600-900 words. Use ## headers. Start with a strong lede — no 'Introduction' header. Write in Toolzyo's voice: sharp, knowledgeable, opinionated. End with a clear takeaway.",
+  "linkedinPost": "LinkedIn-optimized post. 200-280 words. Start with a bold hook line. Use short punchy paragraphs. End with a question to drive comments. No hashtags.",
+  "xThread": "Tweet thread. 6-8 tweets separated by ---TWEET---. Tweet 1 is the hook. Last tweet is the takeaway + call to follow. Each tweet max 260 chars.",
+  "newsletterSection": "Newsletter section. 180-240 words. Conversational, punchy. Start with a bold subject line prefixed 'SUBJECT:'. Then the section body. End with one actionable insight.",
+  "seoTitle": "SEO-optimized title (55-60 chars)",
+  "metaDescription": "Meta description (145-155 chars)",
+  "slug": "url-friendly-slug",
+  "tags": ["tag1","tag2","tag3","tag4","tag5"],
+  "tldr": "TL;DR in one sentence — the single thing they need to know",
+  "bannerImagePrompt": "A Midjourney-ready image prompt for the article banner. Format exactly like this — subject and scene description, visual style keywords, lighting description, mood, color palette, composition note --ar 16:9 --v 6 --style raw. Make it evocative of the article topic, futuristic/tech aesthetic, no text or logos in the image."
+}`
+          }]
+        })
+      });
+      const writeData = await writeRes.json();
+      const raw = writeData.content?.[0]?.text || '{}';
+      const parsed = parseJSON(raw);
+
+      setStep('write','done'); setStep('seo','active');
+      await new Promise(r=>setTimeout(r,300));
+      setStep('seo','done');
+
+      if (parsed) { setResult(parsed); setPhase('done'); }
+      else setPhase('error');
+    } catch(e) { console.error(e); setPhase('error'); }
+  };
+
+  const getActiveContent = () => {
+    if (!result) return '';
+    switch(format) {
+      case 'blog':       return result.blogPost || '';
+      case 'linkedin':   return result.linkedinPost || '';
+      case 'thread':     return result.xThread || '';
+      case 'newsletter': return result.newsletterSection || '';
+      default: return result.blogPost || '';
+    }
+  };
+
+  const downloadHTML = () => {
+    if (!result) return;
+    const html = buildWebsiteHTML(result);
+    const blob = new Blob([html], {type:'text/html'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href=url; a.download=`${(result.slug||'article')}.html`;
+    a.click(); URL.revokeObjectURL(url);
+  };
+
+  const buildWebsiteHTML = (r) => {
+    const content = (r.blogPost||'')
+      .replace(/^#{2}\s(.+)$/gm, '<h2>$1</h2>')
+      .replace(/^#{3}\s(.+)$/gm, '<h3>$1</h3>')
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\n\n/g, '</p><p>');
+
+    return `<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>${r.seoTitle||r.title}</title>
+<meta name="description" content="${r.metaDescription||r.subtitle}"/>
+<meta property="og:title" content="${r.seoTitle||r.title}"/>
+<meta property="og:description" content="${r.metaDescription||r.subtitle}"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#070A20;color:#F0F2FF;font-family:'DM Sans',sans-serif;font-weight:300;padding:0 0 4rem}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse 60% 50% at 10% 10%,rgba(42,47,255,0.1) 0%,transparent 60%)}
+.wrap{max-width:760px;margin:0 auto;padding:2rem 2rem}
+.logo{font-family:'Syne',sans-serif;font-size:1rem;color:rgba(240,242,255,0.38);letter-spacing:0.08em;text-align:center;padding:2rem 0 2.5rem}
+.logo em{font-style:normal;color:#9D4EFF}
+.banner{position:relative;border-radius:16px;overflow:hidden;height:220px;margin-bottom:2.5rem;background:linear-gradient(135deg,#070A20,#0d1035,#1a0a30);border:1px solid rgba(123,43,255,0.25)}
+.banner::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 20% 50%,rgba(42,47,255,0.25) 0%,transparent 60%),radial-gradient(ellipse 60% 80% at 85% 30%,rgba(196,0,255,0.2) 0%,transparent 55%)}
+.banner-grid{position:absolute;inset:0;opacity:0.06;background-image:linear-gradient(rgba(240,242,255,0.5) 1px,transparent 1px),linear-gradient(90deg,rgba(240,242,255,0.5) 1px,transparent 1px);background-size:40px 40px}
+.banner-c{position:relative;z-index:1;padding:1.8rem 2rem;height:100%;display:flex;flex-direction:column;justify-content:flex-end}
+.b-cat{display:inline-flex;align-items:center;gap:0.35rem;font-size:0.63rem;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;background:rgba(157,78,255,0.2);border:1px solid rgba(157,78,255,0.35);color:#c084fc;padding:0.18rem 0.65rem;border-radius:50px;margin-bottom:0.65rem;width:fit-content}
+.b-title{font-family:'Syne',sans-serif;font-size:clamp(1.3rem,3vw,2rem);line-height:1.15;font-weight:700}
+.b-meta{display:flex;align-items:center;gap:1rem;margin-top:0.65rem;font-size:0.7rem;color:rgba(240,242,255,0.38)}
+.tldr{background:rgba(42,47,255,0.09);border:1px solid rgba(42,47,255,0.22);border-radius:12px;padding:1rem 1.2rem;margin-bottom:2rem}
+.tldr-l{font-size:0.63rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#8b91ff;margin-bottom:0.35rem}
+.tldr-t{font-size:0.88rem;color:rgba(240,242,255,0.78);line-height:1.7}
+article{font-size:0.9rem;line-height:1.9;color:rgba(240,242,255,0.75)}
+article h2{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:700;color:#F0F2FF;margin:2rem 0 0.7rem;border-left:3px solid #9D4EFF;padding-left:0.8rem}
+article h3{font-family:'Syne',sans-serif;font-size:1rem;color:#c084fc;margin:1.4rem 0 0.5rem}
+article p{margin-bottom:1rem}
+article strong{color:#F0F2FF;font-weight:600}
+article ul,article ol{padding-left:1.4rem;margin-bottom:1rem}
+article li{margin-bottom:0.4rem}
+article blockquote{border-left:3px solid #00E8C0;padding:0.8rem 1rem;margin:1.2rem 0;background:rgba(0,232,192,0.05);border-radius:0 10px 10px 0}
+.tags{display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid rgba(123,43,255,0.14)}
+.tag{font-size:0.68rem;padding:0.18rem 0.6rem;border-radius:50px;background:rgba(123,43,255,0.12);border:1px solid rgba(123,43,255,0.22);color:#c084fc}
+.footer{text-align:center;margin-top:3rem;padding-top:1.5rem;border-top:1px solid rgba(123,43,255,0.12);font-size:0.72rem;color:rgba(240,242,255,0.2)}
+</style></head><body>
+<div class="wrap">
+<div class="logo">Toolzyo<em>.</em> AI Intel</div>
+<div class="banner">
+  <div class="banner-grid"></div>
+  <div class="banner-c">
+    <span class="b-cat">★ ${r.category||'AI Intel'}</span>
+    <div class="b-title">${r.title||'AI Intel'}</div>
+    <div class="b-meta">
+      <span>${r.readingTime||'5 min read'}</span>
+      <span>·</span>
+      <span>${new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</span>
+    </div>
+  </div>
+</div>
+${r.tldr ? `<div class="tldr"><div class="tldr-l">TL;DR</div><div class="tldr-t">${r.tldr}</div></div>` : ''}
+<article><p>${content}</p></article>
+<div class="tags">${(r.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+<div class="footer">Toolzyo AI Intel — toolzyo.com</div>
+</div></body></html>`;
+  };
+
+  const threads = result?.xThread ? result.xThread.split('---TWEET---').map(t=>t.trim()).filter(Boolean) : [];
+
+
+  const GateOverlay = ({ codeId }) => (
+    <div className="gate-overlay">
+      <div className="gate-overlay-inner">
+        <div className="gate-lock">🔒</div>
+        <h3 className="gate-title">Your personalized results are ready</h3>
+        <p className="gate-sub">You're seeing a preview based on your inputs. Unlock the full output or book a call to go through it together.</p>
+        <div className="gate-options">
+          <button className="gate-opt gate-opt-pay" onClick={()=>{ localStorage.setItem('tz_access_session','1'); setIsUnlocked(true); window.open('https://toolzyo.com/checkout?plan=session','_blank'); }}>
+            <div className="gate-opt-label">This Result</div>
+            <div className="gate-opt-price">$57</div>
+            <div className="gate-opt-desc">Unlock this full output + all downloads for this session</div>
+          </button>
+          <button className="gate-opt gate-opt-month" onClick={()=>{ window.open('https://toolzyo.com/checkout?plan=14day','_blank'); }}>
+            <div className="gate-opt-label">This Tool · 14 Days</div>
+            <div className="gate-opt-price">$127</div>
+            <div className="gate-opt-desc">Unlimited use of this tool for 14 days · all results unlocked</div>
+          </button>
+        </div>
+        <div className="gate-divider">
+          <div className="gate-divider-line"/>
+          <span className="gate-divider-text">or let us do it for you</span>
+          <div className="gate-divider-line"/>
+        </div>
+        <button className="gate-opt gate-opt-dfy" style={{width:'100%',marginBottom:'0.65rem'}} onClick={()=>window.open('https://toolzyo.com/#pricing','_blank')}>
+          <div className="gate-opt-label" style={{color:'#fbbf24'}}>⭐ Done-For-You — Strategy Snapshot</div>
+          <div className="gate-opt-price" style={{background:'linear-gradient(135deg,#fbbf24,#f59e0b)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text'}}>$397</div>
+          <div className="gate-opt-desc">Haze runs this for your business, delivers the polished report — you do nothing</div>
+        </button>
+        <button className="gate-call-btn" onClick={()=>window.open('https://toolzyo.com/#start','_blank')}>
+          📅 Book a discovery call first — talk through it live
+        </button>
+        {!showCodeEntry && (
+          <button className="gate-already" onClick={()=>setShowCodeEntry(true)}>Already have an access code?</button>
+        )}
+        {showCodeEntry && (
+          <div className="gate-code-row">
+            <input className="gate-code-input" id={codeId} placeholder="Enter access code" onKeyDown={e=>e.key==='Enter'&&unlockAccess(codeId)}/>
+            <button className="gate-code-btn" onClick={()=>unlockAccess(codeId)}>Unlock</button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  return (
+    <>
+      <style>{css}</style>
+      <div className="ai-root">
+        <div className="ai-inner">
+
+          {/* HEADER */}
+          <div className="ai-header">
+            <div className="ai-wordmark">Toolzyo<em>.</em></div>
+            <h1 className="ai-title">AI<br/><span className="ai-grd">Intel</span></h1>
+            <p className="ai-sub">Research any AI topic and instantly get a blog post, LinkedIn article, X thread, and newsletter section — ready to publish</p>
+            <div className="ai-chips">
+              <span className="chip cb"><Globe size={10}/> Deep Research</span>
+              <span className="chip cp"><BookOpen size={10}/> Blog Posts</span>
+              <span className="chip cc"><Rss size={10}/> Website Feed</span>
+              <span className="chip cm"><Hash size={10}/> X Threads</span>
+            </div>
+          </div>
+
+          <div className="ai-layout">
+
+            {/* ── LEFT ──────────────────────────────────────────────────── */}
+            <div>
+              {/* TOPIC INPUT */}
+              <div className="panel">
+                <p className="panel-title"><Search size={16}/> Topic</p>
+                <span className="eyebrow">What should we research?</span>
+                <textarea className="t-input" rows={3}
+                  placeholder="e.g. How AI agents are changing content workflows for creators..."
+                  value={topic} onChange={e=>setTopic(e.target.value)}/>
+                <div className="divider"/>
+                <span className="eyebrow">Target Audience</span>
+                <input className="t-input" type="text"
+                  placeholder="e.g. creators and entrepreneurs"
+                  value={audience} onChange={e=>setAudience(e.target.value)}/>
+              </div>
+
+              {/* FORMAT */}
+              <div className="panel">
+                <p className="panel-title"><FileText size={16}/> Output Format</p>
+                <div className="fmt-grid">
+                  {FORMATS.map(f=>(
+                    <div key={f.id} className={`fmt-btn${format===f.id?' on':''}`} onClick={()=>setFormat(f.id)}>
+                      {f.icon} {f.label}
+                    </div>
+                  ))}
+                </div>
+                <p style={{fontSize:'0.71rem',color:'rgba(240,242,255,0.28)',marginTop:'0.7rem',lineHeight:1.6}}>All 4 formats are generated every time — switch views in the output panel.</p>
+              </div>
+
+              {/* PRESETS */}
+              <div className="panel">
+                <p className="panel-title"><Radio size={16}/> Quick Topics</p>
+                <p style={{fontSize:'0.77rem',color:'rgba(240,242,255,0.42)',marginBottom:'0.8rem',lineHeight:1.6}}>Pre-loaded topics for the AI Intel website feed:</p>
+                <div className="preset-grid">
+                  {PRESETS.map(cat=>(
+                    <div key={cat.cat}>
+                      <p className="preset-cat">{cat.cat}</p>
+                      {cat.items.map(item=>(
+                        <div key={item.title} className={`preset-btn${selectedPreset===item.title?' on':''}`} onClick={()=>selectPreset(item)}>
+                          <div className="preset-ico" style={{background:item.bg}}>{item.icon}</div>
+                          <div className="preset-text">
+                            <p className="preset-title">{item.title}</p>
+                            <p className="preset-sub">{item.sub}</p>
+                          </div>
+                          <ChevronRight size={13} color="rgba(240,242,255,0.25)" style={{marginLeft:'auto',flexShrink:0}}/>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <button className={`btn btn-gen${isRunning?' running':''}`}
+                disabled={isRunning||!topic.trim()}
+                onClick={generate}>
+                {isRunning
+                  ? <><Loader size={15} className="spin"/> Researching & Writing...</>
+                  : <><Zap size={15}/> Generate AI Intel Article</>}
+              </button>
+
+              {steps.length > 0 && (
+                <div className="step-list" style={{marginTop:'1rem'}}>
+                  {steps.map(s=>(
+                    <div key={s.id} className={`step-item${s.status==='active'?' active':s.status==='done'?' done':''}`}>
+                      <div className="sdot"/>
+                      <span className="slabel">{s.status==='done'?'✓ ':s.status==='active'?'⟳ ':''}{s.label}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* ── RIGHT ─────────────────────────────────────────────────── */}
+            <div>
+              <div className="panel" style={{minHeight:520}}>
+
+                {phase==='idle' && (
+                  <div className="out-empty">
+                    <Rss size={44} strokeWidth={1} color="#9D4EFF"/>
+                    <p>Pick a topic preset or type your own — get a full article in all 4 formats</p>
+                  </div>
+                )}
+                {isRunning && !result && (
+                  <div className="out-empty">
+                    <Loader size={38} strokeWidth={1} color="#9D4EFF" className="spin"/>
+                    <p>Researching, outlining, and writing your AI Intel article...</p>
+                  </div>
+                )}
+                {phase==='error' && (
+                  <div className="out-empty">
+                    <AlertCircle size={36} color="#ff8080"/>
+                    <p style={{color:'#ff8080'}}>Something went wrong. Check your topic and try again.</p>
+                  </div>
+                )}
+
+                {result && (
+                  <>
+                    {/* TABS */}
+                    <div className="out-tabs">
+                      <button className={`out-tab${activeTab==='article'?' on':''}`} onClick={()=>setActiveTab('article')}>
+                        <BookOpen size={12}/> Article
+                      </button>
+                      <button className={`out-tab${activeTab==='formats'?' on':''}`} onClick={()=>setActiveTab('formats')}>
+                        <Layers size={12}/> All Formats
+                      </button>
+                      <button className={`out-tab${activeTab==='seo'?' on':''}`} onClick={()=>setActiveTab('seo')}>
+                        <Globe size={12}/> SEO & Meta
+                      </button>
+                    </div>
+
+                    <div className="export-bar">
+                      <button className="btn btn-cyan btn-sm" onClick={()=>gatedDownload(downloadHTML)}>
+                        <Download size={11}/> Export for Website
+                      </button>
+                      <button className="btn btn-ghost btn-sm" onClick={()=>copy(getActiveContent(),'main')}>
+                        {copied==='main'?<Check size={11}/>:<Copy size={11}/>} Copy {FORMATS.find(f=>f.id===format)?.label}
+                      </button>
+                    </div>
+
+                    {/* ARTICLE TAB */}
+                    {activeTab==='article' && (
+                      <div className="gate-wrap">
+                        <span className="gate-preview-badge">👁 Sample Preview — Title & TL;DR visible · Full article locked</span>
+                      <>
+                        {/* Editorial banner */}
+                        <div className="editorial-banner">
+                          <div className="banner-bg-mesh"/>
+                          <div className="banner-grid-lines"/>
+                          <div className="banner-dots">
+                            {[0,1,2,3].map(r=>(
+                              <div key={r} className="banner-dot-row">
+                                {[0,1,2,3,4].map(c=><div key={c} className="banner-dot"/>)}
+                              </div>
+                            ))}
+                          </div>
+                          <div className="banner-content">
+                            <span className="banner-cat"><Star size={10}/> {result.category||'AI Intel'}</span>
+                            <h2 className="banner-title">{result.title}</h2>
+                            <div className="banner-meta-row">
+                              <span className="banner-meta-item"><Clock size={11}/> {result.readingTime||readingTime(result.blogPost)}</span>
+                              <span className="banner-meta-item">·</span>
+                              <span className="banner-meta-item">{new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Banner image prompt */}
+                        {result.bannerImagePrompt && (
+                          <div className="img-prompt-box">
+                            <div className="img-prompt-header">
+                              <span className="img-prompt-label">🎨 Banner Image Prompt</span>
+                              <div className="img-prompt-models">
+                                <span className="img-model-tag">Midjourney</span>
+                                <span className="img-model-tag">DALL-E 3</span>
+                                <span className="img-model-tag">Flux</span>
+                                <span className="img-model-tag">Ideogram</span>
+                              </div>
+                            </div>
+                            <div className="img-prompt-text">{result.bannerImagePrompt}</div>
+                            <div className="img-prompt-copy" onClick={()=>copy(result.bannerImagePrompt,'banner-prompt')}>
+                              {copied==='banner-prompt' ? <Check size={11}/> : <Copy size={11}/>}
+                              {copied==='banner-prompt' ? 'Copied!' : 'Copy Prompt'}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* TL;DR */}
+                        {result.tldr && (
+                          <div style={{background:'rgba(42,47,255,0.08)',border:'1px solid rgba(42,47,255,0.2)',borderRadius:12,padding:'0.9rem 1.1rem',marginBottom:'1.3rem'}}>
+                            <p style={{fontSize:'0.63rem',fontWeight:600,letterSpacing:'0.14em',textTransform:'uppercase',color:'#8b91ff',marginBottom:'0.3rem'}}>TL;DR</p>
+                            <p style={{fontSize:'0.86rem',color:'rgba(240,242,255,0.78)',lineHeight:1.72}}>{result.tldr}</p>
+                          </div>
+                        )}
+
+                        {/* Format switcher */}
+                        <div style={{display:'flex',gap:'0.4rem',marginBottom:'1.1rem',flexWrap:'wrap'}}>
+                          {FORMATS.map(f=>(
+                            <div key={f.id} className={`fmt-btn${format===f.id?' on':''}`} style={{flex:'0 0 auto',padding:'0.38rem 0.8rem',fontSize:'0.7rem'}}
+                              onClick={()=>setFormat(f.id)}>
+                              {f.icon} {f.label}
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Blog post */}
+                        {format==='blog' && (
+                          isUnlocked
+                            ? <div className="article-body" dangerouslySetInnerHTML={{__html: formatMarkdown(result.blogPost||'')}}/>
+                            : <><div className="article-body" dangerouslySetInnerHTML={{__html: formatMarkdown((result.blogPost||'').split('\n\n').slice(0,3).join('\n\n'))}}/><div className="gate-blurred" style={{height:200,background:'rgba(7,10,32,0.4)',borderRadius:12,marginTop:'0.5rem'}}/></>
+                        )}
+                        {/* LinkedIn */}
+                        {format==='linkedin' && (
+                          <div style={{background:'rgba(7,10,32,0.7)',border:'1px solid rgba(10,102,194,0.25)',borderRadius:14,padding:'1.3rem',fontSize:'0.87rem',lineHeight:'1.82',color:'rgba(240,242,255,0.78)',whiteSpace:'pre-wrap'}}>
+                            {result.linkedinPost}
+                          </div>
+                        )}
+                        {/* X Thread */}
+                        {format==='thread' && (
+                          <div className="thread-posts">
+                            {threads.map((t,i)=>(
+                              <div key={i}>
+                                <div className="thread-post">
+                                  <span className="thread-num">{i+1}</span>
+                                  <p className="thread-post-text">{t}</p>
+                                </div>
+                                {i < threads.length-1 && <div className="thread-connector"/>}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        {/* Newsletter */}
+                        {format==='newsletter' && (
+                          <div className="newsletter-wrap">
+                            {result.newsletterSection?.includes('SUBJECT:') && (
+                              <div className="newsletter-header">
+                                <p className="newsletter-label">Subject Line</p>
+                                <p className="newsletter-subject">{result.newsletterSection.split('\n')[0].replace('SUBJECT:','').trim()}</p>
+                              </div>
+                            )}
+                            <div className="newsletter-body">
+                              {result.newsletterSection?.replace(/^SUBJECT:.+\n/, '').trim()}
+                            </div>
+                          </div>
+                        )}
+                      </>
+                      {!isUnlocked && <GateOverlay codeId="intelCode"/>}
+                      </div>
+                    )}
+
+                    {/* ALL FORMATS TAB */}
+                    {activeTab==='formats' && (
+                      <div style={{display:'flex',flexDirection:'column',gap:'1.3rem'}}>
+                        {[
+                          { key:'linkedin', label:'LinkedIn Post', icon:<Linkedin size={13}/>, color:'rgba(10,102,194,0.22)', border:'rgba(10,102,194,0.25)', content: result.linkedinPost },
+                          { key:'thread',   label:'X Thread',     icon:<Hash size={13}/>,     color:'rgba(255,255,255,0.05)', border:'rgba(255,255,255,0.12)', content: threads.join('\n\n---\n\n') },
+                          { key:'newsletter',label:'Newsletter',  icon:<Mail size={13}/>,      color:'rgba(42,47,255,0.1)', border:'rgba(42,47,255,0.22)', content: result.newsletterSection },
+                        ].map(f=>(
+                          <div key={f.key}>
+                            <div style={{display:'flex',alignItems:'center',gap:'0.5rem',marginBottom:'0.6rem'}}>
+                              <p style={{fontSize:'0.67rem',fontWeight:600,letterSpacing:'0.13em',textTransform:'uppercase',color:'#9D4EFF',display:'flex',alignItems:'center',gap:'0.3rem'}}>{f.icon} {f.label}</p>
+                              <button className="btn btn-ghost btn-sm" style={{marginLeft:'auto'}} onClick={()=>copy(f.content||'',f.key)}>
+                                {copied===f.key?<Check size={10}/>:<Copy size={10}/>} Copy
+                              </button>
+                            </div>
+                            <div style={{background:f.color,border:`1px solid ${f.border}`,borderRadius:12,padding:'1rem 1.1rem',fontSize:'0.83rem',lineHeight:'1.78',color:'rgba(240,242,255,0.72)',whiteSpace:'pre-wrap'}}>
+                              {f.content}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* SEO TAB */}
+                    {activeTab==='seo' && (
+                      <div>
+                        <div className="seo-box">
+                          <p className="seo-box-title"><Globe size={12}/> SEO Metadata</p>
+                          <div className="seo-field">
+                            <p className="seo-field-label">SEO Title ({(result.seoTitle||'').length} chars)</p>
+                            <p className="seo-field-val">{result.seoTitle}</p>
+                          </div>
+                          <div className="seo-field">
+                            <p className="seo-field-label">Meta Description ({(result.metaDescription||'').length} chars)</p>
+                            <p className="seo-field-val">{result.metaDescription}</p>
+                          </div>
+                          <div className="seo-field">
+                            <p className="seo-field-label">URL Slug</p>
+                            <p className="seo-field-val slug">/{result.slug}</p>
+                          </div>
+                          <div className="seo-field">
+                            <p className="seo-field-label">Tags</p>
+                            <div className="seo-tags">
+                              {(result.tags||[]).map((t,i)=><span key={i} className="seo-tag">#{t}</span>)}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div style={{background:'rgba(7,10,32,0.6)',border:'1px solid rgba(123,43,255,0.15)',borderRadius:12,padding:'1rem 1.1rem',marginBottom:'1rem'}}>
+                          <p style={{fontSize:'0.66rem',fontWeight:600,letterSpacing:'0.14em',textTransform:'uppercase',color:'#9D4EFF',marginBottom:'0.5rem'}}>Google Preview</p>
+                          <p style={{fontSize:'0.85rem',color:'#8bb8ff',marginBottom:'0.25rem'}}>toolzyo.com/intel/{result.slug}</p>
+                          <p style={{fontSize:'0.88rem',color:'#c084fc',fontWeight:600,marginBottom:'0.22rem'}}>{result.seoTitle}</p>
+                          <p style={{fontSize:'0.8rem',color:'rgba(240,242,255,0.55)',lineHeight:1.6}}>{result.metaDescription}</p>
+                        </div>
+
+                        <div className="export-bar">
+                          <button className="btn btn-cyan btn-sm" onClick={()=>copy(`<title>${result.seoTitle}</title>\n<meta name="description" content="${result.metaDescription}"/>`,'meta')}>
+                            {copied==='meta'?<Check size={11}/>:<Copy size={11}/>} Copy Meta Tags
+                          </button>
+                          <button className="btn btn-ghost btn-sm" onClick={()=>gatedDownload(downloadHTML)}>
+                            <Download size={11}/> Full HTML Page
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {toast && <div className="toast"><Check size={13}/> {toast}</div>}
+
+      {showPaywall && (
+        <div className="pw-overlay" onClick={e=>{ if(e.target===e.currentTarget){ setShowPaywall(false); } }}>
+          <div className="pw-card">
+            <div className="pw-lock">🔒</div>
+            <h2 className="pw-title">Your results are ready to save</h2>
+            <p className="pw-sub">Generate freely — download your personalized output when you're on a package or grab one-time access.</p>
+            <div className="pw-options">
+              <button className="pw-opt pw-opt-primary" onClick={()=>{ setShowPaywall(false); window.open('https://toolzyo.com/#pricing','_blank'); }}>
+                <div className="pw-opt-label">📦 View Packages</div>
+                <div className="pw-opt-text">Content Engine · Full Service · Strategy Snapshot</div>
+                <div className="pw-opt-price">From $397 · Includes unlimited downloads</div>
+              </button>
+              <button className="pw-opt pw-opt-secondary" onClick={()=>{ setShowPaywall(false); window.open('https://toolzyo.com/vault','_blank'); }}>
+                <div className="pw-opt-label">⚡ One-Time Download</div>
+                <div className="pw-opt-text">Pay once, download this result now</div>
+                <div className="pw-opt-price">$9 per export — available in The Vault</div>
+              </button>
+            </div>
+            <div className="pw-divider"/>
+            <p className="pw-code-lbl">Already have access? Enter your code</p>
+            <div className="pw-code-row">
+              <input className="pw-code-input" id="pwCodeInput" placeholder="Access code" type="text" onKeyDown={e=>e.key==='Enter'&&unlockWithCode('pwCodeInput')}/>
+              <button className="pw-code-btn" onClick={()=>unlockWithCode('pwCodeInput')}>Unlock</button>
+            </div>
+            <button className="pw-dismiss" onClick={()=>setShowPaywall(false)}>Continue browsing without downloading</button>
+          </div>
+        </div>
+      )}
+
+    </>
+  );
+}
+
+
+const container = document.getElementById('root');
+const root = ReactDOM.createRoot(container);
+root.render(React.createElement(ToolzyoAIIntel));
+</script>
+</body>
+</html>

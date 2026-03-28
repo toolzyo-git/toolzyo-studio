@@ -1,0 +1,32 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/tools", "destination": "/tools/index.html" },
+    { "source": "/tools/:path*", "destination": "/tools/:path*.html" }
+  ],
+  "redirects": [
+    { "source": "/join", "destination": "/join.html", "permanent": false },
+    { "source": "/refund-policy", "destination": "/refund-policy.html", "permanent": false },
+    { "source": "/vault", "destination": "/vault.html", "permanent": false },
+    { "source": "/intel", "destination": "/intel.html", "permanent": false }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        { "key": "X-XSS-Protection", "value": "1; mode=block" }
+      ]
+    },
+    {
+      "source": "/hero.jpg",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+    },
+    {
+      "source": "/haze.jpg",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+    }
+  ]
+}

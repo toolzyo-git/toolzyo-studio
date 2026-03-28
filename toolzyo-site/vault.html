@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>The Vault — Toolzyo Studio Digital Products</title>
+<link href="https://fonts.cdnfonts.com/css/gambarino" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/switzer" rel="stylesheet">
+<style>
+  :root {
+    --ink:     #04051A;
+    --navy:    #070A20;
+    --navy2:   #0A0D28;
+    --royal:   #2A2FFF;
+    --purple:  #7B2BFF;
+    --purpv:   #9D4EFF;
+    --mag:     #C400FF;
+    --white:   #F0F2FF;
+    --dim:     rgba(240,242,255,0.58);
+    --faint:   rgba(240,242,255,0.22);
+    --card:    rgba(13,16,53,0.82);
+    --border:  rgba(123,43,255,0.2);
+    --borderb: rgba(42,47,255,0.22);
+    --G: 'Gambarino', Georgia, serif;
+    --S: 'Switzer', 'DM Sans', sans-serif;
+  }
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  html { scroll-behavior:smooth; }
+  body { background:var(--navy); color:var(--white); font-family:var(--S); font-weight:300; overflow-x:hidden; line-height:1.6; min-height:100vh; }
+  body::after { content:''; position:fixed; inset:0; pointer-events:none; z-index:998; opacity:0.025; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)'/%3E%3C/svg%3E"); }
+
+  /* NAV */
+  nav { position:fixed; top:0; width:100%; z-index:500; display:flex; align-items:center; justify-content:space-between; padding:1.1rem 4rem; background:rgba(4,5,26,0.8); backdrop-filter:blur(28px); border-bottom:1px solid rgba(123,43,255,0.13); }
+  .nav-logo { font-family:var(--G); font-size:1.7rem; letter-spacing:0.02em; color:var(--white); text-decoration:none; }
+  .nav-logo em { font-style:normal; color:var(--purpv); }
+  .nav-back { display:inline-flex; align-items:center; gap:0.5rem; font-family:var(--S); font-weight:400; font-size:0.8rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--dim); text-decoration:none; transition:color 0.2s; }
+  .nav-back:hover { color:var(--white); }
+  .nav-cta { background:linear-gradient(135deg,var(--royal),var(--purple)); color:var(--white); padding:0.55rem 1.5rem; border-radius:50px; font-family:var(--S); font-weight:500; font-size:0.8rem; letter-spacing:0.08em; text-transform:uppercase; text-decoration:none; transition:all 0.25s; }
+  .nav-cta:hover { transform:translateY(-1px); box-shadow:0 8px 28px rgba(123,43,255,0.45); }
+
+  /* PAGE HEADER */
+  .vault-header {
+    padding:10rem 4rem 5rem;
+    text-align:center;
+    position:relative; overflow:hidden;
+  }
+  .vault-header::before {
+    content:''; position:absolute; top:0; left:50%; transform:translateX(-50%);
+    width:800px; height:500px;
+    background:radial-gradient(ellipse at center, rgba(123,43,255,0.15) 0%, transparent 70%);
+    pointer-events:none;
+  }
+  .eyebrow { font-family:var(--S); font-weight:400; font-size:0.72rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--purpv); margin-bottom:1rem; display:flex; align-items:center; justify-content:center; gap:0.6rem; }
+  .vault-header h1 { font-family:var(--G); font-size:clamp(3rem,7vw,6rem); line-height:0.95; letter-spacing:0.01em; color:var(--white); }
+  .vault-header h1 .purp { background:linear-gradient(135deg,var(--purpv),var(--mag)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .vault-header p { font-family:var(--S); font-weight:300; font-size:1rem; color:var(--dim); max-width:520px; margin:1.5rem auto 0; line-height:1.8; }
+  .rule { width:60px; height:2px; margin:1.4rem auto; background:linear-gradient(90deg,var(--royal),var(--purple),var(--mag)); border-radius:2px; }
+
+  /* FILTER TABS */
+  .vault-filters {
+    display:flex; justify-content:center; gap:0.75rem; flex-wrap:wrap;
+    padding:0 4rem 3rem;
+  }
+  .filter-btn {
+    background:rgba(255,255,255,0.03); border:1px solid rgba(123,43,255,0.2);
+    border-radius:50px; padding:0.5rem 1.2rem;
+    font-family:var(--S); font-weight:400; font-size:0.78rem;
+    letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--dim); cursor:pointer; transition:all 0.2s;
+  }
+  .filter-btn:hover, .filter-btn.active {
+    background:rgba(123,43,255,0.12); border-color:var(--purpv); color:var(--white);
+  }
+
+  /* PRODUCT GRID */
+  .vault-grid-wrap { padding:0 4rem 7rem; }
+  .vault-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(260px,1fr));
+    gap:1.5rem;
+    max-width:1200px; margin:0 auto;
+  }
+  .pcard { background:var(--card); border:1px solid var(--border); border-radius:20px; overflow:hidden; transition:all 0.3s; text-decoration:none; color:inherit; display:flex; flex-direction:column; }
+  .pcard:hover { transform:translateY(-6px); border-color:rgba(196,0,255,0.38); box-shadow:0 24px 60px rgba(123,43,255,0.15); }
+  .pthumb { width:100%; aspect-ratio:4/3; background:linear-gradient(135deg,#0a0c30,#150828); display:flex; align-items:center; justify-content:center; font-size:3.5rem; position:relative; overflow:hidden; }
+  .pthumb::after { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(42,47,255,0.07),rgba(196,0,255,0.1)); }
+  .pbody { padding:1.5rem; flex:1; display:flex; flex-direction:column; }
+  .ptype { font-family:var(--S); font-weight:400; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.12em; color:var(--purpv); margin-bottom:0.5rem; }
+  .pbody h3 { font-family:var(--G); font-size:1.2rem; letter-spacing:0.01em; line-height:1.3; margin-bottom:0.6rem; color:var(--white); }
+  .pbody p { font-family:var(--S); font-weight:300; font-size:0.84rem; color:var(--dim); line-height:1.65; flex:1; }
+  .pfoot { display:flex; align-items:center; justify-content:space-between; margin-top:1.4rem; padding-top:1.2rem; border-top:1px solid rgba(123,43,255,0.12); }
+  .pprice { font-family:var(--G); font-size:1.4rem; background:linear-gradient(135deg,var(--royal),var(--purpv)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .pbtn { background:linear-gradient(135deg,var(--purple),var(--mag)); color:var(--white); padding:0.5rem 1.2rem; border-radius:50px; font-family:var(--S); font-weight:500; font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase; transition:all 0.2s; display:inline-block; text-decoration:none; }
+  .pcard:hover .pbtn { background:linear-gradient(135deg,var(--royal),var(--purple)); }
+
+  /* EMPTY STATE */
+  .coming-soon { grid-column:1/-1; text-align:center; padding:4rem 2rem; border:1px dashed rgba(123,43,255,0.18); border-radius:18px; }
+  .coming-soon p { font-family:var(--S); font-weight:300; color:var(--dim); font-size:0.92rem; line-height:1.75; }
+
+  /* FOOTER */
+  footer { background:var(--ink); border-top:1px solid var(--border); padding:3rem 4rem; text-align:center; }
+  .flogo { font-family:var(--G); font-size:2rem; letter-spacing:0.02em; color:var(--white); margin-bottom:0.5rem; }
+  .flogo em { font-style:normal; color:var(--purpv); }
+  footer > p { font-family:var(--S); font-weight:300; color:var(--faint); font-size:0.85rem; }
+  .fnav { display:flex; justify-content:center; gap:2.5rem; flex-wrap:wrap; margin:1.5rem 0; list-style:none; }
+  .fnav a { font-family:var(--S); font-weight:300; font-size:0.82rem; letter-spacing:0.06em; color:var(--dim); text-decoration:none; transition:color 0.2s; }
+  .fnav a:hover { color:var(--white); }
+  .copy { margin-top:1.5rem; font-size:0.72rem !important; color:rgba(240,242,255,0.16) !important; }
+
+  /* ANIMATIONS */
+  .reveal { opacity:0; transform:translateY(30px); transition:opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+
+  /* MOBILE */
+  @media(max-width:768px){
+    nav { padding:1rem 1.5rem; }
+    .vault-header { padding:8rem 1.5rem 3rem; }
+    .vault-filters { padding:0 1.5rem 2rem; }
+    .vault-grid-wrap { padding:0 1.5rem 5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">Toolzyo<em>.</em></a>
+  <a href="index.html" class="nav-back">← Back to Home</a>
+  <a href="index.html#start" class="nav-cta">Start a Project</a>
+</nav>
+
+<!-- HEADER -->
+<div class="vault-header">
+  <div class="eyebrow">Digital Products</div>
+  <h1>The <span class="purp">Vault</span></h1>
+  <div class="rule"></div>
+  <p>Ebooks, templates, playbooks, and mini courses — everything you need to implement AI in your business, starting today.</p>
+</div>
+
+<!-- FILTERS -->
+<div class="vault-filters">
+  <button class="filter-btn active" onclick="filterVault('all', this)">All Products</button>
+  <button class="filter-btn" onclick="filterVault('ebook', this)">Ebooks</button>
+  <button class="filter-btn" onclick="filterVault('template', this)">Templates</button>
+  <button class="filter-btn" onclick="filterVault('course', this)">Courses</button>
+  <button class="filter-btn" onclick="filterVault('swipe', this)">Swipe Files</button>
+</div>
+
+<!-- PRODUCT GRID -->
+<div class="vault-grid-wrap">
+  <div class="vault-grid" id="vaultGrid">
+
+    <a href="#" class="pcard reveal" data-type="ebook">
+      <div class="pthumb">📘</div>
+      <div class="pbody">
+        <div class="ptype">Ebook</div>
+        <h3>The AI Business Playbook</h3>
+        <p>A step-by-step guide to integrating AI into your business operations without the overwhelm. Practical, actionable, and built for non-technical founders.</p>
+        <div class="pfoot"><span class="pprice">$27</span><a href="#" class="pbtn">Get It →</a></div>
+      </div>
+    </a>
+
+    <a href="#" class="pcard reveal" data-type="template">
+      <div class="pthumb">🗺️</div>
+      <div class="pbody">
+        <div class="ptype">Template Pack</div>
+        <h3>AI Prompt Toolkit for Marketers</h3>
+        <p>100+ battle-tested prompts for content creation, strategy, social media, and brand messaging. Copy, paste, and customize.</p>
+        <div class="pfoot"><span class="pprice">$19</span><a href="#" class="pbtn">Get It →</a></div>
+      </div>
+    </a>
+
+    <a href="#" class="pcard reveal" data-type="course">
+      <div class="pthumb">⚡</div>
+      <div class="pbody">
+        <div class="ptype">Mini Course</div>
+        <h3>Automate Your Business in 7 Days</h3>
+        <p>A practical crash course on using no-code AI tools to automate the repetitive tasks that are slowing your business down.</p>
+        <div class="pfoot"><span class="pprice">$47</span><a href="#" class="pbtn">Get It →</a></div>
+      </div>
+    </a>
+
+    <a href="#" class="pcard reveal" data-type="swipe">
+      <div class="pthumb">📊</div>
+      <div class="pbody">
+        <div class="ptype">Swipe File</div>
+        <h3>Social Media Content OS</h3>
+        <p>A complete Notion-based content system powered by AI workflows. Plan, create, and publish faster with a system that runs itself.</p>
+        <div class="pfoot"><span class="pprice">$37</span><a href="#" class="pbtn">Get It →</a></div>
+      </div>
+    </a>
+
+    <!--
+    ADD NEW PRODUCTS BELOW THIS LINE
+    Copy a .pcard block above, update the content,
+    set href to your Gumroad or Stan Store URL,
+    and set data-type to: ebook | template | course | swipe
+    -->
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="flogo">Toolzyo<em>.</em></div>
+  <p>Human-led. AI-enhanced. Built for brands ready to grow smarter.</p>
+  <ul class="fnav">
+    <li><a href="index.html#services">Services</a></li>
+    <li><a href="index.html#ai-intel">AI Intel</a></li>
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#start">Start a Project</a></li>
+  </ul>
+  <p class="copy">© 2025 Toolzyo Studio. All rights reserved.</p>
+</footer>
+
+<script>
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        obs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  function filterVault(type, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.pcard').forEach(card => {
+      if (type === 'all' || card.dataset.type === type) {
+        card.style.display = 'flex';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+</script>
+</body>
+</html>

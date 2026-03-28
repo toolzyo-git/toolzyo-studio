@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Marketing Maven — Toolzyo Studio</title>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://unpkg.com/lucide-react@0.383.0/dist/umd/lucide-react.min.js"></script>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:#070A20; }
+  #root { min-height:100vh; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-presets="react">
+const { useState } = React;
+const Sparkles = LucideReact.Sparkles;
+const Zap = LucideReact.Zap;
+const Target = LucideReact.Target;
+const Share2 = LucideReact.Share2;
+const Handshake = LucideReact.Handshake;
+const Download = LucideReact.Download;
+const Copy = LucideReact.Copy;
+const Check = LucideReact.Check;
+const Loader = LucideReact.Loader;
+const TrendingUp = LucideReact.TrendingUp;
+const Eye = LucideReact.Eye;
+const FileText = LucideReact.FileText;
+const LayoutGrid = LucideReact.LayoutGrid;
+const Plus = LucideReact.Plus;
+const Minus = LucideReact.Minus;
+
+const css = `
+  @import url('https://fonts.cdnfonts.com/css/gambarino');
+  @import url('https://fonts.cdnfonts.com/css/switzer');
+
+  .mm-root *, .mm-root *::before, .mm-root *::after { box-sizing:border-box; margin:0; padding:0; }
+  .mm-root {
+    font-family:'Switzer','DM Sans',sans-serif; background:#070A20; color:#F0F2FF;
+    min-height:100vh; overflow-x:hidden; position:relative;
+  }
+  .mm-root::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse 65% 50% at 5% 10%, rgba(42,47,255,0.14) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 45% at 95% 90%, rgba(196,0,255,0.11) 0%, transparent 60%);
+  }
+  .mm-inner { position:relative; z-index:1; max-width:1280px; margin:0 auto; padding:2rem 2rem 5rem; }
+
+  .mm-header { text-align:center; padding:2.5rem 0 3.5rem; }
+  .mm-wordmark { font-family:'Gambarino',Georgia,serif; font-size:1.15rem; color:rgba(240,242,255,0.4); letter-spacing:0.04em; margin-bottom:1.4rem; }
+  .mm-wordmark em { font-style:normal; color:#9D4EFF; }
+  .mm-title { font-family:'Gambarino',Georgia,serif; font-size:clamp(2.6rem,5.5vw,5rem); line-height:0.95; }
+  .mm-title-grd { background:linear-gradient(135deg,#2A2FFF,#9D4EFF,#C400FF); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .mm-sub { font-weight:300; font-size:0.94rem; color:rgba(240,242,255,0.52); margin-top:1rem; line-height:1.7; }
+  .mm-chips { display:flex; gap:0.55rem; justify-content:center; flex-wrap:wrap; margin-top:1.3rem; }
+  .chip { display:inline-flex; align-items:center; gap:0.32rem; padding:0.26rem 0.82rem; border-radius:50px; font-size:0.67rem; font-weight:400; letter-spacing:0.1em; text-transform:uppercase; }
+  .chip-b { background:rgba(42,47,255,0.12); border:1px solid rgba(42,47,255,0.28); color:#8b91ff; }
+  .chip-p { background:rgba(123,43,255,0.12); border:1px solid rgba(123,43,255,0.28); color:#c084fc; }
+  .chip-c { background:rgba(0,232,192,0.09); border:1px solid rgba(0,232,192,0.24); color:#00E8C0; }
+
+  .mm-layout { display:grid; grid-template-columns:380px 1fr; gap:1.6rem; align-items:start; }
+  @media(max-width:960px){ .mm-layout{ grid-template-columns:1fr; } }
+
+  .panel { background:rgba(13,16,53,0.82); border:1px solid rgba(123,43,255,0.2); border-radius:20px; padding:1.8rem; backdrop-filter:blur(16px); position:relative; overflow:hidden; margin-bottom:1.2rem; }
+  .panel::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,rgba(157,78,255,0.5),transparent); }
+  .panel-title { font-family:'Gambarino',Georgia,serif; font-size:1.1rem; letter-spacing:0.02em; margin-bottom:1.3rem; display:flex; align-items:center; gap:0.5rem; }
+  .panel-title svg { color:#9D4EFF; }
+  .eyebrow { font-size:0.67rem; font-weight:400; letter-spacing:0.16em; text-transform:uppercase; color:#9D4EFF; margin-bottom:0.55rem; }
+  .divider { height:1px; background:rgba(123,43,255,0.14); margin:1.1rem 0; }
+
+  .t-input { width:100%; background:rgba(7,10,32,0.8); border:1px solid rgba(123,43,255,0.22); border-radius:11px; padding:0.75rem 1rem; font-family:'Switzer',sans-serif; font-size:0.84rem; color:#F0F2FF; outline:none; resize:none; transition:border-color 0.2s; line-height:1.65; }
+  .t-input:focus { border-color:#9D4EFF; }
+  .t-input::placeholder { color:rgba(240,242,255,0.2); }
+  .char-count { font-size:0.67rem; color:rgba(240,242,255,0.25); text-align:right; margin-top:0.25rem; }
+
+  .pill-row { display:flex; gap:0.38rem; flex-wrap:wrap; }
+  .pill { background:rgba(255,255,255,0.04); border:1px solid rgba(123,43,255,0.18); border-radius:50px; padding:0.26rem 0.72rem; font-size:0.71rem; color:rgba(240,242,255,0.5); cursor:pointer; transition:all 0.18s; }
+  .pill:hover { border-color:#9D4EFF; color:#F0F2FF; }
+  .pill.on { background:rgba(123,43,255,0.18); border-color:#9D4EFF; color:#F0F2FF; }
+
+  .platform-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0.45rem; }
+  .plat { background:rgba(7,10,32,0.6); border:1px solid rgba(123,43,255,0.16); border-radius:10px; padding:0.6rem 0.5rem; text-align:center; cursor:pointer; transition:all 0.2s; font-size:0.72rem; color:rgba(240,242,255,0.5); }
+  .plat:hover { border-color:rgba(123,43,255,0.4); }
+  .plat.on { background:rgba(123,43,255,0.15); border-color:#9D4EFF; color:#F0F2FF; }
+  .plat-icon { font-size:1.2rem; display:block; margin-bottom:0.2rem; }
+
+  .btn { border:none; cursor:pointer; font-family:'Switzer',sans-serif; font-weight:500; font-size:0.82rem; letter-spacing:0.08em; text-transform:uppercase; border-radius:50px; padding:0.8rem 1.8rem; transition:all 0.22s; display:inline-flex; align-items:center; gap:0.5rem; justify-content:center; }
+  .btn:disabled { opacity:0.38; cursor:not-allowed; }
+  .btn-gen { background:linear-gradient(135deg,#2A2FFF,#7B2BFF,#C400FF); background-size:200% 200%; color:#F0F2FF; width:100%; padding:1rem; font-size:0.88rem; }
+  .btn-gen:hover:not(:disabled) { transform:translateY(-2px); box-shadow:0 16px 42px rgba(123,43,255,0.52); }
+  .btn-gen.running { animation:gradpulse 2s linear infinite; }
+  .btn-ghost { background:transparent; border:1px solid rgba(123,43,255,0.32); color:#9D4EFF; }
+  .btn-ghost:hover:not(:disabled) { background:rgba(123,43,255,0.1); border-color:#9D4EFF; color:#F0F2FF; }
+  .btn-cyan { background:rgba(0,232,192,0.1); border:1px solid rgba(0,232,192,0.28); color:#00E8C0; }
+  .btn-cyan:hover:not(:disabled) { background:rgba(0,232,192,0.18); transform:translateY(-1px); }
+  .btn-sm { padding:0.4rem 1rem; font-size:0.71rem; }
+  @keyframes gradpulse { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+  @keyframes spin { to{transform:rotate(360deg)} }
+  .spin { animation:spin 0.8s linear infinite; }
+
+  .tabs { display:flex; gap:0.4rem; margin-bottom:1.5rem; border-bottom:1px solid rgba(123,43,255,0.15); padding-bottom:0.1rem; }
+  .tab { font-family:'Switzer',sans-serif; font-size:0.78rem; font-weight:400; letter-spacing:0.07em; text-transform:uppercase; color:rgba(240,242,255,0.4); background:transparent; border:none; cursor:pointer; padding:0.6rem 1rem; border-radius:8px 8px 0 0; transition:all 0.2s; display:flex; align-items:center; gap:0.4rem; position:relative; }
+  .tab:hover { color:rgba(240,242,255,0.75); }
+  .tab.on { color:#F0F2FF; }
+  .tab.on::after { content:''; position:absolute; bottom:-2px; left:0; right:0; height:2px; background:linear-gradient(90deg,#2A2FFF,#9D4EFF); border-radius:2px; }
+
+  .step-list { display:flex; flex-direction:column; gap:0.45rem; margin:1rem 0; }
+  .step-item { display:flex; align-items:center; gap:0.7rem; padding:0.6rem 0.85rem; border-radius:10px; background:rgba(7,10,32,0.6); border:1px solid rgba(123,43,255,0.12); transition:all 0.3s; }
+  .step-item.active { border-color:rgba(157,78,255,0.38); background:rgba(123,43,255,0.1); }
+  .step-item.done { border-color:rgba(0,232,192,0.28); background:rgba(0,232,192,0.05); }
+  .sdot { width:7px; height:7px; border-radius:50%; background:rgba(123,43,255,0.25); flex-shrink:0; transition:all 0.3s; }
+  .step-item.active .sdot { background:#9D4EFF; box-shadow:0 0 8px rgba(157,78,255,0.7); animation:pulse 1s infinite; }
+  .step-item.done .sdot { background:#00E8C0; }
+  .slabel { font-size:0.77rem; color:rgba(240,242,255,0.45); transition:color 0.3s; }
+  .step-item.active .slabel { color:#F0F2FF; }
+  .step-item.done .slabel { color:rgba(0,232,192,0.75); }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.55;transform:scale(1.3)} }
+
+  .cat-card { background:rgba(7,10,32,0.7); border:1px solid rgba(123,43,255,0.18); border-radius:16px; margin-bottom:1.2rem; overflow:hidden; transition:border-color 0.2s; }
+  .cat-card:hover { border-color:rgba(123,43,255,0.38); }
+  .cat-header { padding:1.1rem 1.3rem; display:flex; align-items:center; gap:0.8rem; cursor:pointer; user-select:none; }
+  .cat-icon-wrap { width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .cat-icon-wrap.content { background:rgba(42,47,255,0.15); border:1px solid rgba(42,47,255,0.28); }
+  .cat-icon-wrap.social  { background:rgba(196,0,255,0.12); border:1px solid rgba(196,0,255,0.25); }
+  .cat-icon-wrap.partner { background:rgba(0,232,192,0.1);  border:1px solid rgba(0,232,192,0.22); }
+  .cat-title { font-family:'Gambarino',Georgia,serif; font-size:1.1rem; flex:1; }
+  .cat-body { padding:0 1.3rem 1.3rem; }
+
+  .top-idea { background:rgba(13,16,53,0.8); border-radius:12px; padding:1rem 1.1rem; margin-bottom:0.9rem; border:1px solid rgba(123,43,255,0.15); }
+  .idea-label { font-size:0.67rem; font-weight:500; letter-spacing:0.13em; text-transform:uppercase; color:#9D4EFF; margin-bottom:0.4rem; }
+  .idea-title { font-family:'Gambarino',Georgia,serif; font-size:1.05rem; line-height:1.3; margin-bottom:0.5rem; }
+  .idea-desc { font-size:0.82rem; color:rgba(240,242,255,0.65); line-height:1.72; }
+
+  .proscons { display:grid; grid-template-columns:1fr 1fr; gap:0.7rem; margin-bottom:0.9rem; }
+  .pc-block { border-radius:10px; padding:0.8rem 0.9rem; }
+  .pc-block.pros { background:rgba(0,232,192,0.06); border:1px solid rgba(0,232,192,0.18); }
+  .pc-block.cons { background:rgba(196,0,255,0.06); border:1px solid rgba(196,0,255,0.18); }
+  .pc-label { font-size:0.67rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:0.5rem; }
+  .pc-block.pros .pc-label { color:#00E8C0; }
+  .pc-block.cons .pc-label { color:#d97aff; }
+  .pc-item { font-size:0.78rem; color:rgba(240,242,255,0.65); line-height:1.6; padding:0.2rem 0; display:flex; gap:0.4rem; }
+  .pc-item::before { content:'•'; flex-shrink:0; }
+  .pc-block.pros .pc-item::before { color:#00E8C0; }
+  .pc-block.cons .pc-item::before { color:#d97aff; }
+
+  .steps-list { display:flex; flex-direction:column; gap:0.5rem; }
+  .nstep { display:flex; align-items:flex-start; gap:0.75rem; padding:0.65rem 0.85rem; background:rgba(42,47,255,0.07); border:1px solid rgba(42,47,255,0.15); border-radius:10px; }
+  .nstep-num { width:22px; height:22px; border-radius:50%; background:linear-gradient(135deg,#2A2FFF,#7B2BFF); font-size:0.68rem; font-weight:600; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
+  .nstep-text { font-size:0.8rem; color:rgba(240,242,255,0.72); line-height:1.65; }
+
+  .ideas-grid { display:flex; flex-direction:column; gap:0.4rem; }
+  .idea-item { display:flex; align-items:center; gap:0.6rem; padding:0.5rem 0.7rem; border-radius:8px; background:rgba(7,10,32,0.5); border:1px solid rgba(123,43,255,0.1); font-size:0.79rem; color:rgba(240,242,255,0.6); }
+  .idea-item::before { content:'→'; color:#9D4EFF; flex-shrink:0; font-size:0.75rem; }
+
+  .vb-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.1rem; }
+  @media(max-width:700px){ .vb-grid{ grid-template-columns:1fr; } }
+  .vb-card { border-radius:18px; overflow:hidden; position:relative; aspect-ratio:3/4; display:flex; flex-direction:column; justify-content:flex-end; border:1px solid rgba(255,255,255,0.08); transition:transform 0.3s, box-shadow 0.3s; }
+  .vb-card:hover { transform:translateY(-6px); box-shadow:0 24px 60px rgba(0,0,0,0.5); }
+  .vb-bg { position:absolute; inset:0; }
+  .vb-content-bg { background:linear-gradient(135deg,#0d1035,#1a1060,#12155e); }
+  .vb-social-bg  { background:linear-gradient(135deg,#1a0535,#3d0a6b,#280545); }
+  .vb-partner-bg { background:linear-gradient(135deg,#051e1e,#003535,#052020); }
+  .vb-blob { position:absolute; border-radius:50%; filter:blur(45px); pointer-events:none; }
+  .vb-overlay { position:absolute; inset:0; background:linear-gradient(to top, rgba(4,5,26,0.95) 0%, rgba(4,5,26,0.3) 50%, transparent 100%); }
+  .vb-content { position:relative; z-index:1; padding:1.4rem; }
+  .vb-cat { font-size:0.63rem; font-weight:500; letter-spacing:0.15em; text-transform:uppercase; margin-bottom:0.5rem; }
+  .vb-idea-title { font-family:'Gambarino',Georgia,serif; font-size:1.1rem; line-height:1.25; margin-bottom:0.7rem; }
+  .vb-keywords { display:flex; flex-wrap:wrap; gap:0.35rem; }
+  .vb-kw { padding:0.18rem 0.6rem; border-radius:50px; font-size:0.62rem; letter-spacing:0.08em; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.15); }
+
+  .out-empty { min-height:420px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.8rem; opacity:0.42; }
+  .out-empty p { font-size:0.84rem; color:rgba(240,242,255,0.5); }
+  .export-bar { display:flex; gap:0.7rem; flex-wrap:wrap; margin-top:1rem; }
+
+  .toast { position:fixed; bottom:2rem; right:2rem; background:rgba(0,232,192,0.12); border:1px solid rgba(0,232,192,0.32); color:#00E8C0; padding:0.65rem 1.15rem; border-radius:50px; font-size:0.78rem; font-weight:500; letter-spacing:0.06em; display:flex; align-items:center; gap:0.4rem; animation:slideUp 0.25s ease; z-index:999; }
+  @keyframes slideUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+  .mm-root ::-webkit-scrollbar { width:4px; }
+  .mm-root ::-webkit-scrollbar-thumb { background:rgba(123,43,255,0.3); border-radius:2px; }
+
+  /* IMAGE PROMPT BOX */
+  .img-prompt-box { background:rgba(7,10,32,0.85); border:1px solid rgba(196,0,255,0.22); border-radius:13px; padding:1rem 1.1rem; margin-top:1rem; }
+  .img-prompt-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:0.65rem; flex-wrap:wrap; gap:0.5rem; }
+  .img-prompt-label { font-size:0.62rem; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:#C400FF; display:flex; align-items:center; gap:0.32rem; }
+  .img-prompt-models { display:flex; gap:0.3rem; flex-wrap:wrap; }
+  .img-model-tag { font-size:0.6rem; font-weight:500; letter-spacing:0.08em; padding:0.14rem 0.5rem; border-radius:50px; background:rgba(196,0,255,0.1); border:1px solid rgba(196,0,255,0.22); color:#e879f9; }
+  .img-prompt-text { font-family:'DM Mono','Courier New',monospace; font-size:0.76rem; color:rgba(240,242,255,0.7); line-height:1.7; background:rgba(0,0,0,0.3); border-radius:8px; padding:0.65rem 0.8rem; white-space:pre-wrap; word-break:break-word; margin-bottom:0.6rem; border:1px solid rgba(255,255,255,0.05); }
+  .img-prompt-copy { display:inline-flex; align-items:center; gap:0.3rem; background:rgba(196,0,255,0.12); border:1px solid rgba(196,0,255,0.28); border-radius:50px; padding:0.26rem 0.85rem; font-size:0.67rem; font-weight:500; letter-spacing:0.07em; text-transform:uppercase; color:#e879f9; cursor:pointer; transition:all 0.18s; font-family:'Switzer',sans-serif; }
+  .img-prompt-copy:hover { background:rgba(196,0,255,0.22); color:#F0F2FF; }
+
+  /* ── OUTPUT GATE ── */
+  .gate-wrap { position:relative; }
+  .gate-preview-badge { display:inline-flex; align-items:center; gap:0.4rem; background:rgba(255,200,0,0.1); border:1px solid rgba(255,200,0,0.25); border-radius:50px; padding:0.22rem 0.75rem; font-size:0.62rem; font-weight:600; letter-spacing:0.13em; text-transform:uppercase; color:#fbbf24; margin-bottom:0.85rem; }
+  .gate-visible { position:relative; }
+  .gate-blurred { filter:blur(5px); pointer-events:none; user-select:none; opacity:0.6; overflow:hidden; max-height:340px; }
+  .gate-overlay { position:relative; margin-top:-2rem; background:linear-gradient(to bottom, transparent 0%, rgba(7,10,32,0.97) 28%); border-radius:0 0 20px 20px; padding:2.5rem 1.8rem 2rem; text-align:center; z-index:10; }
+  .gate-overlay-inner { background:linear-gradient(135deg,rgba(13,16,53,0.95),rgba(30,10,55,0.9)); border:1px solid rgba(123,43,255,0.32); border-radius:20px; padding:2rem 1.8rem; position:relative; overflow:hidden; }
+  .gate-overlay-inner::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,#9D4EFF,transparent); }
+  .gate-lock { font-size:1.8rem; margin-bottom:0.6rem; }
+  .gate-title { font-family:'Gambarino',Georgia,serif; font-size:1.35rem; color:#F0F2FF; margin-bottom:0.4rem; line-height:1.2; }
+  .gate-sub { font-size:0.8rem; color:rgba(240,242,255,0.48); line-height:1.7; margin-bottom:1.4rem; max-width:360px; margin-left:auto; margin-right:auto; }
+  .gate-options { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-bottom:1rem; }
+  @media(max-width:600px){ .gate-options{ grid-template-columns:1fr; } }
+  .gate-opt { padding:1rem 1rem; border-radius:14px; cursor:pointer; border:none; font-family:'Switzer','DM Sans',sans-serif; text-align:center; transition:all 0.22s; }
+  .gate-opt-pay { background:linear-gradient(135deg,rgba(42,47,255,0.2),rgba(123,43,255,0.2)); border:1px solid rgba(123,43,255,0.35); }
+  .gate-opt-pay:hover { border-color:#9D4EFF; transform:translateY(-2px); box-shadow:0 10px 30px rgba(123,43,255,0.3); }
+  .gate-opt-month { background:rgba(0,232,192,0.08); border:1px solid rgba(0,232,192,0.22); }
+  .gate-opt-month:hover { background:rgba(0,232,192,0.14); border-color:#00E8C0; transform:translateY(-2px); }
+  .gate-opt-price { font-family:'Gambarino',Georgia,serif; font-size:1.5rem; line-height:1; margin-bottom:0.2rem; }
+  .gate-opt-pay .gate-opt-price { background:linear-gradient(135deg,#2A2FFF,#9D4EFF); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .gate-opt-month .gate-opt-price { color:#00E8C0; }
+  .gate-opt-label { font-size:0.7rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.22rem; }
+  .gate-opt-pay .gate-opt-label { color:#9D4EFF; }
+  .gate-opt-month .gate-opt-label { color:#00E8C0; }
+  .gate-opt-desc { font-size:0.72rem; color:rgba(240,242,255,0.45); line-height:1.5; }
+  .gate-divider { display:flex; align-items:center; gap:0.7rem; margin:0.5rem 0; }
+  .gate-divider-line { flex:1; height:1px; background:rgba(123,43,255,0.15); }
+  .gate-divider-text { font-size:0.65rem; color:rgba(240,242,255,0.25); letter-spacing:0.1em; text-transform:uppercase; }
+  .gate-call-btn { width:100%; padding:0.85rem; border-radius:50px; border:1px solid rgba(123,43,255,0.28); background:transparent; color:rgba(240,242,255,0.6); font-family:'Switzer','DM Sans',sans-serif; font-size:0.78rem; font-weight:500; letter-spacing:0.08em; text-transform:uppercase; cursor:pointer; transition:all 0.2s; }
+  .gate-call-btn:hover { background:rgba(123,43,255,0.1); border-color:#9D4EFF; color:#F0F2FF; }
+  .gate-already { font-size:0.68rem; color:rgba(240,242,255,0.22); margin-top:0.75rem; cursor:pointer; transition:color 0.18s; background:none; border:none; font-family:'Switzer','DM Sans',sans-serif; width:100%; }
+  .gate-already:hover { color:rgba(240,242,255,0.5); }
+  .gate-code-row { display:flex; gap:0.45rem; margin-top:0.6rem; }
+  .gate-code-input { flex:1; background:rgba(7,10,32,0.8); border:1px solid rgba(123,43,255,0.22); border-radius:9px; padding:0.5rem 0.8rem; font-size:0.8rem; color:#F0F2FF; outline:none; font-family:'Switzer','DM Sans',sans-serif; }
+  .gate-code-input::placeholder { color:rgba(240,242,255,0.2); }
+  .gate-code-btn { background:rgba(123,43,255,0.18); border:1px solid rgba(123,43,255,0.28); border-radius:9px; padding:0.5rem 0.9rem; font-size:0.7rem; font-weight:500; letter-spacing:0.07em; text-transform:uppercase; color:#9D4EFF; cursor:pointer; font-family:'Switzer','DM Sans',sans-serif; white-space:nowrap; }
+  .gate-code-btn:hover { background:rgba(123,43,255,0.28); color:#F0F2FF; }
+`;
+
+const INDUSTRIES = ['SaaS','E-commerce','Creator Economy','Health & Wellness','Finance','Education','Fashion','Food & Bev','Tech Hardware','Agency'];
+const PLATFORMS = [
+  {id:'tiktok',icon:'🎵',label:'TikTok'},{id:'instagram',icon:'📸',label:'Instagram'},
+  {id:'youtube',icon:'▶️',label:'YouTube'},{id:'linkedin',icon:'💼',label:'LinkedIn'},
+  {id:'twitter',icon:'𝕏',label:'X / Twitter'},{id:'pinterest',icon:'📌',label:'Pinterest'},
+];
+const GOALS = ['Brand Awareness','Lead Generation','Sales Conversion','Community Building','Product Launch','Thought Leadership'];
+
+const VB_CONFIG = {
+  content: { bgClass:'vb-content-bg', catColor:'#8b91ff', blobs:[{w:200,h:200,top:'-10%',left:'-8%',color:'rgba(42,47,255,0.4)'},{w:130,h:130,top:'30%',right:'-5%',color:'rgba(123,43,255,0.3)'}], kws:['storytelling','authority','reach','SEO','viral'] },
+  social:  { bgClass:'vb-social-bg',  catColor:'#d97aff', blobs:[{w:190,h:190,top:'-5%',right:'-8%',color:'rgba(196,0,255,0.4)'},{w:120,h:120,bottom:'25%',left:'-6%',color:'rgba(123,43,255,0.35)'}], kws:['community','hooks','UGC','trending','virality'] },
+  partner: { bgClass:'vb-partner-bg', catColor:'#00E8C0', blobs:[{w:210,h:210,bottom:'-8%',right:'-10%',color:'rgba(0,232,192,0.35)'},{w:140,h:140,top:'15%',left:'-7%',color:'rgba(0,168,139,0.3)'}], kws:['collab','trust','co-create','network','synergy'] },
+};
+
+function parsePlan(raw) {
+  const result = { content:'', social:'', partner:'' };
+  const markers = [
+    { key:'content', re:/##\s*content marketing/i },
+    { key:'social',  re:/##\s*social media/i },
+    { key:'partner', re:/##\s*partnership/i },
+  ];
+  const lines = raw.split('\n');
+  let cur = null;
+  const buffers = { content:[], social:[], partner:[] };
+  for (const line of lines) {
+    const hit = markers.find(m => m.re.test(line));
+    if (hit) { cur = hit.key; continue; }
+    if (cur) buffers[cur].push(line);
+  }
+  for (const k of Object.keys(result)) {
+    result[k] = buffers[k].join('\n').trim();
+  }
+  if (!result.content && !result.social && !result.partner) {
+    const thirds = Math.ceil(lines.length / 3);
+    result.content = lines.slice(0, thirds).join('\n');
+    result.social  = lines.slice(thirds, thirds*2).join('\n');
+    result.partner = lines.slice(thirds*2).join('\n');
+  }
+  return result;
+}
+
+function extractSection(text) {
+  if (!text) return { topIdea:'Strategy Pending', description:'', pros:['High potential reach','Builds brand authority'], cons:['Requires consistent effort','Results take time'], nextSteps:['Define your content calendar','Set measurable KPIs','Launch a pilot campaign'], allIdeas:[] };
+  const lines = text.split('\n').filter(l => l.trim());
+
+  const ideas = lines
+    .filter(l => /^\d+\.|^[-*•]/.test(l.trim()))
+    .map(l => l.replace(/^\d+\.|^[-*•]|\*\*/g,'').trim())
+    .filter(l => l.length > 4 && l.length < 110)
+    .slice(0, 5);
+
+  const prosIdx  = lines.findIndex(l => /\bpros\b|advantage|benefit/i.test(l));
+  const consIdx  = lines.findIndex(l => /\bcons\b|disadvantage|challenge|downside/i.test(l));
+  const nextIdx  = lines.findIndex(l => /next step|action item|checklist/i.test(l));
+  const topIdx   = lines.findIndex(l => /top pick|best idea|recommended|\*\*top/i.test(l));
+
+  const bullets = (start, end) => {
+    if (start < 0) return [];
+    const sl = end > start ? lines.slice(start+1, end) : lines.slice(start+1, start+5);
+    return sl.filter(l=>l.trim()).map(l=>l.replace(/^[-*•\d.]+/,'').trim()).filter(l=>l.length>3).slice(0,3);
+  };
+
+  const pros = bullets(prosIdx, consIdx > prosIdx ? consIdx : prosIdx+5);
+  const cons = bullets(consIdx, nextIdx > consIdx ? nextIdx : consIdx+5);
+  const nextSteps = bullets(nextIdx, nextIdx+5);
+
+  const topLine = topIdx >= 0 ? lines[topIdx] : lines.find(l => /\*\*/.test(l)) || ideas[0] || '';
+  const topIdea = topLine.replace(/\*\*/g,'').replace(/^[-*•\d.]+|top pick:|best idea:|recommended:/gi,'').trim() || 'Top Strategy';
+
+  const descLines = lines
+    .filter((l,i) => i > 0 && i < Math.max(2, prosIdx > 0 ? prosIdx : 5))
+    .filter(l => l.trim() && !/\*\*/.test(l) && !/pros|cons|next|^\d+\./i.test(l))
+    .slice(0, 2).map(l => l.trim());
+
+  return {
+    topIdea,
+    description: descLines.join(' ') || text.slice(0, 200),
+    pros: pros.length ? pros : ['High potential reach','Aligns with brand goals','Scalable over time'],
+    cons: cons.length ? cons : ['Requires consistency','Results take time'],
+    nextSteps: nextSteps.length ? nextSteps : ['Create a detailed action plan','Set weekly milestones','Track and iterate'],
+    allIdeas: ideas,
+  };
+}
+
+function ToolzyoMarketingMaven() {
+  const [productName, setProductName]   = useState('');
+
+  const [isUnlocked, setIsUnlocked] = useState(
+    typeof window !== 'undefined' && !!localStorage.getItem('tz_access')
+  );
+  const [showCodeEntry, setShowCodeEntry] = useState(false);
+
+  const unlockAccess = (inputId) => {
+    const code = document.getElementById(inputId)?.value?.trim().toUpperCase();
+    if (code && (code === 'TZ2025' || code.length >= 8)) {
+      localStorage.setItem('tz_access', '1');
+      setIsUnlocked(true);
+    } else {
+      const el = document.getElementById(inputId);
+      if (el) { el.style.borderColor='rgba(255,80,80,0.5)'; setTimeout(()=>el.style.borderColor='',1500); }
+    }
+  };
+
+
+  const [showPaywall, setShowPaywall] = useState(false);
+  const [pendingDownload, setPendingDownload] = useState(null);
+
+  const gatedDownload = (fn) => {
+    if (typeof window !== 'undefined' && localStorage.getItem('tz_access')) { fn(); return; }
+    setPendingDownload(() => fn);
+    setShowPaywall(true);
+  };
+
+  const unlockWithCode = (inputId) => {
+    const code = document.getElementById(inputId)?.value?.trim().toUpperCase();
+    const valid = code && (code === 'TZ2025' || code.length >= 8);
+    if (valid) {
+      localStorage.setItem('tz_access', '1');
+      setShowPaywall(false);
+      if (pendingDownload) { pendingDownload(); setPendingDownload(null); }
+    } else {
+      const el = document.getElementById(inputId);
+      if (el) { el.style.borderColor = 'rgba(255,80,80,0.5)'; setTimeout(()=>el.style.borderColor='',1500); }
+    }
+  };
+
+  const [productDesc, setProductDesc]   = useState('');
+  const [valueProp, setValueProp]       = useState('');
+  const [industry, setIndustry]         = useState('');
+  const [platforms, setPlatforms]       = useState(['instagram','tiktok']);
+  const [goal, setGoal]                 = useState('Brand Awareness');
+  const [phase, setPhase]               = useState('idle');
+  const [steps, setSteps]               = useState([
+    { id:'analyze', label:'Analyzing product & market positioning', status:'idle' },
+    { id:'plan',    label:'Building 3-channel marketing plan',       status:'idle' },
+    { id:'board',   label:'Generating vision board concepts',        status:'idle' },
+  ]);
+  const [structured, setStructured]     = useState(null);
+  const [rawPlan, setRawPlan]           = useState('');
+  const [activeTab, setActiveTab]       = useState('plan');
+  const [expanded, setExpanded]         = useState({ content:true, social:true, partner:true });
+  const [imgPrompts, setImgPrompts]     = useState(null);
+  const [copiedPrompt, setCopiedPrompt] = useState('');
+  const [toast, setToast]               = useState(false);
+
+  const setStep = (id, s) => setSteps(p => p.map(x => x.id===id ? {...x, status:s} : x));
+  const togglePlat = id => setPlatforms(p => p.includes(id) ? p.filter(x=>x!==id) : [...p,id]);
+  const toggleExp = cat => setExpanded(p => ({...p, [cat]:!p[cat]}));
+
+  const generate = async () => {
+    if (!productName.trim() || !productDesc.trim()) return;
+    setPhase('running');
+    setRawPlan(''); setStructured(null); setImgPrompts(null);
+    setSteps(p => p.map(s => ({...s, status:'idle'})));
+    setActiveTab('plan');
+    try {
+      setStep('analyze','active');
+      await new Promise(r => setTimeout(r, 500));
+      setStep('analyze','done');
+      setStep('plan','active');
+
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          model:'claude-sonnet-4-20250514', max_tokens:3000,
+          messages:[{ role:'user', content:
+`You are an expert marketing strategist. Create a comprehensive, actionable marketing plan.
+
+Product Name: ${productName}
+Product Description: ${productDesc}
+Value Proposition: ${valueProp || 'Not specified'}
+Industry: ${industry || 'General'}
+Target Platforms: ${platforms.join(', ') || 'all platforms'}
+Primary Goal: ${goal}
+
+Use EXACTLY these section headers on their own lines:
+## CONTENT MARKETING
+## SOCIAL MEDIA CAMPAIGNS
+## PARTNERSHIP OPPORTUNITIES
+
+For each section:
+1. List 4-5 specific, creative campaign ideas as a numbered list
+2. **Top Pick:** Name the single best idea
+3. **Description:** 2-3 sentences on how to execute it
+4. **Pros:**
+- pro 1
+- pro 2
+- pro 3
+5. **Cons:**
+- con 1
+- con 2
+6. **Next Steps:**
+- action 1
+- action 2
+- action 3
+
+Be specific to this product. No generic fluff. Write for someone executing this week.`
+          }]
+        })
+      });
+      const data = await res.json();
+      const raw = data.content?.[0]?.text || '';
+      setRawPlan(raw);
+      setStep('plan','done');
+      setStep('board','active');
+      const sections = parsePlan(raw);
+      setStructured({
+        content: extractSection(sections.content),
+        social:  extractSection(sections.social),
+        partner: extractSection(sections.partner),
+      });
+      setStep('board','done');
+      setPhase('done');
+
+      // Generate vision board image prompts (non-blocking)
+      try {
+        const s = { content: extractSection(sections.content), social: extractSection(sections.social), partner: extractSection(sections.partner) };
+        const ipRes = await fetch('https://api.anthropic.com/v1/messages', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({
+            model:'claude-sonnet-4-20250514', max_tokens:700,
+            messages:[{ role:'user', content:
+`Generate 3 Midjourney-ready image generation prompts for a marketing vision board.
+
+Product: ${productName} — ${productDesc}
+Content Marketing concept: ${s.content?.topIdea || 'content marketing'}
+Social Campaign concept: ${s.social?.topIdea || 'social campaign'}
+Partnership concept: ${s.partner?.topIdea || 'partnership strategy'}
+
+Return ONLY valid JSON (no markdown):
+{
+  "content": "Full MJ prompt for a Content Marketing visual. Dark, cinematic, cool blue-purple palette. No text/logos. --ar 3:4 --v 6 --style raw",
+  "social": "Full MJ prompt for a Social Campaign visual. Vibrant, energetic, magenta-purple palette. No text/logos. --ar 3:4 --v 6 --style raw",
+  "partner": "Full MJ prompt for a Partnership visual. Rich, professional, teal-green palette. No text/logos. --ar 3:4 --v 6 --style raw"
+}
+
+Each prompt should be descriptive and evocative — scene, subject, mood, lighting, composition. Make them feel premium and campaign-worthy.`
+            }]
+          })
+        });
+        const ipData = await ipRes.json();
+        const ipParsed = parseJSON(ipData.content?.[0]?.text || '{}');
+        if (ipParsed) setImgPrompts(ipParsed);
+      } catch(e) { console.warn('Image prompts failed silently', e); }
+    } catch(e) {
+      console.error(e); setPhase('error');
+    }
+  };
+
+  const copyRaw = () => {
+    navigator.clipboard.writeText(rawPlan);
+    setToast(true); setTimeout(()=>setToast(false), 2500);
+  };
+
+  const downloadReport = () => {
+    if (!structured) return;
+    const cats = [
+      { key:'content', label:'Content Marketing',        icon:'📝' },
+      { key:'social',  label:'Social Media Campaigns',   icon:'📱' },
+      { key:'partner', label:'Partnership Opportunities', icon:'🤝' },
+    ];
+    const html = `<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>${productName} — Marketing Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#070A20;color:#F0F2FF;font-family:'DM Sans',sans-serif;font-weight:300;padding:0 0 4rem}
+.wrap{max-width:800px;margin:0 auto;padding:3rem 2rem}
+header{text-align:center;padding:2rem 0 3rem;border-bottom:1px solid rgba(123,43,255,0.16);margin-bottom:3rem}
+.logo{font-family:'Syne',sans-serif;font-size:1rem;color:rgba(240,242,255,0.38);letter-spacing:0.08em;margin-bottom:1.5rem}
+.logo em{font-style:normal;color:#9D4EFF}
+h1{font-family:'Syne',sans-serif;font-size:2.5rem;font-weight:700}
+.meta{display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;margin-top:1rem}
+.tag{padding:0.22rem 0.75rem;border-radius:50px;font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase}
+.tb{background:rgba(42,47,255,0.14);border:1px solid rgba(42,47,255,0.28);color:#8b91ff}
+.tp{background:rgba(196,0,255,0.1);border:1px solid rgba(196,0,255,0.22);color:#d97aff}
+.tc{background:rgba(0,232,192,0.1);border:1px solid rgba(0,232,192,0.22);color:#00E8C0}
+.sec{margin-bottom:2.5rem;background:rgba(13,16,53,0.8);border:1px solid rgba(123,43,255,0.18);border-radius:18px;overflow:hidden}
+.sec-h{padding:1.2rem 1.5rem;display:flex;align-items:center;gap:0.7rem;border-bottom:1px solid rgba(123,43,255,0.12)}
+.sec-t{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700}
+.sec-b{padding:1.5rem}
+.ti{background:rgba(7,10,32,0.7);border-radius:12px;padding:1rem 1.1rem;margin-bottom:1rem;border:1px solid rgba(123,43,255,0.15)}
+.tl{font-size:0.65rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#9D4EFF;margin-bottom:0.35rem}
+.tt{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:0.4rem}
+.td{font-size:0.82rem;color:rgba(240,242,255,0.62);line-height:1.7}
+.pcr{display:grid;grid-template-columns:1fr 1fr;gap:0.7rem;margin-bottom:1rem}
+.pc{border-radius:10px;padding:0.8rem 0.9rem}
+.pro{background:rgba(0,232,192,0.06);border:1px solid rgba(0,232,192,0.18)}
+.con{background:rgba(196,0,255,0.06);border:1px solid rgba(196,0,255,0.18)}
+.pcl{font-size:0.65rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.45rem}
+.pro .pcl{color:#00E8C0}.con .pcl{color:#d97aff}
+.pci{font-size:0.78rem;color:rgba(240,242,255,0.62);padding:0.18rem 0;display:flex;gap:0.4rem}
+.pci::before{content:'•';flex-shrink:0}
+.pro .pci::before{color:#00E8C0}.con .pci::before{color:#d97aff}
+.nsl{display:flex;flex-direction:column;gap:0.45rem}
+.nsl-lbl{font-size:0.65rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:#9D4EFF;margin-bottom:0.6rem}
+.nsi{display:flex;align-items:flex-start;gap:0.7rem;padding:0.55rem 0.8rem;background:rgba(42,47,255,0.07);border:1px solid rgba(42,47,255,0.14);border-radius:9px}
+.nsn{width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#2A2FFF,#7B2BFF);font-size:0.65rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nst{font-size:0.79rem;color:rgba(240,242,255,0.7);line-height:1.6}
+footer{text-align:center;margin-top:3rem;padding-top:2rem;border-top:1px solid rgba(123,43,255,0.13);font-size:0.74rem;color:rgba(240,242,255,0.22)}
+</style></head><body><div class="wrap">
+<header>
+  <div class="logo">Toolzyo<em>.</em> Studio</div>
+  <h1>${productName}</h1>
+  ${valueProp ? `<p style="font-size:0.92rem;color:rgba(240,242,255,0.55);margin-top:0.8rem;line-height:1.7">${valueProp}</p>` : ''}
+  <div class="meta">
+    ${industry ? `<span class="tag tb">${industry}</span>` : ''}
+    <span class="tag tp">${goal}</span>
+    <span class="tag tc">Marketing Plan</span>
+  </div>
+</header>
+${cats.map(cat => {
+  const d = structured[cat.key];
+  return `<div class="sec">
+  <div class="sec-h"><span style="font-size:1.3rem">${cat.icon}</span><span class="sec-t">${cat.label}</span></div>
+  <div class="sec-b">
+    <div class="ti"><div class="tl">★ Top Pick</div><div class="tt">${d.topIdea}</div><div class="td">${d.description}</div></div>
+    <div class="pcr">
+      <div class="pc pro"><div class="pcl">Pros</div>${d.pros.map(p=>`<div class="pci">${p}</div>`).join('')}</div>
+      <div class="pc con"><div class="pcl">Cons</div>${d.cons.map(c=>`<div class="pci">${c}</div>`).join('')}</div>
+    </div>
+    <div class="nsl-lbl">Next Steps</div>
+    <div class="nsl">${d.nextSteps.map((s,i)=>`<div class="nsi"><div class="nsn">${i+1}</div><div class="nst">${s}</div></div>`).join('')}</div>
+  </div>
+</div>`;}).join('')}
+<footer>Generated by Toolzyo Studio — toolzyo.com · © ${new Date().getFullYear()} Toolzyo</footer>
+</div></body></html>`;
+    const blob = new Blob([html], {type:'text/html'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `${productName.replace(/\s+/g,'-').toLowerCase()}-marketing-plan.html`;
+    a.click(); URL.revokeObjectURL(url);
+  };
+
+  const isRunning = phase === 'running';
+  const CATS = [
+    { key:'content', label:'Content Marketing',        icon:<Target size={16} color="#8b91ff"/>, iconClass:'content' },
+    { key:'social',  label:'Social Media Campaigns',   icon:<Share2 size={16} color="#d97aff"/>, iconClass:'social'  },
+    { key:'partner', label:'Partnership Opportunities', icon:<Handshake size={16} color="#00E8C0"/>, iconClass:'partner' },
+  ];
+
+
+  const GateOverlay = ({ codeId }) => (
+    <div className="gate-overlay">
+      <div className="gate-overlay-inner">
+        <div className="gate-lock">🔒</div>
+        <h3 className="gate-title">Your personalized results are ready</h3>
+        <p className="gate-sub">You're seeing a preview based on your inputs. Unlock the full output or book a call to go through it together.</p>
+        <div className="gate-options">
+          <button className="gate-opt gate-opt-pay" onClick={()=>{ localStorage.setItem('tz_access_session','1'); setIsUnlocked(true); window.open('https://toolzyo.com/checkout?plan=session','_blank'); }}>
+            <div className="gate-opt-label">This Result</div>
+            <div className="gate-opt-price">$57</div>
+            <div className="gate-opt-desc">Unlock this full output + all downloads for this session</div>
+          </button>
+          <button className="gate-opt gate-opt-month" onClick={()=>{ window.open('https://toolzyo.com/checkout?plan=14day','_blank'); }}>
+            <div className="gate-opt-label">This Tool · 14 Days</div>
+            <div className="gate-opt-price">$127</div>
+            <div className="gate-opt-desc">Unlimited use of this tool for 14 days · all results unlocked</div>
+          </button>
+        </div>
+        <div className="gate-divider">
+          <div className="gate-divider-line"/>
+          <span className="gate-divider-text">or let us do it for you</span>
+          <div className="gate-divider-line"/>
+        </div>
+        <button className="gate-opt gate-opt-dfy" style={{width:'100%',marginBottom:'0.65rem'}} onClick={()=>window.open('https://toolzyo.com/#pricing','_blank')}>
+          <div className="gate-opt-label" style={{color:'#fbbf24'}}>⭐ Done-For-You — Strategy Snapshot</div>
+          <div className="gate-opt-price" style={{background:'linear-gradient(135deg,#fbbf24,#f59e0b)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent',backgroundClip:'text'}}>$397</div>
+          <div className="gate-opt-desc">Haze runs this for your business, delivers the polished report — you do nothing</div>
+        </button>
+        <button className="gate-call-btn" onClick={()=>window.open('https://toolzyo.com/#start','_blank')}>
+          📅 Book a discovery call first — talk through it live
+        </button>
+        {!showCodeEntry && (
+          <button className="gate-already" onClick={()=>setShowCodeEntry(true)}>Already have an access code?</button>
+        )}
+        {showCodeEntry && (
+          <div className="gate-code-row">
+            <input className="gate-code-input" id={codeId} placeholder="Enter access code" onKeyDown={e=>e.key==='Enter'&&unlockAccess(codeId)}/>
+            <button className="gate-code-btn" onClick={()=>unlockAccess(codeId)}>Unlock</button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  return (
+    <>
+      <style>{css}</style>
+      <div className="mm-root">
+        <div className="mm-inner">
+
+          <div className="mm-header">
+            <div className="mm-wordmark">Toolzyo<em>.</em></div>
+            <h1 className="mm-title">Marketing<br/><span className="mm-title-grd">Maven</span></h1>
+            <p className="mm-sub">AI-powered marketing strategy: content, social & partnerships — plus a vision board</p>
+            <div className="mm-chips">
+              <span className="chip chip-b"><Target size={10}/> Content Strategy</span>
+              <span className="chip chip-p"><Share2 size={10}/> Social Campaigns</span>
+              <span className="chip chip-c"><Eye size={10}/> Vision Board</span>
+            </div>
+          </div>
+
+          <div className="mm-layout">
+
+            {/* ── LEFT ────────────────────────────────────────────────── */}
+            <div>
+              <div className="panel">
+                <p className="panel-title"><Sparkles size={16}/> Product Brief</p>
+
+                <p className="eyebrow">Product Name *</p>
+                <input className="t-input" type="text" placeholder="e.g. Toolzyo Studio"
+                  value={productName} onChange={e=>setProductName(e.target.value)}/>
+                <div className="divider"/>
+                <p className="eyebrow">Product Description *</p>
+                <textarea className="t-input" rows={3}
+                  placeholder="What does it do? Who is it for? What problem does it solve?"
+                  value={productDesc} onChange={e=>setProductDesc(e.target.value)} maxLength={400}/>
+                <p className="char-count">{productDesc.length}/400</p>
+                <div className="divider"/>
+                <p className="eyebrow">One-Sentence Value Prop</p>
+                <input className="t-input" type="text"
+                  placeholder="e.g. The fastest way for creators to build AI digital products"
+                  value={valueProp} onChange={e=>setValueProp(e.target.value)}/>
+              </div>
+
+              <div className="panel">
+                <p className="panel-title"><TrendingUp size={16}/> Market Context</p>
+                <p className="eyebrow">Industry</p>
+                <div className="pill-row">
+                  {INDUSTRIES.map(ind=>(
+                    <button key={ind} className={`pill${industry===ind?' on':''}`}
+                      onClick={()=>setIndustry(industry===ind?'':ind)}>{ind}</button>
+                  ))}
+                </div>
+                <div className="divider"/>
+                <p className="eyebrow">Target Platforms</p>
+                <div className="platform-grid">
+                  {PLATFORMS.map(p=>(
+                    <div key={p.id} className={`plat${platforms.includes(p.id)?' on':''}`}
+                      onClick={()=>togglePlat(p.id)}>
+                      <span className="plat-icon">{p.icon}</span>{p.label}
+                    </div>
+                  ))}
+                </div>
+                <div className="divider"/>
+                <p className="eyebrow">Primary Goal</p>
+                <div className="pill-row">
+                  {GOALS.map(g=>(
+                    <button key={g} className={`pill${goal===g?' on':''}`}
+                      onClick={()=>setGoal(g)}>{g}</button>
+                  ))}
+                </div>
+              </div>
+
+              <button className={`btn btn-gen${isRunning?' running':''}`}
+                disabled={isRunning||!productName.trim()||!productDesc.trim()}
+                onClick={generate}>
+                {isRunning
+                  ? <><Loader size={15} className="spin"/> Generating Plan...</>
+                  : <><Zap size={15}/> Generate Marketing Plan</>}
+              </button>
+
+              {(isRunning||phase==='done'||phase==='error') && (
+                <div className="step-list" style={{marginTop:'1rem'}}>
+                  {steps.map(s=>(
+                    <div key={s.id} className={`step-item${s.status==='active'?' active':s.status==='done'?' done':''}`}>
+                      <div className="sdot"/>
+                      <span className="slabel">{s.status==='done'?'✓ ':s.status==='active'?'⟳ ':''}{s.label}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* ── RIGHT ───────────────────────────────────────────────── */}
+            <div>
+              <div className="panel" style={{minHeight:480}}>
+
+                {phase==='idle' && (
+                  <div className="out-empty">
+                    <Target size={44} strokeWidth={1} color="#9D4EFF"/>
+                    <p>Fill in your product brief and generate</p>
+                  </div>
+                )}
+                {isRunning&&!structured && (
+                  <div className="out-empty">
+                    <Loader size={38} strokeWidth={1} color="#9D4EFF" className="spin"/>
+                    <p>Building your marketing plan...</p>
+                  </div>
+                )}
+                {phase==='error' && (
+                  <div className="out-empty">
+                    <p style={{color:'#ff5449'}}>Something went wrong. Try again.</p>
+                  </div>
+                )}
+
+                {structured && (
+                  <>
+                    <div className="tabs">
+                      <button className={`tab${activeTab==='plan'?' on':''}`} onClick={()=>setActiveTab('plan')}>
+                        <FileText size={13}/> Marketing Plan
+                      </button>
+                      <button className={`tab${activeTab==='board'?' on':''}`} onClick={()=>setActiveTab('board')}>
+                        <LayoutGrid size={13}/> Vision Board
+                      </button>
+                    </div>
+
+                    {activeTab==='plan' && (
+                      <div className="gate-wrap">
+                        <span className="gate-preview-badge">👁 Sample Preview — First strategy visible · Full plan locked</span>
+                      <>
+                        <div className="export-bar" style={{marginBottom:'1.2rem'}}>
+                          <button className="btn btn-ghost btn-sm" onClick={copyRaw}><Copy size={12}/> Copy Raw</button>
+                          <button className="btn btn-cyan btn-sm" onClick={()=>gatedDownload(downloadReport)}><Download size={12}/> Download Report</button>
+                        </div>
+                        {CATS.map(cat=>{
+                          const d = structured[cat.key];
+                          if (!d) return null;
+                          const open = expanded[cat.key];
+                          return (
+                            <div key={cat.key} className="cat-card">
+                              <div className="cat-header" onClick={()=>toggleExp(cat.key)}>
+                                <div className={`cat-icon-wrap ${cat.iconClass}`}>{cat.icon}</div>
+                                <span className="cat-title">{cat.label}</span>
+                                {open ? <Minus size={14} color="rgba(240,242,255,0.4)"/> : <Plus size={14} color="rgba(240,242,255,0.4)"/>}
+                              </div>
+                              {open && (
+                                <div className="cat-body">
+                                  {d.allIdeas.length > 0 && (
+                                    <>
+                                      <p className="eyebrow" style={{marginBottom:'0.5rem'}}>Ideas Generated</p>
+                                      <div className="ideas-grid" style={{marginBottom:'1rem'}}>
+                                        {d.allIdeas.map((idea,i)=>(
+                                          <div key={i} className="idea-item">{idea}</div>
+                                        ))}
+                                      </div>
+                                    </>
+                                  )}
+                                  <div className="top-idea">
+                                    <p className="idea-label">★ Top Pick</p>
+                                    <p className="idea-title">{d.topIdea}</p>
+                                    <p className="idea-desc">{d.description}</p>
+                                  </div>
+                                  <div className="proscons">
+                                    <div className="pc-block pros">
+                                      <p className="pc-label">Pros</p>
+                                      {d.pros.map((p,i)=><p key={i} className="pc-item">{p}</p>)}
+                                    </div>
+                                    <div className="pc-block cons">
+                                      <p className="pc-label">Cons</p>
+                                      {d.cons.map((c,i)=><p key={i} className="pc-item">{c}</p>)}
+                                    </div>
+                                  </div>
+                                  <p className="eyebrow">Next Steps</p>
+                                  <div className="steps-list">
+                                    {d.nextSteps.map((s,i)=>(
+                                      <div key={i} className="nstep">
+                                        <div className="nstep-num">{i+1}</div>
+                                        <p className="nstep-text">{s}</p>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </>
+                      {!isUnlocked && <GateOverlay codeId="mavenCode"/>}
+                      </div>
+                    )}
+
+                    {activeTab==='board' && (
+                      <div className="gate-wrap">
+                        <span className="gate-preview-badge">👁 Sample Preview — First concept visible · Full board locked</span>
+                      <>
+                        <p style={{fontSize:'0.82rem',color:'rgba(240,242,255,0.45)',marginBottom:'1.2rem',lineHeight:1.65}}>
+                          Visual campaign concepts — use as creative direction for your designer or content team.
+                        </p>
+                        <div className="vb-grid">
+                          {CATS.map(cat=>{
+                            const d = structured[cat.key];
+                            const v = VB_CONFIG[cat.key];
+                            if (!d) return null;
+                            return (
+                              <div key={cat.key} className="vb-card">
+                                <div className={`vb-bg ${v.bgClass}`}/>
+                                {v.blobs.map((b,i)=>(
+                                  <div key={i} className="vb-blob" style={{width:b.w,height:b.h,top:b.top,left:b.left,right:b.right,bottom:b.bottom,background:b.color}}/>
+                                ))}
+                                <div className="vb-overlay"/>
+                                <div className="vb-content">
+                                  <p className="vb-cat" style={{color:v.catColor}}>{cat.label}</p>
+                                  <p className="vb-idea-title">{d.topIdea}</p>
+                                  <div className="vb-keywords">
+                                    {v.kws.map(kw=><span key={kw} className="vb-kw">{kw}</span>)}
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                        <div className="export-bar" style={{marginTop:'1.2rem'}}>
+                          <button className="btn btn-cyan btn-sm" onClick={()=>gatedDownload(downloadReport)}><Download size={12}/> Download Full Report</button>
+                        </div>
+
+                        {/* Vision board image prompts */}
+                        {imgPrompts && (
+                          <div style={{marginTop:'1.6rem'}}>
+                            <p className="eyebrow" style={{marginBottom:'0.25rem'}}>🎨 Image Gen Prompts</p>
+                            <p style={{fontSize:'0.77rem',color:'rgba(240,242,255,0.38)',marginBottom:'1rem',lineHeight:1.65}}>
+                              Drop these into Midjourney, DALL-E 3, Flux, or Ideogram to generate real campaign visuals.
+                            </p>
+                            {CATS.map(cat => imgPrompts[cat.key] ? (
+                              <div key={cat.key} className="img-prompt-box" style={{marginBottom:'0.8rem'}}>
+                                <div className="img-prompt-header">
+                                  <span className="img-prompt-label">🎨 {cat.label}</span>
+                                  <div className="img-prompt-models">
+                                    <span className="img-model-tag">Midjourney</span>
+                                    <span className="img-model-tag">DALL-E 3</span>
+                                    <span className="img-model-tag">Flux</span>
+                                    <span className="img-model-tag">Ideogram</span>
+                                  </div>
+                                </div>
+                                <div className="img-prompt-text">{imgPrompts[cat.key]}</div>
+                                <div className="img-prompt-copy" onClick={()=>{
+                                  navigator.clipboard.writeText(imgPrompts[cat.key]);
+                                  setCopiedPrompt(cat.key);
+                                  setTimeout(()=>setCopiedPrompt(''), 2000);
+                                }}>
+                                  {copiedPrompt===cat.key ? <Check size={11}/> : <Copy size={11}/>}
+                                  {copiedPrompt===cat.key ? 'Copied!' : 'Copy Prompt'}
+                                </div>
+                              </div>
+                            ) : null)}
+                          </div>
+                        )}
+
+                        {/* Loading state while prompts generate */}
+                        {!imgPrompts && phase==='done' && (
+                          <div style={{marginTop:'1.4rem',padding:'1rem',borderRadius:12,border:'1px solid rgba(196,0,255,0.14)',background:'rgba(196,0,255,0.04)',display:'flex',alignItems:'center',gap:'0.6rem'}}>
+                            <Loader size={13} color="#C400FF" style={{animation:'spin 0.8s linear infinite',flexShrink:0}}/>
+                            <p style={{fontSize:'0.75rem',color:'rgba(240,242,255,0.4)'}}>Generating image prompts for each concept...</p>
+                          </div>
+                        )}
+                      </>
+                      {!isUnlocked && <GateOverlay codeId="mavenCodeB"/>}
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      {toast && <div className="toast"><Check size={13}/> Copied to clipboard</div>}
+
+      {showPaywall && (
+        <div className="pw-overlay" onClick={e=>{ if(e.target===e.currentTarget){ setShowPaywall(false); } }}>
+          <div className="pw-card">
+            <div className="pw-lock">🔒</div>
+            <h2 className="pw-title">Your results are ready to save</h2>
+            <p className="pw-sub">Generate freely — download your personalized output when you're on a package or grab one-time access.</p>
+            <div className="pw-options">
+              <button className="pw-opt pw-opt-primary" onClick={()=>{ setShowPaywall(false); window.open('https://toolzyo.com/#pricing','_blank'); }}>
+                <div className="pw-opt-label">📦 View Packages</div>
+                <div className="pw-opt-text">Content Engine · Full Service · Strategy Snapshot</div>
+                <div className="pw-opt-price">From $397 · Includes unlimited downloads</div>
+              </button>
+              <button className="pw-opt pw-opt-secondary" onClick={()=>{ setShowPaywall(false); window.open('https://toolzyo.com/vault','_blank'); }}>
+                <div className="pw-opt-label">⚡ One-Time Download</div>
+                <div className="pw-opt-text">Pay once, download this result now</div>
+                <div className="pw-opt-price">$9 per export — available in The Vault</div>
+              </button>
+            </div>
+            <div className="pw-divider"/>
+            <p className="pw-code-lbl">Already have access? Enter your code</p>
+            <div className="pw-code-row">
+              <input className="pw-code-input" id="pwCodeInput" placeholder="Access code" type="text" onKeyDown={e=>e.key==='Enter'&&unlockWithCode('pwCodeInput')}/>
+              <button className="pw-code-btn" onClick={()=>unlockWithCode('pwCodeInput')}>Unlock</button>
+            </div>
+            <button className="pw-dismiss" onClick={()=>setShowPaywall(false)}>Continue browsing without downloading</button>
+          </div>
+        </div>
+      )}
+
+    </>
+  );
+}
+
+
+const container = document.getElementById('root');
+const root = ReactDOM.createRoot(container);
+root.render(React.createElement(ToolzyoMarketingMaven));
+</script>
+</body>
+</html>

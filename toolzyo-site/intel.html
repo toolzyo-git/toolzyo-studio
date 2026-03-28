@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AI Intel — Toolzyo Studio</title>
+<meta name="description" content="The most important AI, LLM, and automation stories — read, rewritten, and filtered through the Toolzyo lens. No noise. Just signal."/>
+<link href="https://fonts.cdnfonts.com/css/gambarino" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/switzer" rel="stylesheet">
+<style>
+  :root{--navy:#070A20;--navy2:#0A0D28;--royal:#2A2FFF;--purple:#7B2BFF;--purpv:#9D4EFF;--mag:#C400FF;--cyan:#00E8C0;--white:#F0F2FF;--dim:rgba(240,242,255,0.62);--faint:rgba(240,242,255,0.25);--card:rgba(13,16,53,0.82);--border:rgba(123,43,255,0.2);--borderb:rgba(42,47,255,0.22);--G:'Gambarino',Georgia,serif;--S:'Switzer','DM Sans',sans-serif;}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--navy);color:var(--white);font-family:var(--S);font-weight:300;overflow-x:hidden;line-height:1.6;}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 55% 45% at 2% 5%,rgba(42,47,255,0.14) 0%,transparent 60%),radial-gradient(ellipse 45% 40% at 98% 95%,rgba(196,0,255,0.09) 0%,transparent 60%);}
+  nav{position:fixed;top:0;width:100%;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:1.1rem 4rem;background:rgba(4,5,26,0.85);backdrop-filter:blur(28px);border-bottom:1px solid rgba(123,43,255,0.13);}
+  .nav-logo{font-family:var(--G);font-size:1.7rem;letter-spacing:0.02em;color:var(--white);text-decoration:none;}
+  .nav-logo em{font-style:normal;color:var(--purpv);}
+  .nav-back{display:inline-flex;align-items:center;gap:0.45rem;font-family:var(--S);font-weight:400;font-size:0.82rem;color:var(--dim);text-decoration:none;letter-spacing:0.04em;transition:color 0.2s;}
+  .nav-back:hover{color:var(--white);}
+  .nav-back::before{content:'←';font-size:1rem;}
+  .page-wrap{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:8rem 2rem 5rem;}
+  .page-header{text-align:center;margin-bottom:4rem;}
+  .eyebrow{font-family:var(--S);font-weight:400;font-size:0.72rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--purpv);margin-bottom:1rem;display:flex;align-items:center;justify-content:center;gap:0.6rem;}
+  .page-title{font-family:var(--G);font-size:clamp(2.8rem,5vw,4.5rem);line-height:1.0;letter-spacing:0.01em;color:var(--white);margin-bottom:1rem;}
+  .page-title .acc{background:linear-gradient(135deg,var(--purpv),var(--mag));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+  .rule{width:60px;height:2px;background:linear-gradient(90deg,var(--royal),var(--purple),var(--mag));border-radius:2px;margin:1.2rem auto;}
+  .page-sub{font-family:var(--S);font-weight:300;color:var(--dim);font-size:0.97rem;line-height:1.8;max-width:520px;margin:0 auto;}
+  /* FILTER TABS */
+  .filter-bar{display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center;margin-bottom:3rem;}
+  .filter-btn{font-family:var(--S);font-weight:400;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.35rem 1rem;border-radius:50px;border:1px solid rgba(123,43,255,0.22);background:transparent;color:var(--dim);cursor:pointer;transition:all 0.2s;}
+  .filter-btn:hover{background:rgba(123,43,255,0.12);color:var(--white);}
+  .filter-btn.active{background:rgba(123,43,255,0.18);border-color:var(--purpv);color:var(--white);}
+  /* ARTICLES GRID */
+  .articles-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+  @media(max-width:900px){.articles-grid{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:580px){.articles-grid{grid-template-columns:1fr;}}
+  .article-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:2rem;transition:all 0.3s;backdrop-filter:blur(12px);display:flex;flex-direction:column;gap:0.85rem;position:relative;overflow:hidden;}
+  .article-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(157,78,255,0.3),transparent);opacity:0;transition:opacity 0.3s;}
+  .article-card:hover{transform:translateY(-5px);border-color:rgba(123,43,255,0.38);box-shadow:0 20px 50px rgba(4,5,26,0.5);}
+  .article-card:hover::before{opacity:1;}
+  .card-meta{display:flex;align-items:center;justify-content:space-between;}
+  .card-src{font-family:var(--S);font-weight:500;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--purpv);}
+  .card-date{font-family:var(--S);font-weight:300;font-size:0.65rem;color:var(--faint);}
+  .article-card h3{font-family:var(--G);font-size:1.2rem;letter-spacing:0.01em;line-height:1.25;color:var(--white);}
+  .article-card p{font-family:var(--S);font-weight:300;font-size:0.84rem;color:var(--dim);line-height:1.72;flex:1;}
+  .card-footer{display:flex;align-items:center;justify-content:space-between;margin-top:auto;flex-wrap:wrap;gap:0.5rem;}
+  .card-tag{display:inline-block;background:rgba(42,47,255,0.1);border:1px solid var(--borderb);color:#8b91ff;padding:0.2rem 0.7rem;border-radius:50px;font-family:var(--S);font-weight:400;font-size:0.65rem;letter-spacing:0.06em;}
+  .card-read{font-family:var(--S);font-weight:500;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--purpv);text-decoration:none;transition:color 0.2s;}
+  .card-read:hover{color:var(--white);}
+  /* FOOTER */
+  footer{background:var(--navy2);border-top:1px solid var(--border);padding:3rem 4rem 2rem;text-align:center;position:relative;z-index:1;}
+  .flogo{font-family:var(--G);font-size:2rem;letter-spacing:0.02em;color:var(--white);margin-bottom:0.5rem;}
+  .flogo em{font-style:normal;color:var(--purpv);}
+  footer p{font-family:var(--S);font-weight:300;font-size:0.82rem;color:var(--faint);margin-top:1rem;}
+  @media(max-width:768px){nav{padding:1rem 1.5rem;}.page-wrap{padding:7rem 1.4rem 4rem;}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">Toolzyo<em>.</em></a>
+  <a href="index.html#ai-intel" class="nav-back">Back to Home</a>
+</nav>
+
+<div class="page-wrap">
+  <div class="page-header">
+    <div class="eyebrow">Toolzyo Intel</div>
+    <h1 class="page-title">AI <span class="acc">Intel</span></h1>
+    <div class="rule"></div>
+    <p class="page-sub">The most important AI, LLM, and automation stories — read, rewritten, and filtered through the Toolzyo lens. No noise. Just signal.</p>
+  </div>
+
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="filterArticles('all', this)">All</button>
+    <button class="filter-btn" onclick="filterArticles('video', this)">AI Video</button>
+    <button class="filter-btn" onclick="filterArticles('image', this)">Image AI</button>
+    <button class="filter-btn" onclick="filterArticles('brand', this)">Brand & Strategy</button>
+    <button class="filter-btn" onclick="filterArticles('tools', this)">Tools & Stack</button>
+  </div>
+
+  <div class="articles-grid" id="articlesGrid">
+
+    <div class="article-card" data-tags="brand strategy geo">
+      <div class="card-meta"><span class="card-src">Toolzyo Original</span><span class="card-date">Mar 26, 2026</span></div>
+      <h3>If AI Can't Find You, You Don't Exist</h3>
+      <p>Brand discovery has moved from Google to AI. Here's what GEO actually is, how AI decides who gets cited, and why the early mover window is closing faster than most brands realize.</p>
+      <div class="card-footer">
+        <span class="card-tag">GEO · Brand Visibility</span>
+        <a href="ai-intel-geo-brand-visibility.html" class="card-read">Read →</a>
+      </div>
+    </div>
+
+    <div class="article-card" data-tags="image tools midjourney">
+      <div class="card-meta"><span class="card-src">Toolzyo Original</span><span class="card-date">Mar 26, 2026</span></div>
+      <h3>Midjourney V8 Is a Different Tool Entirely</h3>
+      <p>A rebuilt codebase, 5× faster, native 2K, and text rendering that actually works. Here's what changed and what it means for brands using AI image generation in production.</p>
+      <div class="card-footer">
+        <span class="card-tag">Midjourney · Image AI</span>
+        <a href="ai-intel-midjourney-v8.html" class="card-read">Read →</a>
+      </div>
+    </div>
+
+    <div class="article-card" data-tags="tools stack workflow">
+      <div class="card-meta"><span class="card-src">Toolzyo Original</span><span class="card-date">Mar 26, 2026</span></div>
+      <h3>The 2026 AI Tool Stack That Actually Matters</h3>
+      <p>Thousands of tools, four workflow functions. Here's the minimal, deliberate stack — organized by what you need to produce, not by tool category.</p>
+      <div class="card-footer">
+        <span class="card-tag">AI Tools · Workflow</span>
+        <a href="ai-intel-ai-tool-stack-2026.html" class="card-read">Read →</a>
+      </div>
+    </div>
+
+    <div class="article-card" data-tags="video music creators">
+      <div class="card-meta"><span class="card-src">Toolzyo Original</span><span class="card-date">Mar 26, 2026</span></div>
+      <h3>Music Videos Cost $0 to Make Now. Here's What That Changes.</h3>
+      <p>The production barrier is gone. Here's what replaces it — and which tools actually work for musicians versus ones that need a filmmaker's workflow.</p>
+      <div class="card-footer">
+        <span class="card-tag">AI Video · Music</span>
+        <a href="ai-intel-ai-music-video-creators.html" class="card-read">Read →</a>
+      </div>
+    </div>
+
+    <div class="article-card" data-tags="image tools free">
+      <div class="card-meta"><span class="card-src">Toolzyo Original</span><span class="card-date">Mar 26, 2026</span></div>
+      <h3>The Free AI Image Stack Professionals Actually Use</h3>
+      <p>200+ free tools exist. Three are worth building a workflow around — including the specialist that beats everything on text rendering.</p>
+      <div class="card-footer">
+        <span class="card-tag">Image AI · Free Tools</span>
+        <a href="ai-intel-free-ai-image-generators.html" class="card-read">Read →</a>
+      </div>
+    </div>
+
+    <div class="article-card" data-tags="video brand marketing">
+      <div class="card-meta"><span class="card-src">Toolzyo Original</span><span class="card-date">Mar 26, 2026</span></div>
+      <h3>AI Music Video Is a Brand Channel. Most Brands Are Missing It.</h3>
+      <p>Branded content with music outperforms everything. AI makes it accessible at zero production cost. Here's how — and which tools match which use case.</p>
+      <div class="card-footer">
+        <span class="card-tag">AI Video · Brand</span>
+        <a href="ai-intel-ai-music-video-brands.html" class="card-read">Read →</a>
+      </div>
+    </div>
+
+    <div class="article-card" data-tags="video seedance bytedance">
+      <div class="card-meta"><span class="card-src">Toolzyo Original</span><span class="card-date">Mar 19, 2026</span></div>
+      <h3>AI Video Just Stopped Being a Slot Machine</h3>
+      <p>Seedance 2.0 changed the creative model — from prompting and hoping, to directing with actual references. Here's what the @ system and native audio mean in practice.</p>
+      <div class="card-footer">
+        <span class="card-tag">ByteDance · AI Video</span>
+        <a href="ai-intel-seedance-2.html" class="card-read">Read →</a>
+      </div>
+    </div>
+
+    <div class="article-card" data-tags="image brand google">
+      <div class="card-meta"><span class="card-src">Toolzyo Original</span><span class="card-date">Mar 19, 2026</span></div>
+      <h3>When AI Stopped Copying Reality and Started Building It</h3>
+      <p>Google's Nano Banana 2 generates images most people can't tell aren't photographs. Here's what that means for brands and anyone building a visual presence.</p>
+      <div class="card-footer">
+        <span class="card-tag">Google · Image AI</span>
+        <a href="ai-intel-nano-banana-2.html" class="card-read">Read →</a>
+      </div>
+    </div>
+
+    <div class="article-card" data-tags="video tools 2026">
+      <div class="card-meta"><span class="card-src">Toolzyo Original</span><span class="card-date">Mar 19, 2026</span></div>
+      <h3>7 AI Video Tools Actually Worth Your Time in 2026</h3>
+      <p>No filler, no hype — just what's working, who it's for, and the honest verdict on each tool in the 2026 AI video stack.</p>
+      <div class="card-footer">
+        <span class="card-tag">Video · AI Tools</span>
+        <a href="ai-intel-ai-video-tools-2026.html" class="card-read">Read →</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="flogo">Toolzyo<em>.</em></div>
+  <p>© 2026 Toolzyo Studio. Human-led. AI-enhanced.</p>
+</footer>
+
+<script>
+  function filterArticles(tag, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.article-card').forEach(card => {
+      if (tag === 'all') {
+        card.style.display = 'flex';
+        return;
+      }
+      const tags = card.dataset.tags || '';
+      const map = { video:'video', image:'image', brand:'brand strategy', tools:'tools stack workflow' };
+      const match = (map[tag] || tag).split(' ').some(t => tags.includes(t));
+      card.style.display = match ? 'flex' : 'none';
+    });
+  }
+</script>
+</body>
+</html>
